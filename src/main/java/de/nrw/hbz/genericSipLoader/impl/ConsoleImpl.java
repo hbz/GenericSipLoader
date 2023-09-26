@@ -51,7 +51,14 @@ public class ConsoleImpl {
       dLoader.extractZips();
       Set<String> ieList = dLoader.scanIEs();
       dLoader.cuFedoraObject(ieList);
-}
+    }
+    
+    if(target.equals("ktbl")) {
+        KtblLoaderImpl ktblLoader = new KtblLoaderImpl(basePath, user, passwd);
+        ktblLoader.extractZips();
+        Set<String> ieList = ktblLoader.scanIEs();
+        ktblLoader.cuToScienceObject(ieList);
+      }
   }
     
 
