@@ -85,9 +85,11 @@ public class KtblLoaderImpl {
 
 	// create new empty ToScienceObject
     String parentId = createToScienceObject("researchdata");
+    // create childressource from parentressource above
+    String childPid = createToScienceObjectChild("file", parentId);
+    
     Iterator<String> fIt = fList.iterator();
     while(fIt.hasNext()) {
-      // find correct sourceId
       String fileName = fIt.next();
       logger.debug(fileName);
       /*
@@ -103,7 +105,6 @@ public class KtblLoaderImpl {
         // add EDM.xml
         //addMetadataStream(pid, "EDM", new File(fileName));
     	// add files to parent Resource
-    	String childPid = createToScienceObjectChild("file", parentId);
     	uploadFile(new File(fileName), childPid);
       } else {
         logger.warn("Cannot create ToScience object or upload file");
