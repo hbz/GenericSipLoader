@@ -9,6 +9,10 @@ public class ResponseObject {
 	private String text;
 	private String error;
 	
+	public ResponseObject() {
+		
+	}
+	
 	public Integer getCode() {
 		return code;
 	}
