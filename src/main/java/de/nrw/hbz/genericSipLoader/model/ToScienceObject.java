@@ -15,7 +15,7 @@ public class ToScienceObject {
 	private String publishScheme;
 	
 	@JsonInclude(JsonInclude.Include.NON_DEFAULT)
-	private String parentId;
+	private String parentPid;
 
 	public String getAccessScheme() {
 		return accessScheme;
@@ -41,12 +41,12 @@ public class ToScienceObject {
 		this.publishScheme = publishScheme;
 	}
 
-	public String getParentId() {
-		return parentId;
+	public String getParentPid() {
+		return parentPid;
 	}
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
+	public void setParentPid(String parentPid) {
+		this.parentPid = parentPid;
 	}
 
 }

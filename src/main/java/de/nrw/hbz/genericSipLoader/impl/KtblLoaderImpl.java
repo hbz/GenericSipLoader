@@ -49,20 +49,16 @@ public class KtblLoaderImpl {
     Set<String> ieList = fScan.getFileList();
     return ieList;
   }
-
-  public String createToScienceObject(String type) {
-	  return createToScienceObjectChild(type, null);
-  }
   
-  public String createToScienceObjectChild(String type, String parentId) {
+  public String createToScienceObject(String type, String parentId) {
     KtblClient client = new KtblClient(user, passwd);
     return client.postToScienceObject(type, parentId);
   }
   
   public void uploadFile(File file, String childId) {
-	    KtblClient client = new KtblClient(user, passwd);
-	    client.postFileStream(childId, file);
-	  }
+    KtblClient client = new KtblClient(user, passwd);
+    client.postFileStream(childId, file);
+  }
   /*
   public void addMetadataStream(String pid, String mdSchema, File file) {
     KtblClient client = new KtblClient(user, passwd);
@@ -76,35 +72,22 @@ public class KtblLoaderImpl {
   }
   */
   /**
-   * create or update a FedoraObject in accordance with DANRW an DIPs specification
-   * DIPs submissions require some preparation to comply with Fedora Data Model
+   * create or update a parent ToScienceObject and one or more childs to upload files
    * 
    * @param fList
    */
   public void cuToScienceObject(Set<String> fList) {
 
 	// create new empty ToScienceObject
-    String parentId = createToScienceObject("researchdata");
-    // create childressource from parentressource above
-    String childPid = createToScienceObjectChild("file", parentId);
-    
+    String parentId = createToScienceObject("researchdata", null);
+
     Iterator<String> fIt = fList.iterator();
     while(fIt.hasNext()) {
       String fileName = fIt.next();
-      logger.debug(fileName);
-      /*
-      int index = fileName.lastIndexOf("/");
-      String parent = fileName.substring(0, index);
-      index = parent.lastIndexOf("/");
-      String sourceId = parent.substring(index +1);
-      */
-            
-      //String pid = "danrw:2023-09-24-" + sourceId;
-      
+      logger.info("FileName: " + fileName);  
       if(parentId!=null) {
-        // add EDM.xml
-        //addMetadataStream(pid, "EDM", new File(fileName));
-    	// add files to parent Resource
+    	// create childressource from parentressource
+    	String childPid = createToScienceObject("file", parentId);
     	uploadFile(new File(fileName), childPid);
       } else {
         logger.warn("Cannot create ToScience object or upload file");

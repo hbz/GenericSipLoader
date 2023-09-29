@@ -23,7 +23,6 @@ import de.nrw.hbz.genericSipLoader.model.ToScienceObject;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.client.Invocation;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -47,6 +46,8 @@ public class KtblClient {
   private String passwd = null;
   public static String MANAGED = "M";
   public static String DSSTATE = "A";
+  public static String PRIVATE = "private";
+  public static String PUBLIC = "public";
   private Hashtable<String,String> apiConfig = new Hashtable<>();
   
   
@@ -88,48 +89,35 @@ public class KtblClient {
        WebTarget webTarget = client.target(apiHost).path(endpoint).path(namespace);
     logger.debug(webTarget.getUri().toString());
     
-    Invocation.Builder invocationBuilder =  webTarget.request(MediaType.TEXT_HTML);
-    Response response = invocationBuilder.get();
+    Response response =  webTarget.request().get();
     logger.debug(response.getStatus());    
   }
   
   /**
-   * Create Child ToScience Object in remote Fedora Repository
+   * Create a Parent or a Child ToScience Object in remote Fedora Repository
    * @param sourceId
    * @return
    */
-  public String postToScienceObject(String type, String parentId) {
-    return postToScienceObjectChild(type, null);
-  }
-  
-  /**
-   * Create Child ToScience Object in remote Fedora Repository
-   * @param sourceId
-   * @return
-   */
-  public String postToScienceObjectChild(String type, String parentId) {
+  public String postToScienceObject(String type, String parentIdOrNull) {
     String endpoint = "resource";
-    
+
     String namespace = apiConfig.get("namespace"); 
     HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
     Client client =  ClientBuilder.newClient(new ClientConfig());
     client.register(basicAuthFeature);
     
     WebTarget webTarget = client.target(apiHost).path(endpoint).path(namespace);
-    logger.debug(webTarget.getUri().toString());
     
     ToScienceObject obj = new ToScienceObject();
-    obj.setAccessScheme("private");
-    obj.setPublishScheme("private");
+    obj.setAccessScheme(PRIVATE);
+    obj.setPublishScheme(PRIVATE);
     obj.setContentType(type);
-    obj.setParentId(parentId);
-    
-    Invocation.Builder invocationBuilder =  webTarget.request(MediaType.TEXT_HTML);
-    Response response = invocationBuilder.post(Entity.entity(obj, MediaType.APPLICATION_JSON));
-    
+    obj.setParentPid(parentIdOrNull);
+
+    Response response =  webTarget.request().post(Entity.json(obj));
     ResponseObject responseObj = response.readEntity(ResponseObject.class);
-    
-	return responseObj.getText();
+
+	return responseObj.getText().split(" ")[0];
   }
   
   /**
@@ -138,24 +126,22 @@ public class KtblClient {
    * @param mdSchema
    * @param xmlFile
    */
-  public void postFileStream(String objId, File file) {
+  public void postFileStream(String childId, File file) {
     String endpoint = "resource";
     
     HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
     Client client =  ClientBuilder.newBuilder().register(basicAuthFeature).register(MultiPartFeature.class).build();
     
-    FileDataBodyPart filePart = new FileDataBodyPart("file", file);
+    FileDataBodyPart filePart = new FileDataBodyPart("data", file, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
     FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
     FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
+    
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(childId).path("data");
 
-    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("data");
-        /*.queryParam("controlGroup", "X").queryParam("mimeType", filePart.getMediaType()).queryParam("dsState", "A")
-        .queryParam("dsLabel", mdSchema + ".xml");*/
-    logger.debug(webTarget.getUri().toString());
-    
     Response response = webTarget.request().post(Entity.entity(multipart, multipart.getMediaType()));
-    logger.debug(response.getStatus());
-    
+    logger.debug("Status File Upload: " + response.getStatus());
+
     try {
       formDataMultiPart.close();
       multipart.close();
@@ -164,6 +150,7 @@ public class KtblClient {
       e.printStackTrace();
     }
   }
+  
   
   /**
    * @param objId
