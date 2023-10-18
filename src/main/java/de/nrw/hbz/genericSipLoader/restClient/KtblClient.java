@@ -73,7 +73,7 @@ public class KtblClient {
   private void setApi() {
     loadProperties();
     apiHost = apiProps.getProperty("protocol") + "://" + apiProps.getProperty("host") + ":"+ apiProps.getProperty("port");
-    System.out.println(apiHost);
+    logger.debug(apiHost);
   }
 
   
@@ -94,13 +94,13 @@ public class KtblClient {
   }
   
   /**
-   * Create a Parent or a Child ToScience Object in remote Fedora Repository
+   * Create a Parent or a Child ToScience Object in remote ToScience Repository
    * @param sourceId
    * @return
    */
   public String postToScienceObject(String type, String parentIdOrNull) {
     String endpoint = "resource";
-
+    String pid = null;
     String namespace = apiConfig.get("namespace"); 
     HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
     Client client =  ClientBuilder.newClient(new ClientConfig());
@@ -116,8 +116,43 @@ public class KtblClient {
 
     Response response =  webTarget.request().post(Entity.json(obj));
     ResponseObject responseObj = response.readEntity(ResponseObject.class);
+    
+    if(response.getStatus()==200) {
+      pid = responseObj.getText().split(" ")[0];
+    }
+	return pid;
+  }
+  
+  /**
+   * @param Pid
+   * @param MdString
+   */
+  public void addMdAsTriple(String Pid, String MdUri, String MdString) {
 
-	return responseObj.getText().split(" ")[0];
+    String pid = Pid;
+    String mdString = "Dummy-Titel";
+    String mdUri = "http://purl.org/dc/terms/title";
+    if(MdString != null) {
+      mdString = MdString;
+    }
+
+    if(MdUri != null) {
+      mdUri = MdUri;
+    }
+
+    String endpoint = "resource";
+    logger.info(pid);
+    HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
+    Client client =  ClientBuilder.newClient(new ClientConfig());
+    client.register(basicAuthFeature);
+    String mdTriple = "<" + pid + "> <" + mdUri+ "> \"" + mdString + "\" .";
+    logger.info(mdTriple);
+    
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(pid).path("metadata2");
+    Response response = webTarget.request().put(Entity.entity(mdTriple, MediaType.TEXT_PLAIN));
+    logger.info(response.getStatus());
+    
+    
   }
   
   /**

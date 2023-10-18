@@ -39,7 +39,8 @@ public class KtblLoaderImpl {
     
     logger.info("\nZip-extraction starts\n");
     
-    ZipExtractor extractor = new ZipExtractor(fList, basePath);
+    // comment zipextractor for testing, uncomment for production
+    // ZipExtractor extractor = new ZipExtractor(fList, basePath);
     
   }
 
@@ -53,6 +54,11 @@ public class KtblLoaderImpl {
   public String createToScienceObject(String type, String parentId) {
     KtblClient client = new KtblClient(user, passwd);
     return client.postToScienceObject(type, parentId);
+  }
+  
+  public void addMetadataAsTriples(String pid, String mdUri, String mdString) {
+    KtblClient client = new KtblClient(user, passwd);
+    client.addMdAsTriple(pid, mdUri, mdString);
   }
   
   public void uploadFile(File file, String childId) {
@@ -79,16 +85,21 @@ public class KtblLoaderImpl {
   public void cuToScienceObject(Set<String> fList) {
 
 	// create new empty ToScienceObject
-    String parentId = createToScienceObject("researchdata", null);
-
+    String parentId = createToScienceObject("researchData", null);
+    addMetadataAsTriples(parentId, "http://purl.org/dc/terms/title", "EmiMin Emission datasets");
+    
     Iterator<String> fIt = fList.iterator();
     while(fIt.hasNext()) {
       String fileName = fIt.next();
-      logger.info("FileName: " + fileName);  
+      logger.info("FileName: " + fileName);
+      
+      int index = fileName.lastIndexOf("/");
+      String fileNameStem = fileName.substring(index + 1).replace(".zip", "").replace("\\", "/");
       if(parentId!=null) {
-    	// create childressource from parentressource
+    	// create child resource from parent resource
     	String childPid = createToScienceObject("file", parentId);
-    	uploadFile(new File(fileName), childPid);
+      addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title", fileNameStem);
+     	uploadFile(new File(fileName), childPid);
       } else {
         logger.warn("Cannot create ToScience object or upload file");
       }

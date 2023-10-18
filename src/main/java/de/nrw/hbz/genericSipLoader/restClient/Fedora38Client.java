@@ -70,7 +70,7 @@ public class Fedora38Client {
   private void setApi() {
     loadProperties();
     apiHost = apiProps.getProperty("protocol") + "://" + apiProps.getProperty("host") + ":"+ apiProps.getProperty("port");
-    System.out.println(apiHost);
+    logger.debug(apiHost);
   }
 
   
