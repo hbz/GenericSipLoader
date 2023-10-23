@@ -4,6 +4,7 @@
 package de.nrw.hbz.genericSipLoader.impl;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -24,13 +25,15 @@ public class KtblLoaderImpl {
     this.basePath = basePath;
     this.user = user;
     this.passwd = passwd;
-  }
+    }
   
   final static Logger logger = LogManager.getLogger(KtblLoaderImpl.class);
   private String basePath = System.getProperty("user.dir");
   private String user = null;
   private String passwd = null;
+  private Hashtable<String,String> parts = new Hashtable<>();
   
+ 
   public void extractZips() {
     
     FileScanner fScan = new FileScanner(basePath);
@@ -40,7 +43,7 @@ public class KtblLoaderImpl {
     logger.info("\nZip-extraction starts\n");
     
     // comment zipextractor for testing, uncomment for production
-    // ZipExtractor extractor = new ZipExtractor(fList, basePath);
+    ZipExtractor extractor = new ZipExtractor(fList, basePath);
     
   }
 
@@ -84,9 +87,23 @@ public class KtblLoaderImpl {
    */
   public void cuToScienceObject(Set<String> fList) {
 
-	// create new empty ToScienceObject
+	  // create new empty ToScienceObject
     String parentId = createToScienceObject("researchData", null);
     addMetadataAsTriples(parentId, "http://purl.org/dc/terms/title", "EmiMin Emission datasets");
+    
+    // create structural parts according to the ktbl structure 
+    String partId = createToScienceObject("part", parentId);
+    addMetadataAsTriples(partId, "http://purl.org/dc/terms/title", "Datasets");
+    parts.put("DATASETS",  partId);
+    
+    partId = createToScienceObject("part", parentId);
+    addMetadataAsTriples(partId, "http://purl.org/dc/terms/title", "Metadata");
+    parts.put("METADATA",  partId);
+
+    partId = createToScienceObject("part", parentId);
+    addMetadataAsTriples(partId, "http://purl.org/dc/terms/title", "Support");
+    parts.put("SUPPORT",  partId);
+
     
     Iterator<String> fIt = fList.iterator();
     while(fIt.hasNext()) {
@@ -95,7 +112,17 @@ public class KtblLoaderImpl {
       
       int index = fileName.lastIndexOf("/");
       String fileNameStem = fileName.substring(index + 1).replace(".zip", "").replace("\\", "/");
-      if(parentId!=null) {
+      
+      if(fileNameStem.contains("/")) {
+        String[] pathParts = fileNameStem.split("/");
+        String partType = pathParts[0];
+        fileNameStem = pathParts[1];
+        String childPid = createToScienceObject("file", parts.get(partType));
+        addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title", fileNameStem);
+        uploadFile(new File(fileName), childPid);
+        
+      }
+      else if(parentId!=null) {
     	// create child resource from parent resource
     	String childPid = createToScienceObject("file", parentId);
       addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title", fileNameStem);
