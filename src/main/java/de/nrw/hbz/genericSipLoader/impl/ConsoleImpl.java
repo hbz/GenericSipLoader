@@ -54,7 +54,9 @@ public class ConsoleImpl {
     }
     
     if(target.equals("ktbl")) {
+    	// Constructor Initialise
         KtblLoaderImpl ktblLoader = new KtblLoaderImpl(basePath, user, passwd);
+        // Unzipping the File
         ktblLoader.extractZips();
         Set<String> ieList = ktblLoader.scanIEs();
         ktblLoader.cuToScienceObject(ieList);

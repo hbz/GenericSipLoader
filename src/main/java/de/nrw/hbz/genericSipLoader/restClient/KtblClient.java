@@ -107,12 +107,14 @@ public class KtblClient {
     client.register(basicAuthFeature);
     
     WebTarget webTarget = client.target(apiHost).path(endpoint).path(namespace);
+    logger.debug("webTarget.toString()="+webTarget.toString());
     
     ToScienceObject obj = new ToScienceObject();
     obj.setAccessScheme(PRIVATE);
     obj.setPublishScheme(PRIVATE);
     obj.setContentType(type);
     obj.setParentPid(parentIdOrNull);
+    
 
     Response response =  webTarget.request().post(Entity.json(obj));
     ResponseObject responseObj = response.readEntity(ResponseObject.class);
@@ -173,9 +175,42 @@ public class KtblClient {
     FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
     
     WebTarget webTarget = client.target(apiHost).path(endpoint).path(childId).path("data");
+    logger.debug("webTarget: " + webTarget.toString());
 
     Response response = webTarget.request().post(Entity.entity(multipart, multipart.getMediaType()));
     logger.debug("Status File Upload: " + response.getStatus());
+
+    try {
+      formDataMultiPart.close();
+      multipart.close();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
+  
+ /**
+  * This method loads a file (Json file) via Api call to the updateKtblAndTos endpoint
+  * @param The json file is assigned a separate resource as a parent resource
+  * @param file Json file which contains TOSCIENCE and KTBL metadata
+  */
+  public void postJsonFile(String parentId, File file) {
+    String endpoint = "resource";
+    
+    HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
+    Client client =  ClientBuilder.newBuilder().register(basicAuthFeature).register(MultiPartFeature.class).build();
+    
+    FileDataBodyPart filePart = new FileDataBodyPart("data", file, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+
+    FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+    FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
+    
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(parentId).path("ktbl");
+    logger.debug("webTarget: " + webTarget.toString());
+
+    Response response = webTarget.request().put(Entity.entity(multipart, multipart.getMediaType()));
+    logger.debug("Status Jons File Upload: " + response.getStatus());
 
     try {
       formDataMultiPart.close();
