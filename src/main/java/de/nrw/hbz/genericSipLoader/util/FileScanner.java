@@ -16,9 +16,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import jakarta.ws.rs.core.MediaType;
-
-
 public class FileScanner {
 
   public FileScanner() {
