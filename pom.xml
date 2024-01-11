@@ -14,6 +14,34 @@
 		<url>http://www.hbz-nrw.de</url>
 	</organization>
 
+	<pluginRepositories>
+  <!-- Workaround for Versions <3.6 of Maven, required for danrw -->
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  
+  <repositories>
+  <!-- Workaround for Versions <3.6 of Maven, required for danrw -->
+  <repository>
+    <id>central</id>
+    <name>Central Repository</name>
+    <url>https://repo.maven.apache.org/maven2</url>
+    <layout>default</layout>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+  </repositories>
 	<build>
 		<plugins>
 			<plugin>
