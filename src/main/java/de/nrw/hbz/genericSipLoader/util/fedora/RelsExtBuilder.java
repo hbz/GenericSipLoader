@@ -1,9 +1,12 @@
 package de.nrw.hbz.genericSipLoader.util.fedora;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,15 +21,18 @@ public class RelsExtBuilder {
       "\n<rdf:Description rdf:about=\"info:fedora/_pid\">"      
       + "\n\t<identifier xmlns=\"http://openarchives.org/OAI/2.0/\" rdf:resource=\"oai:_pid\"></identifier>");
   private String footer = new String("</rdf:Description>\n</rdf:RDF>");
-  private String pid = null; 
+  private String pid = null;
+  private String result = null;
 
   private List<String> memberOf = new ArrayList<>();
 
   public RelsExtBuilder(String Pid) {
     pid = Pid;
+    result = generateRelsExt();
+    
   }
   
-  public String generateRelsExt() {
+  private String generateRelsExt() {
     String reStr = null;
     StringBuffer reSB = new StringBuffer();
     reStr = relsext.replaceAll("_pid", pid);
@@ -40,12 +46,19 @@ public class RelsExtBuilder {
     return reSB.toString();
   }
   
-  public File fileWriter(String path, String reStr) {
+  public InputStream getInputStream() {
+    ByteArrayInputStream bais = new ByteArrayInputStream(result.getBytes());
+    InputStream is = new BufferedInputStream(bais);
+    return is;
+  }
+  
+  
+  public File getFile(String path) {
     File file = new File(path + System.getProperty("file.separator") + "RELS-EXT.xml");
     try {
       FileOutputStream fos = new FileOutputStream(file);
       BufferedOutputStream bos = new BufferedOutputStream(fos);
-      bos.write(reStr.getBytes("UTF-8"));
+      bos.write(result.getBytes("UTF-8"));
 
       bos.flush();
       fos.close();

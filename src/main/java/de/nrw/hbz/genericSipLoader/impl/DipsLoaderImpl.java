@@ -4,6 +4,7 @@
 package de.nrw.hbz.genericSipLoader.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import de.nrw.hbz.genericSipLoader.restClient.Fedora38Client;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
+import de.nrw.hbz.genericSipLoader.util.fedora.RelsExtBuilder;
 import jakarta.ws.rs.core.MediaType;
 
 /**
@@ -65,6 +67,11 @@ public class DipsLoaderImpl {
     client.postXmlMetadataStream(pid, mdSchema, file);
   }
 
+  public void addMetadataStream(String pid, String mdSchema, InputStream fileStream) {
+    Fedora38Client client = new Fedora38Client(user, passwd);
+    client.postXmlMetadataStream(pid, mdSchema, fileStream);
+  }
+  
   public void addPayLoadStream(String pid, int id, File file) {
     String DSId = "DS" + id;
     Fedora38Client client = new Fedora38Client(user, passwd);
@@ -96,7 +103,8 @@ public class DipsLoaderImpl {
 
       if(pid!=null) {
         // add EDM.xml
-        addMetadataStream(pid, "EDM", new File(fileName));
+        addMetadataStream(pid, "EDM.xml", new File(fileName));
+        addMetadataStream(pid, "RESL-EXT", new RelsExtBuilder(pid).getInputStream());
       } else {
         logger.warn("Cannot create Fedora object for: " + sourceId);
       }
@@ -108,7 +116,7 @@ public class DipsLoaderImpl {
       while(epiIt.hasNext()) {
         String epiFileName = epiIt.next();
         logger.debug(epiFileName);
-        addMetadataStream(pid, "EPICUR", new File(epiFileName));
+        addMetadataStream(pid, "epicur.xml", new File(epiFileName));
       }
       
       List<String> mimeTypes = new ArrayList<>();

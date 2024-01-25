@@ -17,6 +17,7 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -141,9 +142,9 @@ public class Fedora38Client {
     FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
     FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
 
-    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("datastreams").path(mdSchema + ".xml")
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("datastreams").path(mdSchema)
         .queryParam("controlGroup", "X").queryParam("mimeType", filePart.getMediaType()).queryParam("dsState", "A")
-        .queryParam("dsLabel", mdSchema + ".xml");
+        .queryParam("dsLabel", mdSchema);
     logger.debug(webTarget.getUri().toString());
     
     Response response = webTarget.request().post(Entity.entity(multipart, multipart.getMediaType()));
@@ -158,6 +159,38 @@ public class Fedora38Client {
     }
   }
   
+  /**
+   * @param objId
+   * @param mdSchema
+   * @param xmlStream Method uses InputStream instead of File
+   */
+  public void postXmlMetadataStream(String objId, String mdSchema, InputStream xmlStream) {
+    String endpoint = "fedora/objects";
+    
+    HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
+    Client client =  ClientBuilder.newBuilder().register(basicAuthFeature).register(MultiPartFeature.class).build();
+    
+    StreamDataBodyPart filePart = new StreamDataBodyPart("file", xmlStream);
+    FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+    FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
+
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("datastreams").path(mdSchema)
+        .queryParam("controlGroup", "X").queryParam("mimeType", filePart.getMediaType()).queryParam("dsState", "A")
+        .queryParam("dsLabel", mdSchema);
+    logger.debug(webTarget.getUri().toString());
+    
+    Response response = webTarget.request().post(Entity.entity(multipart, multipart.getMediaType()));
+    logger.debug(response.getStatus());
+    
+    try {
+      formDataMultiPart.close();
+      multipart.close();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   /**
    * @param objId
    * @param DSId

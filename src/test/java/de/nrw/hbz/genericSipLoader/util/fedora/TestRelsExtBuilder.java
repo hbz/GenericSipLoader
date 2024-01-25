@@ -13,6 +13,6 @@ public class TestRelsExtBuilder {
   @Test
   public void produceRelsExtStream() {
     RelsExtBuilder reB = new RelsExtBuilder("1234");
-    reB.generateRelsExt();
+    reB.getInputStream();
   }
 }
