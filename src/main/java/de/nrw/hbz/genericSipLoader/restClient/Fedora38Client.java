@@ -141,7 +141,7 @@ public class Fedora38Client {
     FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
     FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
 
-    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("datastreams").path(mdSchema)
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("datastreams").path(mdSchema + ".xml")
         .queryParam("controlGroup", "X").queryParam("mimeType", filePart.getMediaType()).queryParam("dsState", "A")
         .queryParam("dsLabel", mdSchema + ".xml");
     logger.debug(webTarget.getUri().toString());
