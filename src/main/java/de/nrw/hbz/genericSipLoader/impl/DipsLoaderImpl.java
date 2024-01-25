@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 import de.nrw.hbz.genericSipLoader.restClient.Fedora38Client;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
-import de.nrw.hbz.genericSipLoader.util.fedora.RelsExtBuilder;
 import jakarta.ws.rs.core.MediaType;
 
 /**
@@ -72,6 +71,12 @@ public class DipsLoaderImpl {
     client.postXmlMetadataStream(pid, mdSchema, fileStream);
   }
   
+  public void addRelationship(String pid, String subject, String predicate, String object) {
+    Fedora38Client client = new Fedora38Client(user, passwd);
+    client.postRelationship(pid, subject, predicate, object);;
+  }
+  
+  
   public void addPayLoadStream(String pid, int id, File file) {
     String DSId = "DS" + id;
     Fedora38Client client = new Fedora38Client(user, passwd);
@@ -104,7 +109,9 @@ public class DipsLoaderImpl {
       if(pid!=null) {
         // add EDM.xml
         addMetadataStream(pid, "EDM.xml", new File(fileName));
-        addMetadataStream(pid, "RESL-EXT", new RelsExtBuilder(pid).getInputStream());
+        addRelationship(pid, "info:fedora/" + pid , "http://www.openarchives.org/OAI/2.0/identifier", "oai:" + pid);
+        addRelationship(pid, "info:fedora/" + pid , "info:fedora/fedora-system:def/relations-external#isMemberOf", "info:fedora/set:ddb");
+        addRelationship(pid, "info:fedora/" + pid , "info:fedora/fedora-system:def/relations-external#isMemberOf", "info:fedora/set:open-access");
       } else {
         logger.warn("Cannot create Fedora object for: " + sourceId);
       }

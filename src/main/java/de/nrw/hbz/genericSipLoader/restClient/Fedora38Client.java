@@ -126,6 +126,31 @@ public class Fedora38Client {
     return objId;
   }
   
+  public void postRelationship(String pid, String subject, String predicate, String object) {
+    String endpoint = "fedora/objects/" + pid + "/relationships/new";
+    
+    HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
+    //MultiPartFeature mpFeature = MultiPartFeature.
+    Client client =  ClientBuilder.newClient(new ClientConfig());
+    client.register(basicAuthFeature);
+    
+    WebTarget webTarget = client.target(apiHost).path(endpoint).queryParam("subject", subject).queryParam("predicate", predicate)
+        .queryParam("object", object).queryParam("isLiteral", "false");
+    logger.debug(webTarget.getUri().toString());
+    
+    Invocation.Builder invocationBuilder =  webTarget.request(MediaType.TEXT_HTML);
+    Response response = invocationBuilder.post(null);
+    logger.debug(response.getStatus());
+
+    if(response.getStatus()!=200) {
+      if(response.getStatus()==500) {
+        logger.warn("Server erroe");
+      } else {
+        logger.warn("Could not create new relationship");
+      }
+    }
+  }
+
   /**
    * add Xml Metadata Stream to remote Fedora Object
    * @param objId
