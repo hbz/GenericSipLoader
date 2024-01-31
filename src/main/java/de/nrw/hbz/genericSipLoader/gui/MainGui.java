@@ -1,14 +1,11 @@
 package de.nrw.hbz.genericSipLoader.gui;
 
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,7 +21,6 @@ import java.util.Set;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
 import de.nrw.hbz.genericSipLoader.impl.DipsLoaderImpl;
 import de.nrw.hbz.genericSipLoader.impl.KtblLoaderImpl;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
@@ -32,11 +28,9 @@ import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
 import java.awt.SystemColor;
 import javax.swing.JTextArea;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
 
 import javax.swing.*;
 
@@ -272,11 +266,8 @@ public class MainGui extends JFrame {
 		String passwd = null;
 		String target = null;
 		try {
-			if (textFieldName.getText() != null
-					&& textField_Pasword.getText() != null
-					&& textFieldZipFile.getText() != null) {
-				target = radButtonMetadata;
-				// System.out.println("target1=" + target);
+			target = radButtonMetadata;
+			if (areFieldsFilled()) {
 				basePath = Paths.get(textFieldZipFile.getText()).getParent()
 						.toString();
 				user = textFieldName.getText();
@@ -288,14 +279,14 @@ public class MainGui extends JFrame {
 				ZipExtractor extractor = new ZipExtractor(fList, basePath);
 			}
 
-			if (target.equals("danrw")) {
+			if (target.equals("danrw") && areFieldsFilled()) {
 				DipsLoaderImpl dLoader = new DipsLoaderImpl(basePath, user,
 						passwd);
 				dLoader.extractZips();
 				Set<String> ieList = dLoader.scanIEs();
 				dLoader.cuFedoraObject(ieList);
 			}
-			if (target.equals("ktbl")) {
+			if (target.equals("ktbl") && areFieldsFilled()) {
 				KtblLoaderImpl ktblLoader = new KtblLoaderImpl(basePath, user,
 						passwd);
 				ktblLoader.extractZips();
@@ -396,18 +387,37 @@ public class MainGui extends JFrame {
 	public void saveTextAreaContentToPropertiesFile(String metadataName,
 			JTextArea textArea) {
 
-		File f = null;
+		File file = null;
 		Path filePath = null;
 		filePath = Paths.get(System.getProperty("user.dir"), "src", "main",
 				"resources", metadataName + "-api.properties");
-		f = new File(filePath.toString());
+		file = new File(filePath.toString());
 
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(f))) {
-			writer.write(textArea.getText());
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+			String content = textArea.getText();
+			System.out.println("content=" + content);
+			String[] lines = content.split("\\n");
 
-		} catch (Exception e) {
-			showMessage("Warning",
-					"The properties file cannot be overwritten.");
+			for (String line : lines) {
+	            String trimmedLine = line.trim();
+	            if (!trimmedLine.isEmpty()) {
+	                writer.write(trimmedLine);
+	                writer.newLine();
+	            }
+	        }
+
+			System.out.println("Inhalt erfolgreich in die Datei geschrieben.");
+		} catch (IOException e) {
+			showMessage("Warnung",
+					"Die Eigenschaftsdatei kann nicht überschrieben werden.");
 		}
+
+	}
+
+	public boolean areFieldsFilled() {
+		String text1 = textFieldZipFile.getText();
+		String text2 = textFieldName.getText();
+		String text3 = textField_Pasword.getText();
+		return !text1.isEmpty() && !text2.isEmpty() && !text3.isEmpty();
 	}
 }
