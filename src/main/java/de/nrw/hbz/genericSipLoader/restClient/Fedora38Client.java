@@ -152,7 +152,7 @@ public class Fedora38Client {
   }
 
   /**
-   * add Xml Metadata Stream to remote Fedora Object
+   * add XML Metadata Stream to remote FedoraObject
    * @param objId
    * @param mdSchema
    * @param xmlFile
@@ -174,6 +174,7 @@ public class Fedora38Client {
     
     Response response = webTarget.request().post(Entity.entity(multipart, multipart.getMediaType()));
     logger.debug(response.getStatus());
+    logger.debug(multipart.getMediaType());
     
     try {
       formDataMultiPart.close();
@@ -217,9 +218,11 @@ public class Fedora38Client {
   }
 
   /**
-   * @param objId
-   * @param DSId
-   * @param plFile
+   * Add new datastream via FormDataMultipart to an existing FedoraObject
+   *   
+   * @param objId the FedoraObject ID
+   * @param DSId the ID of the added datastream as part of the FedoraObject
+   * @param plFile the path to the payload datastream to add
    */
   public void postPayLoadStream(String objId, String DSId, File plFile) {
     String endpoint = "fedora/objects";
