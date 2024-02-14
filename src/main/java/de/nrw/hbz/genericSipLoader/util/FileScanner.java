@@ -70,7 +70,7 @@ public class FileScanner {
       Iterator<String> fListIt = fList.iterator();
       while(fListIt.hasNext()) {
        String fileName = fListIt.next();
-       //System.out.println(fileName);
+       System.out.println(fileName);
       }
     } catch (IOException e) {
       // TODO Auto-generated catch block
