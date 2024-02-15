@@ -1,6 +1,3 @@
-/**
- * 
- */
 package de.nrw.hbz.genericSipLoader.edm.model;
 
 import java.util.ArrayList;
@@ -8,22 +5,32 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeQdc;
 
-import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeProvidedCHO;
-import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeResourceAttribute;
-import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeProvidedCHO;
-import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeRdf;
+@JsonDeserialize(as = DeserializeQdc.class)
+// @JsonSerialize(as = SerializeRdf.class)
+@JsonIgnoreProperties(ignoreUnknown = true)  
+public interface Qdc {
 
-/**
- * 
- */
-@JsonDeserialize(as = DeserializeProvidedCHO.class)
-// @JsonSerialize(as = SerializeProvidedCHO.class)
-public interface ProvidedCHO {
-  
+  /**
+   * @return the OaiDcXmlns
+   */
+  public String getOaiDcXmlns();
+
+  /**
+   * @return the dcXmlns
+   */
+  public String getDcXmlns();
+
+  /**
+   * @return the dctermsXmlns
+   */
+  public String getDctermsXmlns();
+
+  /**
+   * @return the xsiSchemaLocation
+   */
+  public String getXsiSchemaLocation();
 
   // add to List
   /**
@@ -79,7 +86,7 @@ public interface ProvidedCHO {
   /**
    * @return the dcTitle
    */
-  public ArrayList<String> getDcTitle();
+  public List<String> getDcTitle();
   /**
    * @return the dcDescription
    */
@@ -132,14 +139,6 @@ public interface ProvidedCHO {
    * @return the dctermsProvenance
    */
   public ArrayList<String> getDctermsProvenance();
-  /**
-   * @return the edmType
-   */
-  public String getEdmType();
-  /**
-   * @return
-   */
-  public String getProvidedCHOAbout();
   
   // Setter
   /**
@@ -162,10 +161,6 @@ public interface ProvidedCHO {
    * @param dctermsProvenance the dctermsProvenance to set
    */
   public void setDctermsProvenance(ArrayList<String> dctermsProvenance);
-  /**
-   * @param edmType the edmType to set
-   */
-  public void setEdmType(String edmType);
   /**
    * @param dcTitle the dcTitle to set
    */
@@ -202,8 +197,4 @@ public interface ProvidedCHO {
    * @param dcDate the dcDate to set
    */
   public void setDcDate(ArrayList<String> date);
-  /**
-   * @param ProvidedCHOAbout
-   */
-  public void setProvidedCHOAbout(String ProvidedCHOAbout);
 }

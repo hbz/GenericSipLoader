@@ -23,7 +23,7 @@ import de.nrw.hbz.genericSipLoader.edm.model.AboutAttribute;
 public class DeserializeProvidedCHO implements ProvidedCHO{
   
 
-  private List<String> dcTitle = new ArrayList<>();
+  private ArrayList<String> dcTitle = new ArrayList<>();
   private ArrayList<String> dcDescription = new ArrayList<>();
   private ArrayList<String> dcCreator = new ArrayList<>();
   private ArrayList<String> dcContributor = new ArrayList<>();
@@ -47,7 +47,7 @@ public class DeserializeProvidedCHO implements ProvidedCHO{
    * @param add item to dctermsExtent
    */
   @Override
-  public void addDctermsExtend(String extent) {
+  public void addDctermsExtent(String extent) {
     this.dctermsExtent.add(extent);
   }
   /**
@@ -132,7 +132,7 @@ public class DeserializeProvidedCHO implements ProvidedCHO{
    */
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName="dc:title")
-  public List<String> getDcTitle() {
+  public ArrayList<String> getDcTitle() {
     return dcTitle;
   }
   /**
