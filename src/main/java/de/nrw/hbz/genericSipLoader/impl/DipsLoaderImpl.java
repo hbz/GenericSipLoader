@@ -19,11 +19,11 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.nrw.hbz.genericSipLoader.edm.impl.AggregationElementOperator;
-import de.nrw.hbz.genericSipLoader.edm.impl.EdmImpl;
-import de.nrw.hbz.genericSipLoader.edm.impl.QdcProvider;
-import de.nrw.hbz.genericSipLoader.edm.model.ProvidedCHO;
-import de.nrw.hbz.genericSipLoader.edm.model.Rdf;
+import de.nrw.hbz.edm.impl.AggregationElementOperator;
+import de.nrw.hbz.edm.impl.EdmImpl;
+import de.nrw.hbz.edm.impl.QdcProvider;
+import de.nrw.hbz.edm.model.ProvidedCHO;
+import de.nrw.hbz.edm.model.Rdf;
 import de.nrw.hbz.genericSipLoader.restClient.Fedora38Client;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
