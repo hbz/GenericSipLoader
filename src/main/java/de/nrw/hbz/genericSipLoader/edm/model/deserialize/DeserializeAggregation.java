@@ -21,7 +21,7 @@ public class DeserializeAggregation implements Aggregation {
   
   private String provider = "Digitales Archiv Nordrhein-Westfalen";
   
-  private String dataProvider = new String();
+  private String dataProvider = null;
 
   private ResourceAttribute isShownBy = null;
 
