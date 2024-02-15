@@ -12,7 +12,7 @@ import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeQdc;
 import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeRdf;
 
 /**
- * 
+ * class 
  */
 public class QdcProvider {
 
@@ -46,7 +46,13 @@ public class QdcProvider {
   public String getQdc() {
     return toString();
   }
-  
+
+  public Qdc getQdc(ProvidedCHO providedCho) {
+    this.providedCho = providedCho;
+    createQdc();
+    return this.qdc;
+  }
+
   /**
    * return complete EDM metadata as serialization to String
    */

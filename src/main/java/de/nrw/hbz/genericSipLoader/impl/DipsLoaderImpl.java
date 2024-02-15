@@ -182,7 +182,7 @@ public class DipsLoaderImpl {
         } catch (IOException e) {
           e.printStackTrace();
         } finally {
-          // tmpFile.delete();
+          tmpFile.delete();
           try {
             bos.close();
           } catch (IOException e) {
