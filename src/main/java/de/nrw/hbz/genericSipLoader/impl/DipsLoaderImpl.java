@@ -52,9 +52,9 @@ public class DipsLoaderImpl {
     fScan.processScan(".zip");
     Set<String> fList = fScan.getFileList();
     
-    logger.info("\nZip-extraction starts\n");
+    // logger.info("\nZip-extraction starts\n");
     
-    ZipExtractor extractor = new ZipExtractor(fList, basePath);
+    // ZipExtractor extractor = new ZipExtractor(fList, basePath);
     
   }
   
