@@ -14,6 +14,7 @@ The GenericSipLoader therefore provides
 - a File-Scanner for identifying metadata files and content files via string-pattern
 - a Jersey REST-Client for Fedora Commons 3.8
 - a Jersey REST-Client for to.science (not implemented yet)
+- a Jackson based EDM model for edit EDM files
 
 ## License ##
 
