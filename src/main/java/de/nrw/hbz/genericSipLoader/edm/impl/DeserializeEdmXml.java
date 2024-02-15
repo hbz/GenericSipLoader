@@ -21,6 +21,10 @@ import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeRdf;
  * 
  */
 public class DeserializeEdmXml {
+
+  private Rdf rdf = new DeserializeRdf();
+  private File importFile = null;
+  private InputStream xmlIs = null;
     
   public DeserializeEdmXml(File file) {
     this.importFile = file;
@@ -31,10 +35,6 @@ public class DeserializeEdmXml {
     importFile = new File(fileName);
     xmlIs = loadXml();
   }
-
-  private Rdf rdf = new DeserializeRdf();
-  private File importFile = null;
-  private InputStream xmlIs = null;
   
   private InputStream loadXml() {
     BufferedInputStream bis = null;

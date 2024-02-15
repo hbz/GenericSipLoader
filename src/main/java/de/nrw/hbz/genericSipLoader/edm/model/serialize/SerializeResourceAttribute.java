@@ -11,6 +11,8 @@ import de.nrw.hbz.genericSipLoader.edm.model.ResourceAttribute;
  * 
  */
 public class SerializeResourceAttribute implements ResourceAttribute {
+  
+  private String rdfResource = null;
 
   public SerializeResourceAttribute() {
     
@@ -18,8 +20,6 @@ public class SerializeResourceAttribute implements ResourceAttribute {
   public SerializeResourceAttribute(String rdfResource) {
     this.rdfResource = rdfResource;
   }
-  
-  private String rdfResource = null;
 
   /**
    * @return the rdfResource

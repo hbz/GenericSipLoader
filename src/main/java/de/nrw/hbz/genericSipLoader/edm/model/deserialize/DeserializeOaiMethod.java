@@ -19,6 +19,10 @@ import de.nrw.hbz.genericSipLoader.edm.model.OaiRecord;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeserializeOaiMethod implements OaiMethod{
   
+  @JacksonXmlProperty(localName="record")
+  @JacksonXmlElementWrapper(useWrapping = false)
+  private ArrayList<DeserializeOaiRecord> oaiRecord = new ArrayList<DeserializeOaiRecord>();
+
   public DeserializeOaiMethod () {
     if(oaiRecord == null) {
       oaiRecord = new ArrayList<DeserializeOaiRecord>();
@@ -35,12 +39,7 @@ public class DeserializeOaiMethod implements OaiMethod{
   
   }
 
-  
-  @JacksonXmlProperty(localName="record")
-  @JacksonXmlElementWrapper(useWrapping = false)
-  private ArrayList<DeserializeOaiRecord> oaiRecord = new ArrayList<DeserializeOaiRecord>();
-
-  
+ 
   /**
    * @return the oaiRecord element
    */

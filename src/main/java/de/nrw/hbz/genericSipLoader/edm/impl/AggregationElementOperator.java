@@ -11,7 +11,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import de.nrw.hbz.genericSipLoader.edm.model.Aggregation;
 import de.nrw.hbz.genericSipLoader.edm.model.Rdf;
-import de.nrw.hbz.genericSipLoader.edm.model.ResourceAttribute;
 import de.nrw.hbz.genericSipLoader.edm.model.WebResource;
 import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeResourceAttribute;
 import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeRdf;
@@ -26,7 +25,11 @@ import de.nrw.hbz.genericSipLoader.util.TimeStampProvider;
 public class AggregationElementOperator {
   //TODO: Implement all operations on the data you wish to have ;-)
   final static Logger logger = LogManager.getLogger(AggregationElementOperator.class);
-
+  
+  private EdmImpl edmImpl = new EdmImpl();
+  private Rdf rdf = null; 
+  
+ 
   /**
    * Constructor takes deserialized EDM metadata (as Rdf object).  
    * @param rdf
@@ -44,10 +47,6 @@ public class AggregationElementOperator {
     rdf = edmImpl.deserializeXml();
   }
 
-  
-  private EdmImpl edmImpl = new EdmImpl();
-  private Rdf rdf = null; 
-  
   /**
    * Replace content of Attributes rdf:resource within all <edm:isShownBy> child elements. 
    * @param replacement

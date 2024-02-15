@@ -17,11 +17,6 @@ import de.nrw.hbz.genericSipLoader.edm.model.OaiMethod;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SerializeOaiPmh implements OaiPmh {
   
-  public SerializeOaiPmh() {
-    // oaiMethod = new SerializeOaiMethod("ListRecords");
-
-  }
-
   private final String oaiXmlns = "http://www.openarchives.org/OAI/2.0/"; 
   private final String xsiXmlns = "http://www.w3.org/2001/XMLSchema-instance"; 
   private final String xsiSchemaLocation = "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"; 

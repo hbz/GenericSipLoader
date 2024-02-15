@@ -20,12 +20,6 @@ import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
  *
  */
 public class KtblLoaderImpl {
-
-  public KtblLoaderImpl(String basePath, String user, String passwd) {
-    this.basePath = basePath;
-    this.user = user;
-    this.passwd = passwd;
-    }
   
   final static Logger logger = LogManager.getLogger(KtblLoaderImpl.class);
   private String basePath = System.getProperty("user.dir");
@@ -33,6 +27,11 @@ public class KtblLoaderImpl {
   private String passwd = null;
   private Hashtable<String,String> parts = new Hashtable<>();
   
+  public KtblLoaderImpl(String basePath, String user, String passwd) {
+    this.basePath = basePath;
+    this.user = user;
+    this.passwd = passwd;
+    }
  
   public void extractZips() {
     

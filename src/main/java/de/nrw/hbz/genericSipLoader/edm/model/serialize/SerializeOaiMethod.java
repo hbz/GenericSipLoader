@@ -15,7 +15,13 @@ import de.nrw.hbz.genericSipLoader.edm.model.OaiRecord;
  * 
  */
 public class SerializeOaiMethod implements OaiMethod{
+
+
   
+  @JacksonXmlProperty(localName="record")
+  @JacksonXmlElementWrapper(useWrapping = false)
+  private ArrayList<SerializeOaiRecord> oaiRecord = new ArrayList<SerializeOaiRecord>();
+
   public SerializeOaiMethod () {
     
   }
@@ -27,11 +33,6 @@ public class SerializeOaiMethod implements OaiMethod{
     oaiRecord.add(new SerializeOaiRecord());
   
   }
-
-  
-  @JacksonXmlProperty(localName="record")
-  @JacksonXmlElementWrapper(useWrapping = false)
-  private ArrayList<SerializeOaiRecord> oaiRecord = new ArrayList<SerializeOaiRecord>();
 
   
   /**

@@ -33,11 +33,6 @@ import jakarta.ws.rs.core.Response;
  */
 public class KtblClient {
   
-  public KtblClient(String user, String passwd) {
-    this.user = user;
-    this.passwd = passwd;
-    setApi();
-  }
   final static Logger logger = LogManager.getLogger(KtblClient.class);
   
   private static Properties apiProps = new Properties();
@@ -50,6 +45,11 @@ public class KtblClient {
   public static String PUBLIC = "public";
   private Hashtable<String,String> apiConfig = new Hashtable<>();
   
+  public KtblClient(String user, String passwd) {
+    this.user = user;
+    this.passwd = passwd;
+    setApi();
+  }
   
   private void loadProperties() {
     InputStream propStream = this.getClass().getClassLoader().getResourceAsStream("ktbl-api.properties");

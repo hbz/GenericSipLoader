@@ -12,14 +12,14 @@ import de.nrw.hbz.genericSipLoader.edm.model.AboutAttribute;
  */
 public class DeserializeAboutAttribute implements AboutAttribute {
 
+  private String rdfAbout = null;
+
   public DeserializeAboutAttribute() {
     
   }
   public DeserializeAboutAttribute(String rdfAbout) {
     this.rdfAbout = rdfAbout;
   }
-  
-  private String rdfAbout = null;
 
   /**
    * @return the rdfAbout

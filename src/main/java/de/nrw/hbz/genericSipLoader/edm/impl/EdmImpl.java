@@ -10,6 +10,7 @@ import de.nrw.hbz.genericSipLoader.edm.model.Rdf;
  */
 public class EdmImpl {
   
+  private String filePath = null; 
   
   public EdmImpl() {
     
@@ -19,7 +20,6 @@ public class EdmImpl {
     this.filePath = filePath;
   }
   
-  private String filePath = null; 
 
       /**
        * @return Rdf

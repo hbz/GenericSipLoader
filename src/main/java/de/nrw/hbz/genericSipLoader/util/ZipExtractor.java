@@ -18,6 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ZipExtractor {
+
+  final static Logger logger = LogManager.getLogger(ZipExtractor.class);
+  private Set<String> fList = null;
+  private String extractionPath = System.getProperty("user.dir");
   
   public ZipExtractor(Set<String> fList) {
     this.fList = fList;
@@ -29,10 +33,6 @@ public class ZipExtractor {
     this.extractionPath = basePath;
     extractZip();
   }
-
-  final static Logger logger = LogManager.getLogger(ZipExtractor.class);
-  private Set<String> fList = null;
-  private String extractionPath = System.getProperty("user.dir");
   
   public void setTargetDir(String fileName) {
     String extLoc = fileName.replace(".zip",  "");

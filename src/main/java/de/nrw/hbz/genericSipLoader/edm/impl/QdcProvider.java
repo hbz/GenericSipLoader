@@ -9,21 +9,24 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import de.nrw.hbz.genericSipLoader.edm.model.ProvidedCHO;
 import de.nrw.hbz.genericSipLoader.edm.model.Qdc;
 import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeQdc;
-import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeRdf;
 
 /**
- * class 
+ * class that provides a Qualified Dublin Core (QDC) representation mapped from EDM
  */
 public class QdcProvider {
 
+  private ProvidedCHO providedCho = null;
+  private Qdc qdc = null;
+  
+  public QdcProvider() {
+    
+  }
+  
   public QdcProvider(ProvidedCHO providedCho) {
    
     this.providedCho = providedCho;
     createQdc();
   }
-  
-  ProvidedCHO providedCho = null;
-  Qdc qdc = null;
   
   private void createQdc() {
     this.qdc = new SerializeQdc();

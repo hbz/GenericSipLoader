@@ -22,6 +22,10 @@ import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeOaiPmh;
  */
 public class DeserializeOaiPmhXml {
     
+  private OaiPmh oaiPmh = new DeserializeOaiPmh();
+  private File importFile = null;
+  private InputStream xmlIs = null;
+
   public DeserializeOaiPmhXml(File file) {
     this.importFile = file;
     xmlIs = loadXml();
@@ -31,10 +35,6 @@ public class DeserializeOaiPmhXml {
     importFile = new File(fileName);
     xmlIs = loadXml();
   }
-
-  private OaiPmh oaiPmh = new DeserializeOaiPmh();
-  private File importFile = null;
-  private InputStream xmlIs = null;
   
   private InputStream loadXml() {
     BufferedInputStream bis = null;

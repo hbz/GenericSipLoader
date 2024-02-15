@@ -12,6 +12,8 @@ import de.nrw.hbz.genericSipLoader.edm.model.ResourceAttribute;
  */
 public class DeserializeResourceAttribute implements ResourceAttribute {
 
+  private String rdfResource = null;
+
   public DeserializeResourceAttribute() {
     
   }
@@ -19,7 +21,6 @@ public class DeserializeResourceAttribute implements ResourceAttribute {
     this.rdfResource = rdfResource;
   }
   
-  private String rdfResource = null;
 
   /**
    * @return the rdfResource

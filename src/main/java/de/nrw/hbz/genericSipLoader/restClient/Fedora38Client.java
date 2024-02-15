@@ -33,11 +33,6 @@ import jakarta.ws.rs.core.Response;
  */
 public class Fedora38Client {
   
-  public Fedora38Client(String user, String passwd) {
-    this.user = user;
-    this.passwd = passwd;
-    setApi();
-  }
   final static Logger logger = LogManager.getLogger(Fedora38Client.class);
   
   private static Properties apiProps = new Properties();
@@ -48,6 +43,11 @@ public class Fedora38Client {
   public static String DSSTATE = "A";
   private Hashtable<String,String> apiConfig = new Hashtable<>();
   
+  public Fedora38Client(String user, String passwd) {
+    this.user = user;
+    this.passwd = passwd;
+    setApi();
+  }
   
   private void loadProperties() {
     InputStream propStream = this.getClass().getClassLoader().getResourceAsStream("fedora-api.properties");

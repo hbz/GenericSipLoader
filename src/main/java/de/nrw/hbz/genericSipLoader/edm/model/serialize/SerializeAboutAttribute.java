@@ -12,6 +12,8 @@ import de.nrw.hbz.genericSipLoader.edm.model.AboutAttribute;
  */
 public class SerializeAboutAttribute implements AboutAttribute  {
 
+  private String rdfAbout = null;
+  
   public SerializeAboutAttribute() {
     
   }
@@ -19,8 +21,6 @@ public class SerializeAboutAttribute implements AboutAttribute  {
     this.rdfAbout = rdfAbout;
   }
   
-  private String rdfAbout = null;
-
   /**
    * @return the rdfAbout
    */

@@ -10,6 +10,8 @@ import de.nrw.hbz.genericSipLoader.edm.model.OaiPmh;
  * 
  */
 public class OaiPmhImpl {
+  
+  private String filePath = null;
 
   public OaiPmh deserializeXml() {
     DeserializeOaiPmhXml dsXml = new DeserializeOaiPmhXml(filePath);
@@ -22,8 +24,6 @@ public class OaiPmhImpl {
     sXml.setEdm(edm);
     sXml.serialize();    
   }
-  
-  private String filePath = null;
     
   /**
    * @return the filePath

@@ -17,6 +17,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class FileScanner {
+  
+  final static Logger logger = LogManager.getLogger(FileScanner.class);
+  private File scan;
+  private String startPath;
+  private String pattern = null;
+  private Set<String> fList;
 
   public FileScanner() {
     createScanner(System.getProperty("user.dir"));
@@ -25,12 +31,6 @@ public class FileScanner {
   public FileScanner(String path) {
     createScanner(path);    
   }
-  
-  final static Logger logger = LogManager.getLogger(FileScanner.class);
-  private File scan;
-  private String startPath;
-  private String pattern = null;
-  private Set<String> fList;
   
   public void createScanner(String path) {
     scan = new File(path);
