@@ -1,64 +1,66 @@
 package de.nrw.hbz.genericSipLoader.gui;
-
 import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import java.util.Set;
 import java.awt.event.ActionEvent;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import de.nrw.hbz.genericSipLoader.impl.DipsLoaderImpl;
 import de.nrw.hbz.genericSipLoader.impl.KtblLoaderImpl;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.awt.SystemColor;
-import javax.swing.JTextArea;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.*;
-
 /**
  * 
  * @author adoud
  *
  */
-public class MainGui extends JFrame {
+public class MainGui {
+	final static Logger logger = LogManager.getLogger(MainGui.class);
 
 	private JFrame frmGenericsiploader;
-	private JTextField textFieldZipFile, textFieldName, textField_Pasword;
+	private JTextField textFieldZipFile, textFieldName;
 	private JLabel lblApiProperties, lbApiUser, lblApiPassword, lblZipFile,
 			lblApiCreditianls;
 	private JRadioButton rdbtnDanrw, rdbtnKtbl;
 	private JTextArea textAreaApiProperties = null;
 	// DANARW | KTBL
 	private String radButtonMetadata = "danrw";
+	private JPasswordField passwordField;
+	private JButton btnBrowse, btnReset, btnOk, btnEditProperties;
+	private Path configProperitesPath = Paths
+			.get(System.getProperty("user.dir"), "Properties files");
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
+		// System.out.println(System.getProperty("user.dir"));
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainGui window = new MainGui();
-
 					window.frmGenericsiploader.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -69,23 +71,33 @@ public class MainGui extends JFrame {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @throws UnsupportedLookAndFeelException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
 	 */
-	public MainGui() {
+	public MainGui() throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException, UnsupportedLookAndFeelException {
+		System.getProperty("user.dir");
 
 		initialize();
+		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		checkAndCopyPropertiesFiles();
 		frmGenericsiploader = new JFrame("GenericSipLoader");
 		frmGenericsiploader.getContentPane().setBackground(SystemColor.info);
 		frmGenericsiploader.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmGenericsiploader.getContentPane().setLayout(null);
 		frmGenericsiploader.setSize(491, 420);
 		frmGenericsiploader.setResizable(false);
-		// Set the frame to appear in the center of the screen
+		// Das Frame so einstellen, dass er in der Mitte des Bildschirms
+		// erscheint
 		Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize();
 		int x = (int) ((screenSize.getWidth() - frmGenericsiploader.getWidth())
@@ -106,10 +118,14 @@ public class MainGui extends JFrame {
 		textFieldName.setBounds(81, 37, 274, 26);
 		frmGenericsiploader.getContentPane().add(textFieldName);
 
-		textField_Pasword = new JTextField("");
-		textField_Pasword.setColumns(10);
-		textField_Pasword.setBounds(81, 74, 274, 26);
-		frmGenericsiploader.getContentPane().add(textField_Pasword);
+		// ********************************JPasswordField**************************************
+
+		passwordField = new JPasswordField();
+		passwordField.setBounds(81, 77, 274, 26);
+		frmGenericsiploader.getContentPane().add(passwordField);
+		passwordField.setText(null);
+
+		// ********************************JPasswordField**************************************
 
 		// ********************************JLabels******************************************
 
@@ -146,12 +162,14 @@ public class MainGui extends JFrame {
 
 		// ********************************JTextArea**************************************
 		textAreaApiProperties = new JTextArea();
+		textAreaApiProperties.setEditable(false);
 		textAreaApiProperties.setWrapStyleWord(true);
 		textAreaApiProperties.setLineWrap(true);
 		textAreaApiProperties.setBackground(Color.WHITE);
 		textAreaApiProperties.setBounds(10, 219, 296, 153);
 		frmGenericsiploader.getContentPane().add(textAreaApiProperties);
-		loadContentOfProperitesFileInTextArea("fedora", textAreaApiProperties);
+		loadContentOfProperitesFileInTextArea("fedora-api.properties",
+				textAreaApiProperties);
 		textAreaApiProperties.getDocument();
 
 		// ********************************JTextArea**************************************
@@ -179,15 +197,15 @@ public class MainGui extends JFrame {
 					rdbtnKtbl.setSelected(false);
 					lblApiProperties.setText("DANRW-Api.properties:");
 					textAreaApiProperties.setText(null);
-					loadContentOfProperitesFileInTextArea("fedora",
-							textAreaApiProperties);
+					loadContentOfProperitesFileInTextArea(
+							"fedora-api.properties", textAreaApiProperties);
 
 				} else if (selectedRadioButton == rdbtnKtbl) {
 					radButtonMetadata = "ktbl";
 					lblApiProperties.setText("KTBL-Api.properties:");
 					rdbtnDanrw.setSelected(false);
 					textAreaApiProperties.setText(null);
-					loadContentOfProperitesFileInTextArea("ktbl",
+					loadContentOfProperitesFileInTextArea("ktbl-api.properties",
 							textAreaApiProperties);
 				}
 				if (!rdbtnKtbl.isSelected() && !rdbtnDanrw.isSelected()) {
@@ -195,8 +213,8 @@ public class MainGui extends JFrame {
 					rdbtnDanrw.setSelected(true);
 					textAreaApiProperties.setText(null);
 					lblApiProperties.setText("DANRW-Api.properties:");
-					loadContentOfProperitesFileInTextArea("fedora",
-							textAreaApiProperties);
+					loadContentOfProperitesFileInTextArea(
+							"fedora-api.properties", textAreaApiProperties);
 				}
 			}
 		};
@@ -206,19 +224,17 @@ public class MainGui extends JFrame {
 		// ********************************JRadioButton**************************************
 
 		// ********************************JButtons**************************************
-		JButton btnReset = new JButton("Reset");
+		btnReset = new JButton("Reset");
 		btnReset.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnReset.setBounds(316, 346, 93, 26);
+		btnReset.setBounds(316, 344, 142, 26);
 		frmGenericsiploader.getContentPane().add(btnReset);
 		btnReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Hier wird die Methode aufgerufen, die Sie mit dem Button
-				// verknüpfen möchten
 				handleResetButtonClick();
 			}
 		});
 
-		JButton btnBrowse = new JButton("Browse");
+		btnBrowse = new JButton("Browse");
 		btnBrowse.setFont(new Font("Arial", Font.PLAIN, 11));
 		btnBrowse.setBounds(365, 111, 93, 26);
 		frmGenericsiploader.getContentPane().add(btnBrowse);
@@ -233,14 +249,29 @@ public class MainGui extends JFrame {
 			}
 		});
 
-		JButton btnOk = new JButton("Ok");
+		btnOk = new JButton("Ok");
 		btnOk.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnOk.setBounds(316, 315, 93, 26);
+		btnOk.setBounds(316, 219, 142, 51);
 		frmGenericsiploader.getContentPane().add(btnOk);
-
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				handleOKButtonClick();
+			}
+		});
+
+		btnEditProperties = new JButton("Edit Properties File");
+		btnEditProperties.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnEditProperties.setBounds(316, 301, 142, 32);
+		frmGenericsiploader.getContentPane().add(btnEditProperties);
+
+		btnEditProperties.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					editPropertiesFile(radButtonMetadata);
+				} catch (InterruptedException e1) {
+
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -248,18 +279,19 @@ public class MainGui extends JFrame {
 	}
 
 	private void handleResetButtonClick() {
+		radButtonMetadata = "danrw";
 		textFieldName.setText(null);
-		textField_Pasword.setText(null);
+		passwordField.setText(null);
 		textFieldZipFile.setText(null);
 		rdbtnDanrw.setSelected(true);
 		rdbtnKtbl.setSelected(false);
 		textAreaApiProperties.setText(null);
 		lblApiProperties.setText("DANRW-Api.properties:");
-		loadContentOfProperitesFileInTextArea("fedora", textAreaApiProperties);
+		loadContentOfProperitesFileInTextArea("fedora-api.properties",
+				textAreaApiProperties);
 	}
 
 	private void handleOKButtonClick() {
-		// handleResetButtonClick();
 		FileScanner fScan = null;
 		String basePath = null;
 		String user = null;
@@ -267,19 +299,22 @@ public class MainGui extends JFrame {
 		String target = null;
 		try {
 			target = radButtonMetadata;
+			logger.debug("target=" + target);
 			if (areFieldsFilled()) {
 				basePath = Paths.get(textFieldZipFile.getText()).getParent()
 						.toString();
+				logger.debug("basePath=" + basePath);
 				user = textFieldName.getText();
-				passwd = textField_Pasword.getText();
+				passwd = new String(passwordField.getPassword());
+
 			} else {
 				fScan = new FileScanner();
 				fScan.processScan(".zip");
 				Set<String> fList = fScan.getFileList();
 				ZipExtractor extractor = new ZipExtractor(fList, basePath);
 			}
-
 			if (target.equals("danrw") && areFieldsFilled()) {
+				logger.debug("danrw block has been called");
 				DipsLoaderImpl dLoader = new DipsLoaderImpl(basePath, user,
 						passwd);
 				dLoader.extractZips();
@@ -293,24 +328,12 @@ public class MainGui extends JFrame {
 				Set<String> ieList = ktblLoader.scanIEs();
 				ktblLoader.cuToScienceObject(ieList);
 			}
-			if (isTextAreaEdited(textAreaApiProperties, target)) {
-				if (target.equals("danrw")) {
-					target = "fedora";
-				}
-				saveTextAreaContentToPropertiesFile(target,
-						textAreaApiProperties);
-			}
-			showMessage("Report", "OK");
-			// handleResetButtonClick();
+
+			handleResetButtonClick();
 		} catch (Exception e) {
 			showMessage("Warning", "Please check your entries !!!");
 		}
 
-	}
-
-	public void showMessage(String title, String message) {
-		JOptionPane.showMessageDialog(frmGenericsiploader, message, title,
-				JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public boolean isTextAreaEdited(JTextArea textArea, String metadata)
@@ -337,37 +360,18 @@ public class MainGui extends JFrame {
 
 	public void loadContentOfProperitesFileInTextArea(String metadataName,
 			JTextArea textArea) {
-		Path filePath = Paths.get(System.getProperty("user.dir"), "src", "main",
-				"resources", metadataName + "-api.properties");
-		textArea.setText(null);
-		textArea.setText(readFileContent(filePath.toString()));
-	}
-
-	public String readFileContent(String filePath) {
-		File file = new File(filePath);
-		StringBuilder stringBuilder = new StringBuilder();
-		try (FileReader fileReader = new FileReader(file);
-				BufferedReader bufferedReader = new BufferedReader(
-						fileReader)) {
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-				if (!line.contains("#")) {
-					stringBuilder.append(line);
-					stringBuilder.append(System.lineSeparator());
-				}
-			}
-			fileReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-
+		if (metadataName.equals("danrw")) {
+			metadataName = "fedora-api.properties";
 		}
-		return stringBuilder.toString();
+
+		textArea.setText(null);
+		textArea.setText(readFileContent(metadataName));
 	}
 
 	public Properties getProperitesFile(String metadataName) {
 		InputStream inputStream = null;
 		if (metadataName.equals("danrw")) {
-			metadataName = "fedora";
+			metadataName = "fedora-api.properties";
 		}
 		Properties properties = new Properties();
 		try {
@@ -384,40 +388,171 @@ public class MainGui extends JFrame {
 		return null;
 	}
 
-	public void saveTextAreaContentToPropertiesFile(String metadataName,
-			JTextArea textArea) {
+	public String readFileContent(String metadataName) {
+		String result = null;
+		InputStream inputStream = null;
 
-		File file = null;
-		Path filePath = null;
-		filePath = Paths.get(System.getProperty("user.dir"), "src", "main",
-				"resources", metadataName + "-api.properties");
-		file = new File(filePath.toString());
-
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-			String content = textArea.getText();
-			System.out.println("content=" + content);
-			String[] lines = content.split("\\n");
-
-			for (String line : lines) {
-	            String trimmedLine = line.trim();
-	            if (!trimmedLine.isEmpty()) {
-	                writer.write(trimmedLine);
-	                writer.newLine();
-	            }
-	        }
-
-			System.out.println("Inhalt erfolgreich in die Datei geschrieben.");
+		try {
+			inputStream = new FileInputStream(
+					configProperitesPath.toString() + "/" + metadataName);
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(inputStream));
+			StringBuilder content = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				content.append(line);
+				content.append(System.lineSeparator());
+			}
+			result = content.toString();
 		} catch (IOException e) {
-			showMessage("Warnung",
-					"Die Eigenschaftsdatei kann nicht überschrieben werden.");
+			e.printStackTrace();
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
+		return result;
 	}
 
 	public boolean areFieldsFilled() {
 		String text1 = textFieldZipFile.getText();
 		String text2 = textFieldName.getText();
-		String text3 = textField_Pasword.getText();
-		return !text1.isEmpty() && !text2.isEmpty() && !text3.isEmpty();
+		char[] passwordChar = passwordField.getPassword();
+		return !text1.isEmpty() && !text2.isEmpty() && passwordChar.length != 0;
 	}
+
+	private void editPropertiesFile(String metadataName)
+			throws InterruptedException {
+		String editorCommand;
+		if (metadataName.equals("danrw")) {
+			metadataName = "fedora";
+		}
+
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			editorCommand = "notepad.exe";
+		} else {
+			editorCommand = "gedit";
+		}
+		try {
+			// Zielverzeichnis fuer Properties-Dateien
+			Path targetDirectory = Paths.get(System.getProperty("user.dir"),
+					"Properties files");
+
+			// Pruefen, ob der Ordner bereits vorhanden ist
+			if (!Files.exists(targetDirectory)) {
+				showMessage("Error", "Properties files folder does not exist.");
+				return;
+			}
+
+			// Pfad zur Properties-Datei im Zielverzeichnis
+			Path targetFilePath = targetDirectory
+					.resolve(metadataName + "-api.properties");
+
+			// Properties-Datei aus dem Classpath laden
+			InputStream inputStream = MainGui.class.getResourceAsStream(
+					"/" + metadataName + "-api.properties");
+
+			// Properties-Datei mit dem Standardeditor öffnen
+			File file = targetFilePath.toFile();
+
+			ProcessBuilder processBuilder = new ProcessBuilder(editorCommand,
+					file.getAbsolutePath());
+
+			Process process = processBuilder.start();
+			// Warten auf das Beenden des Editors
+			int exitCode = process.waitFor();
+			// Editor geschlossen
+			if (exitCode == 0) {
+				// refresh textAreaApiProperties
+				loadContentOfProperitesFileInTextArea(
+						metadataName + "-api.properties",
+						textAreaApiProperties);
+			} else {
+				showMessage("Error", "Error when editing the file");
+			}
+
+		} catch (IOException e) {
+			showMessage("Error", "Error when editing the file");
+		}
+	}
+	private void checkAndCopyPropertiesFiles() {
+		try {
+			// Zielverzeichnis fuer Properties-Dateien
+			Path targetDirectory = Paths.get(System.getProperty("user.dir"),
+					"Properties files");
+
+			// Pruefen, ob der Ordner bereits vorhanden ist
+			if (!Files.exists(targetDirectory)) {
+				// Ordner erstellen
+				Files.createDirectory(targetDirectory);
+
+				// Pfad zum Verzeichnis mit den Properties-Dateien
+				String resourceDirectory;
+				File jarFile = new File(MainGui.class.getProtectionDomain()
+						.getCodeSource().getLocation().toURI().getPath());
+				if (jarFile.isFile()) {
+					// Die Anwendung wird als JAR-Datei ausgeführt
+					resourceDirectory = "/";
+					java.util.jar.JarFile jar = new java.util.jar.JarFile(
+							jarFile);
+					java.util.Enumeration<java.util.jar.JarEntry> entries = jar
+							.entries();
+
+					while (entries.hasMoreElements()) {
+						java.util.jar.JarEntry entry = entries.nextElement();
+
+						String entryName = entry.getName();
+						if (entryName.endsWith(".properties")) {
+							Path targetFilePath = targetDirectory
+									.resolve(entryName.substring(
+											resourceDirectory.length()));
+
+							try (InputStream inputStream = MainGui.class
+									.getResourceAsStream(entryName);
+									OutputStream outputStream = new FileOutputStream(
+											targetFilePath.toFile())) {
+								byte[] buffer = new byte[1024];
+								int bytesRead;
+								while ((bytesRead = inputStream
+										.read(buffer)) != -1) {
+									outputStream.write(buffer, 0, bytesRead);
+								}
+							}
+						}
+					}
+					jar.close();
+				} else {
+					// Die Anwendung wird im Entwicklungsmodus(Eclipse)
+					// ausgeführt
+					resourceDirectory = "src/main/resources/";
+					try (DirectoryStream<Path> directoryStream = Files
+							.newDirectoryStream(Paths.get(resourceDirectory))) {
+						for (Path entry : directoryStream) {
+							if (entry.getFileName().toString()
+									.endsWith(".properties")) {
+								Path targetFilePath = targetDirectory
+										.resolve(entry.getFileName());
+								Files.copy(entry, targetFilePath,
+										StandardCopyOption.REPLACE_EXISTING);
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			showMessage("Error",
+					"Properties files cannot be found or created.");
+		}
+	}
+
+	public void showMessage(String title, String message) {
+		JOptionPane.showMessageDialog(frmGenericsiploader, message, title,
+				JOptionPane.INFORMATION_MESSAGE);
+	}
+
 }

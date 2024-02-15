@@ -9,6 +9,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -96,7 +98,8 @@ public class KtblLoaderImpl {
 		while (fIt.hasNext()) {
 			String fileName = fIt.next();
 			logger.info("FileName: " + fileName);
-
+			
+			
 			if (fileName.endsWith(".json")) {
 				// create new empty ToScienceObject
 				String parentId = createToScienceObject("researchData", null);
