@@ -1,31 +1,28 @@
-/**
- * 
- */
 package de.nrw.hbz.genericSipLoader.edm.model.serialize;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-import de.nrw.hbz.genericSipLoader.edm.model.ProvidedCHO;
+import de.nrw.hbz.genericSipLoader.edm.model.Qdc;
 import de.nrw.hbz.genericSipLoader.edm.model.ResourceAttribute;
-import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeAboutAttribute;
-import de.nrw.hbz.genericSipLoader.edm.model.AboutAttribute;
 
-
-/**
- * 
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SerializeProvidedCHO implements ProvidedCHO {
-  
+@JacksonXmlRootElement(localName = "oai_dc:dc")
+public class SerializeQdc implements Qdc {
+
+  private final String OaiDcXmlns = "http://www.openarchives.org/OAI/2.0/oai_dc/";
+  private final String dcXmlns = "http://purl.org/dc/elements/1.1/";
+  private final String dctermsXmlns = "http://purl.org/dc/terms/";
+
+  private final String xsiSchemaLocation = "http://www.openarchives.org/OAI/2.0/oai_dc http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd";
 
   @JacksonXmlElementWrapper(useWrapping = false)
-  private ArrayList<String> dcTitle = new ArrayList<>();
+  private List<String> dcTitle = new ArrayList<>();
   @JacksonXmlElementWrapper(useWrapping = false)
   private ArrayList<String> dcDescription = new ArrayList<>();
   @JacksonXmlElementWrapper(useWrapping = false)
@@ -42,7 +39,7 @@ public class SerializeProvidedCHO implements ProvidedCHO {
   private ArrayList<String> dcType = new ArrayList<>();
   @JacksonXmlElementWrapper(useWrapping = false)
   private ArrayList<String> dcDate = new ArrayList<>();
-  
+
   private String dctermsCreated = new String();
   private String dctermsIssued = new String();
   @JacksonXmlElementWrapper(useWrapping = false)
@@ -51,10 +48,38 @@ public class SerializeProvidedCHO implements ProvidedCHO {
   private ArrayList<SerializeResourceAttribute> dctermsIsReferencedBy = null;
   @JacksonXmlElementWrapper(useWrapping = false)
   private ArrayList<String> dctermsProvenance = new ArrayList<>();
-  
-  private String edmType = new String();
-  private String cHOAbout = new String();
-  
+
+  /**
+   * @return the OaiDcXmlns
+   */
+  @JacksonXmlProperty(localName = "xmlns:oai_dc", isAttribute = true)
+  public String getOaiDcXmlns() {
+    return OaiDcXmlns;
+  }
+
+  /**
+   * @return the dcXmlns
+   */
+  @JacksonXmlProperty(localName = "xmlns:dc", isAttribute = true)
+  public String getDcXmlns() {
+    return dcXmlns;
+  }
+
+  /**
+   * @return the dctermsXmlns
+   */
+  @JacksonXmlProperty(localName = "xmlns:dcterms", isAttribute = true)
+  public String getDctermsXmlns() {
+    return dctermsXmlns;
+  }
+
+  /**
+   * @return the xsiSchemaLocation
+   */
+  public String getXsiSchemaLocation() {
+    return this.xsiSchemaLocation;
+  }
+
   // add to List
   /**
    * @param add item to dctermsExtent
@@ -153,7 +178,7 @@ public class SerializeProvidedCHO implements ProvidedCHO {
    */
   @Override
   @JacksonXmlProperty(localName="dc:title")
-  public ArrayList<String> getDcTitle() {
+  public List<String> getDcTitle() {
     return dcTitle;
   }
   /**
@@ -260,22 +285,6 @@ public class SerializeProvidedCHO implements ProvidedCHO {
   public ArrayList<String> getDctermsProvenance() {
     return dctermsProvenance;
   }
-  /**
-   * @return the edmType
-   */
-  @Override
-  @JacksonXmlProperty(localName="edm:type")
-  public String getEdmType() {
-    return edmType;
-  }
-  /**
-   *
-   */
-  @Override
-  @JacksonXmlProperty(localName = "rdf:about", isAttribute = true)
-  public String getProvidedCHOAbout() {
-    return this.cHOAbout;
-  }
 
   // Setter
   /**
@@ -317,14 +326,6 @@ public class SerializeProvidedCHO implements ProvidedCHO {
   @JacksonXmlProperty(localName="dcterms:provenance")
   public void setDctermsProvenance(ArrayList<String> dctermsProvenance) {
     this.dctermsProvenance = dctermsProvenance;
-  }
-  /**
-   * @param edmType the edmType to set
-   */
-  @Override
-  @JacksonXmlProperty(localName="edm:type")
-  public void setEdmType(String edmType) {
-    this.edmType = edmType;
   }
   /**
    * @param dcTitle the dcTitle to set
@@ -401,13 +402,5 @@ public class SerializeProvidedCHO implements ProvidedCHO {
   public void setDcDate(ArrayList<String> date) {
     this.dcDate = date;
   }
-
-  /**
-   *@param providedCHOAbout
-   */
-  @Override
-  @JacksonXmlProperty(localName="rdf:about")
-  public void setProvidedCHOAbout(String ProvidedCHOAbout) {
-    this.cHOAbout = ProvidedCHOAbout;
-  }
+  
 }

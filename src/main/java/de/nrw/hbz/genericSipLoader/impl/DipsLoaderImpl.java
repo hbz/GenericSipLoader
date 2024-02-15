@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.nrw.hbz.genericSipLoader.edm.impl.AggregationElementOperator;
 import de.nrw.hbz.genericSipLoader.edm.impl.EdmImpl;
-import de.nrw.hbz.genericSipLoader.edm.impl.QdcImpl;
+import de.nrw.hbz.genericSipLoader.edm.impl.QdcProvider;
 import de.nrw.hbz.genericSipLoader.edm.model.ProvidedCHO;
 import de.nrw.hbz.genericSipLoader.edm.model.Rdf;
 import de.nrw.hbz.genericSipLoader.restClient.Fedora38Client;
@@ -198,14 +198,11 @@ public class DipsLoaderImpl {
   
   private String createQDC(String edmFileName) {
     // TODO: implement method for getting QDC
-    String qdcXml = null;
     EdmImpl edmImpl = new EdmImpl(edmFileName);
     Rdf rdf = edmImpl.deserializeXml();
     ProvidedCHO provCho = rdf.getProvidedCho();
-    QdcImpl qdcImpl = new QdcImpl();
-    qdcXml = qdcImpl.serializeXml(provCho);
-    
-    return qdcXml;
+    QdcProvider qdcProvider = new QdcProvider(provCho);
+    return qdcProvider.getQdc();
   }
 
   /**
