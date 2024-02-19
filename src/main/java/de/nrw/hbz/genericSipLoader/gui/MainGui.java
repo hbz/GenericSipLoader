@@ -55,7 +55,7 @@ public class MainGui {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-
+		logger.info("MainGui has been called.");
 		// System.out.println(System.getProperty("user.dir"));
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -433,11 +433,19 @@ public class MainGui {
 			metadataName = "fedora";
 		}
 
-		if (System.getProperty("os.name").toLowerCase().contains("win")) {
-			editorCommand = "notepad.exe";
+		String os = System.getProperty("os.name").toLowerCase();
+
+		if (os.contains("win")) {
+		    editorCommand = "notepad.exe";
+		} else if (os.contains("mac")) {
+		    editorCommand = "open -t";
+		} else if (os.contains("nix") || os.contains("nux")) {
+		    editorCommand = "xdg-open";
 		} else {
-			editorCommand = "gedit";
+		    showMessage("Error", "Unsupported operating system.");
+		    return;
 		}
+
 		try {
 			// Zielverzeichnis fuer Properties-Dateien
 			Path targetDirectory = Paths.get(System.getProperty("user.dir"),

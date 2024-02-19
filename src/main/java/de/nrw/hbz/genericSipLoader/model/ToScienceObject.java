@@ -1,8 +1,6 @@
 package de.nrw.hbz.genericSipLoader.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.*;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 

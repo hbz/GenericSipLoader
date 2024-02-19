@@ -8,17 +8,13 @@ import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.swing.JOptionPane;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import de.nrw.hbz.genericSipLoader.restClient.KtblClient;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 /**
  * @author aquast
@@ -27,6 +23,7 @@ import java.nio.file.Paths;
 public class KtblLoaderImpl {
 
 	public KtblLoaderImpl(String basePath, String user, String passwd) {
+		logger.info("KtblLoaderImpl constructor has been called.");
 		this.basePath = basePath;
 		this.user = user;
 		this.passwd = passwd;

@@ -40,6 +40,7 @@ import jakarta.ws.rs.core.Response;
 public class KtblClient {
 
 	public KtblClient(String user, String passwd) {
+		logger.info("KtblClient constructor has been called.");
 		this.user = user;
 		this.passwd = passwd;
 		setApi();
@@ -293,9 +294,11 @@ public class KtblClient {
 
 		int statusCode = response.getStatus();
 		if (statusCode == 200) {
-			 JOptionPane.showMessageDialog(null, "OK", "Report", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "OK", "Report",
+					JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			JOptionPane.showMessageDialog(null, "Failed to upload Json file", "Report", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Failed to upload Json file",
+					"Report", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		try {
