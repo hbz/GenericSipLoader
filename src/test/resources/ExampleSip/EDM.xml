@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:edm="http://www.europeana.eu/schemas/edm/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:ore="http://www.openarchives.org/ore/terms/" xmlns:ns11="http://www.w3.org/ns/odrl/2/">
+    <edm:ProvidedCHO rdf:about="FB-0001">
+        <dc:title>Schulen</dc:title>
+        <dc:language>de</dc:language>
+        <dc:type>Broschüre</dc:type>
+        <dc:type>Archivalie</dc:type>
+        <dc:contributor>Amt für Informationsverarbeitung</dc:contributor>
+        <dc:creator>Amt für Presse- und Öffentlichkeitsarbeit</dc:creator>
+        <dc:identifier>FB-0001</dc:identifier>
+        <dc:rights>Historisches Archiv der Stadt Köln – DiPS.kommunal</dc:rights>
+        <dc:publisher>Stadtarchiv Musterstadt - DiPS.kommunal</dc:publisher>
+        <dcterms:issued>25.04.2022</dcterms:issued>
+        <edm:type>TEXT</edm:type>
+    </edm:ProvidedCHO>
+    <ore:Aggregation rdf:about="0e6ceff1-697e-4bd5-b71b-2095068cd91e">
+        <edm:aggregatedCHO rdf:resource="FB-0001"/>
+        <edm:dataProvider>Rechte</edm:dataProvider>
+        <edm:isShownBy rdf:resource="000-0002.csv"/>
+        <edm:object rdf:resource="000-0002.csv"/>
+        <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+        <edm:rights rdf:resource="http://rightsstatements.org/vocab/InC/1.0/"/>
+    </ore:Aggregation>
+    <ore:Aggregation rdf:about="d66cdd7e-7f8a-48ee-8a7e-19102d57bc7b">
+        <edm:aggregatedCHO rdf:resource="FB-0001"/>
+        <edm:dataProvider>Rechte</edm:dataProvider>
+        <edm:isShownBy rdf:resource="000-0001.txt"/>
+        <edm:object rdf:resource="000-0001.txt"/>
+        <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+        <edm:rights rdf:resource="http://rightsstatements.org/vocab/InC/1.0/"/>
+    </ore:Aggregation>
+    <edm:WebResource rdf:about="000-0001.txt"/>
+    <edm:WebResource rdf:about="000-0002.csv" >
+        <edm:isNextInSequence rdf:resource="000-0001.txt"/>
+    </edm:WebResource>        
+</rdf:RDF>

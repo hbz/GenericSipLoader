@@ -4,6 +4,7 @@
 package de.nrw.hbz.edm.impl;
 
 import java.util.ArrayList;
+import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +29,7 @@ public class ConsoleImpl {
   /**
    * @param args
    */
-    String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "src/main/resources/OaiPmh.xml";
+    String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "src/test/resources/OaiPmh.xml";
     
     //static String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "src/main/resources/OAIBase.xml";
 
@@ -52,9 +53,9 @@ public class ConsoleImpl {
       // logger.debug(resultOaiPmh.getOaiMethod().getRecord().get(0).getMetadata().getRdf().getProvidedCho());
       //impl.serializeXml(resultOaiPmh);
 
-      conImpl.filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "src/main/resources/ExampleSip/EDM.xml";
-      EdmImpl edmImpl = new EdmImpl(conImpl.filePath);
-      Rdf resultEdm = edmImpl.deserializeXml();
+      conImpl.filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "src/test/resources/ExampleSip/EDM.xml";
+      // EdmImpl edmImpl = new EdmImpl(conImpl.filePath);
+      Rdf resultEdm = EdmProvider.deserialize(new File(conImpl.filePath));
       logger.debug(resultOaiPmh.getOaiMethod().getRecord().get(0).getMetadata().getRdf().getProvidedCho());
       // edmImpl.serializeXml(resultEdm);
       

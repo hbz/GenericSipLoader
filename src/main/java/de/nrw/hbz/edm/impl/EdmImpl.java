@@ -3,6 +3,8 @@
  */
 package de.nrw.hbz.edm.impl;
 
+import java.io.File;
+
 import de.nrw.hbz.edm.model.Rdf;
 
 /**
@@ -25,8 +27,7 @@ public class EdmImpl {
        * @return Rdf
        */
       public Rdf deserializeXml() {
-        DeserializeEdmXml dsXml = new DeserializeEdmXml(filePath);
-        return dsXml.deserialize();
+        return EdmProvider.deserialize(new File(filePath));
         
       }
 
