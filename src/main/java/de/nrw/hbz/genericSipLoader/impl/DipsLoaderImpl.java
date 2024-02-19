@@ -20,10 +20,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.nrw.hbz.edm.impl.AggregationElementOperator;
+import de.nrw.hbz.edm.impl.EdmProvider;
+import de.nrw.hbz.edm.impl.HtmlProvider;
 import de.nrw.hbz.edm.impl.EdmImpl;
 import de.nrw.hbz.edm.impl.QdcProvider;
 import de.nrw.hbz.edm.model.ProvidedCHO;
 import de.nrw.hbz.edm.model.Rdf;
+import de.nrw.hbz.edm.model.serialize.SerializeAggregation;
 import de.nrw.hbz.genericSipLoader.restClient.Fedora38Client;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
@@ -105,10 +108,9 @@ public class DipsLoaderImpl {
   public void cuFedoraObject(Set<String> fList) {
 
     Iterator<String> fIt = fList.iterator();
-    int i = 1;
     while(fIt.hasNext()) {
       Hashtable<String, String> idReplacement = new Hashtable<>();
-     // find correct sourceId
+      // find correct sourceId
       String fileName = fIt.next();
       logger.debug(fileName);
       int index = fileName.lastIndexOf("/");
@@ -157,14 +159,17 @@ public class DipsLoaderImpl {
         String dsUrl = createDSUrl(pid, "DS" + id);
         idReplacement.put(plId, dsUrl);
         // logger.debug("Replace " + plId + " with " + idReplacement.get(plId));
-        i = i-1;
       }
       logger.debug(pid);
-      
+
       addMetadataStream(pid, "EDM_submitted.xml", new File(fileName));
-      
+
+      HtmlProvider htmlProv = new HtmlProvider(EdmProvider.deserialize(refactorEdm(idReplacement, fileName)));
+      addPayLoadStream(pid, id+1, htmlProv.toTempFile());
+      String edmResult = EdmProvider.serialize(htmlProv.appendHtmlAggregation(createDSUrl(pid, "DS" + (id+1))));
+       
       Hashtable<String,String> xmlStreams = new Hashtable<>();
-      xmlStreams.put("EDM.xml", refactorEdm(idReplacement, fileName));
+      xmlStreams.put("EDM.xml", edmResult);
       xmlStreams.put("QDC.xml", createQDC(fileName));
 
       Enumeration<String> sEn = xmlStreams.keys();
@@ -182,7 +187,7 @@ public class DipsLoaderImpl {
         } catch (IOException e) {
           e.printStackTrace();
         } finally {
-          tmpFile.delete();
+           tmpFile.delete();
           try {
             bos.close();
           } catch (IOException e) {
@@ -197,9 +202,7 @@ public class DipsLoaderImpl {
   
   
   private String createQDC(String edmFileName) {
-    // TODO: implement method for getting QDC
-    EdmImpl edmImpl = new EdmImpl(edmFileName);
-    Rdf rdf = edmImpl.deserializeXml();
+    Rdf rdf = EdmProvider.deserialize(new File(edmFileName));
     ProvidedCHO provCho = rdf.getProvidedCho();
     QdcProvider qdcProvider = new QdcProvider(provCho);
     return qdcProvider.getQdc();
@@ -211,8 +214,7 @@ public class DipsLoaderImpl {
    * @return refactored EDM as String
    */
   private String refactorEdm(Hashtable<String,String> replacements, String edmFileName) {
-    EdmImpl edmImpl = new EdmImpl(edmFileName);
-    Rdf rdf = edmImpl.deserializeXml();
+    Rdf rdf = EdmProvider.deserialize(new File(edmFileName));
     AggregationElementOperator ago = new AggregationElementOperator(rdf);
     ago.replaceAllIsShownBy(replacements);
     return ago.toString();

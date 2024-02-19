@@ -2,6 +2,7 @@ package de.nrw.hbz.edm.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +26,6 @@ import de.nrw.hbz.edm.util.TimeStampProvider;
 public class AggregationElementOperator {
   //TODO: Implement all operations on the data you wish to have ;-)
   final static Logger logger = LogManager.getLogger(AggregationElementOperator.class);
-  
-  private EdmImpl edmImpl = new EdmImpl();
   private Rdf rdf = null; 
   
  
@@ -43,8 +42,7 @@ public class AggregationElementOperator {
    * @param filePath
    */
   public  AggregationElementOperator(String filePath) {
-    this.edmImpl.setFilePath(filePath);
-    rdf = edmImpl.deserializeXml();
+    rdf = EdmProvider.deserialize(new File(filePath));
   }
 
   /**
