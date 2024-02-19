@@ -33,32 +33,6 @@ public class EdmProvider {
 
   private Rdf rdf = new DeserializeRdf();
   private static InputStream xmlIs = null;
-  private InputStream conIs = null;
-    
-  /**
-   * Constructor takes serialized EDM as File Object 
-   * @param file
-   */
-  public EdmProvider(File file) {
-    conIs = loadXml(file);
-  }
-
-  /**
-   *  Constructor takes serialized EDM as String
-   * @param rdfString
-   */
-  public EdmProvider(String rdfString) {
-    xmlIs = loadXmlString(rdfString);
-  }
-  
-  /**
-   *  Constructor takes serialized EDM as InputStream
-   * @param rdfIs
-   */
-  public EdmProvider(InputStream rdfIs) {
-    //importFile = new File(fileName);
-    xmlIs = rdfIs;
-  }
 
   /**
    * loads File content into InputStream
