@@ -157,7 +157,7 @@ public class HtmlProvider {
   }
   
   public Rdf appendHtmlAggregation(String dsUrl) {
-    int i = rdf.getAggregation().size();
+    // int i = rdf.getAggregation().size();
     Aggregation aggregation = new DeserializeAggregation();
     aggregation.setEdmAggregatedCHO(new DeserializeResourceAttribute("SplashPage"));
     aggregation.setEdmIsShownBy(new DeserializeResourceAttribute(dsUrl));

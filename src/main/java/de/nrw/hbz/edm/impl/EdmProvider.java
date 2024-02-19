@@ -4,12 +4,10 @@
 package de.nrw.hbz.edm.impl;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -35,13 +33,14 @@ public class EdmProvider {
 
   private Rdf rdf = new DeserializeRdf();
   private static InputStream xmlIs = null;
+  private InputStream conIs = null;
     
   /**
    * Constructor takes serialized EDM as File Object 
    * @param file
    */
   public EdmProvider(File file) {
-    xmlIs = loadXml(file);
+    conIs = loadXml(file);
   }
 
   /**

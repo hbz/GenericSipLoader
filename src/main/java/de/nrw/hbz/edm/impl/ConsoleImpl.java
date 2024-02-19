@@ -41,7 +41,7 @@ public class ConsoleImpl {
       ConsoleImpl conImpl = new ConsoleImpl();
       OaiPmhImpl impl = new OaiPmhImpl();
       SerializeOaiPmh exOaiPmh = (SerializeOaiPmh) conImpl.generateExampleOaiPmh();
-      // impl.serializeXml(exOaiPmh);
+      impl.serializeXml(exOaiPmh);
 
       if (args != null && args.length > 0) {
         conImpl.filePath = args[0];
@@ -54,10 +54,10 @@ public class ConsoleImpl {
       //impl.serializeXml(resultOaiPmh);
 
       conImpl.filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "src/test/resources/ExampleSip/EDM.xml";
-      // EdmImpl edmImpl = new EdmImpl(conImpl.filePath);
+      EdmImpl edmImpl = new EdmImpl(conImpl.filePath);
       Rdf resultEdm = EdmProvider.deserialize(new File(conImpl.filePath));
       logger.debug(resultOaiPmh.getOaiMethod().getRecord().get(0).getMetadata().getRdf().getProvidedCho());
-      // edmImpl.serializeXml(resultEdm);
+      edmImpl.serializeXml(resultEdm);
       
       ArrayList<String> isShownByReplacement = new ArrayList<>();
       isShownByReplacement.add("https://www.q-terra.de/Part-1/000-0002.csv");
