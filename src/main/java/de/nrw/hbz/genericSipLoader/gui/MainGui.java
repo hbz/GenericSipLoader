@@ -45,7 +45,7 @@ public class MainGui {
 	private JRadioButton rdbtnDanrw, rdbtnKtbl;
 	private JTextArea textAreaApiProperties = null;
 	// DANARW | KTBL
-	private String radButtonMetadata = "danrw";
+	private String radButtonMetadata = "ktbl";
 	private JPasswordField passwordField;
 	private JButton btnBrowse, btnReset, btnOk, btnEditProperties;
 	private Path configProperitesPath = Paths
@@ -129,7 +129,7 @@ public class MainGui {
 
 		// ********************************JLabels******************************************
 
-		lblApiProperties = new JLabel("DANRW-Api.properties:");
+		lblApiProperties = new JLabel("KTBL-Api.properties:");
 		lblApiProperties.setBackground(new Color(255, 255, 255));
 		lblApiProperties.setFont(new Font("Arial", Font.BOLD, 12));
 		lblApiProperties.setForeground(new Color(218, 165, 32));
@@ -168,7 +168,7 @@ public class MainGui {
 		textAreaApiProperties.setBackground(Color.WHITE);
 		textAreaApiProperties.setBounds(10, 219, 296, 153);
 		frmGenericsiploader.getContentPane().add(textAreaApiProperties);
-		loadContentOfProperitesFileInTextArea("fedora-api.properties",
+		loadContentOfProperitesFileInTextArea("ktbl-api.properties",
 				textAreaApiProperties);
 		textAreaApiProperties.getDocument();
 
@@ -176,31 +176,25 @@ public class MainGui {
 
 		// ********************************JRadioButton**************************************
 		rdbtnDanrw = new JRadioButton("DANRW");
+		rdbtnDanrw.setEnabled(false);
 		rdbtnDanrw.setBackground(new Color(240, 230, 140));
 		rdbtnDanrw.setFont(new Font("Arial", Font.PLAIN, 11));
-		rdbtnDanrw.setSelected(true);
 		rdbtnDanrw.setBounds(10, 168, 70, 20);
 		frmGenericsiploader.getContentPane().add(rdbtnDanrw);
 
 		rdbtnKtbl = new JRadioButton("KTBL");
+		rdbtnKtbl.setSelected(true);
 		rdbtnKtbl.setBackground(new Color(240, 230, 140));
 		rdbtnKtbl.setFont(new Font("Arial", Font.PLAIN, 11));
 		rdbtnKtbl.setBounds(90, 168, 70, 20);
+
 		frmGenericsiploader.getContentPane().add(rdbtnKtbl);
 
 		// Nur ein JRadioButton kann gleichzeitig ausgewählt werden
 		ActionListener radioButtonListener = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JRadioButton selectedRadioButton = (JRadioButton) e.getSource();
-				if (selectedRadioButton == rdbtnDanrw) {
-					radButtonMetadata = "danrw";
-					rdbtnKtbl.setSelected(false);
-					lblApiProperties.setText("DANRW-Api.properties:");
-					textAreaApiProperties.setText(null);
-					loadContentOfProperitesFileInTextArea(
-							"fedora-api.properties", textAreaApiProperties);
-
-				} else if (selectedRadioButton == rdbtnKtbl) {
+				if (selectedRadioButton == rdbtnKtbl) {
 					radButtonMetadata = "ktbl";
 					lblApiProperties.setText("KTBL-Api.properties:");
 					rdbtnDanrw.setSelected(false);
@@ -208,17 +202,26 @@ public class MainGui {
 					loadContentOfProperitesFileInTextArea("ktbl-api.properties",
 							textAreaApiProperties);
 				}
-				if (!rdbtnKtbl.isSelected() && !rdbtnDanrw.isSelected()) {
-					radButtonMetadata = "danrw";
-					rdbtnDanrw.setSelected(true);
-					textAreaApiProperties.setText(null);
-					lblApiProperties.setText("DANRW-Api.properties:");
-					loadContentOfProperitesFileInTextArea(
-							"fedora-api.properties", textAreaApiProperties);
-				}
+				// else if (selectedRadioButton == rdbtnDanrw) {
+				// radButtonMetadata = "danrw";
+				// rdbtnKtbl.setSelected(false);
+				// lblApiProperties.setText("DANRW-Api.properties:");
+				// textAreaApiProperties.setText(null);
+				// loadContentOfProperitesFileInTextArea(
+				// "fedora-api.properties", textAreaApiProperties);
+				// }
+				// if (!rdbtnKtbl.isSelected() && !rdbtnDanrw.isSelected()) {
+				// radButtonMetadata = "ktbl";
+				// rdbtnDanrw.setSelected(false);
+				//
+				// textAreaApiProperties.setText(null);
+				// lblApiProperties.setText("KTBL-Api.properties:");
+				// loadContentOfProperitesFileInTextArea(
+				// "fedora-api.properties", textAreaApiProperties);
+				// }
 			}
 		};
-		rdbtnDanrw.addActionListener(radioButtonListener);
+	//	rdbtnDanrw.addActionListener(radioButtonListener);
 		rdbtnKtbl.addActionListener(radioButtonListener);
 
 		// ********************************JRadioButton**************************************
@@ -279,15 +282,15 @@ public class MainGui {
 	}
 
 	private void handleResetButtonClick() {
-		radButtonMetadata = "danrw";
+		radButtonMetadata = "ktbl";
 		textFieldName.setText(null);
 		passwordField.setText(null);
 		textFieldZipFile.setText(null);
-		rdbtnDanrw.setSelected(true);
-		rdbtnKtbl.setSelected(false);
+		rdbtnDanrw.setSelected(false);
+		rdbtnKtbl.setSelected(true);
 		textAreaApiProperties.setText(null);
-		lblApiProperties.setText("DANRW-Api.properties:");
-		loadContentOfProperitesFileInTextArea("fedora-api.properties",
+		lblApiProperties.setText("KTBL-Api.properties:");
+		loadContentOfProperitesFileInTextArea("ktbl-api.properties",
 				textAreaApiProperties);
 	}
 
@@ -328,7 +331,7 @@ public class MainGui {
 				Set<String> ieList = ktblLoader.scanIEs();
 				ktblLoader.cuToScienceObject(ieList);
 			}
-
+			showMessage("Report", "Uploading is finished!");
 			handleResetButtonClick();
 		} catch (Exception e) {
 			showMessage("Warning", "Please check your entries !!!");
@@ -436,14 +439,14 @@ public class MainGui {
 		String os = System.getProperty("os.name").toLowerCase();
 
 		if (os.contains("win")) {
-		    editorCommand = "notepad.exe";
+			editorCommand = "notepad.exe";
 		} else if (os.contains("mac")) {
-		    editorCommand = "open -t";
+			editorCommand = "open -t";
 		} else if (os.contains("nix") || os.contains("nux")) {
-		    editorCommand = "xdg-open";
+			editorCommand = "xdg-open";
 		} else {
-		    showMessage("Error", "Unsupported operating system.");
-		    return;
+			showMessage("Error", "Unsupported operating system.");
+			return;
 		}
 
 		try {

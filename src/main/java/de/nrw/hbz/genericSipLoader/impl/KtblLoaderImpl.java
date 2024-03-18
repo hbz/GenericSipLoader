@@ -98,10 +98,15 @@ public class KtblLoaderImpl {
 			
 			
 			if (fileName.endsWith(".json")) {
+				System.out.println("Found Json file");
+				logger.info("Found Json file : " + fileName);
 				// create new empty ToScienceObject
 				String parentId = createToScienceObject("researchData", null);
+				
 				// Upload of the Json-File so that 2 datastreams KTBL and
 				// TOSCIENCE will be persisted.
+				System.out.println("Start uploadJsonFile");
+				logger.info("Start uploadJsonFile");
 				uploadJsonFile(new File(fileName), parentId);
 				File otherFile = getFileInSameFolder(fList, fileName);
 				if (otherFile != null) {

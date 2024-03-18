@@ -156,14 +156,13 @@ public class KtblClient {
 
 		WebTarget webTarget = client.target(apiHost).path(endpoint)
 				.path(namespace);
-		logger.debug("webTarget.toString()=" + webTarget.toString());
-
+		System.out.println("webTarget=" + webTarget.toString());
 		ToScienceObject obj = new ToScienceObject();
 		obj.setAccessScheme(PRIVATE);
 		obj.setPublishScheme(PRIVATE);
 		obj.setContentType(type);
 		obj.setParentPid(parentIdOrNull);
-		logger.debug("ToScienceObject=" + obj.toString());
+
 		Gson gson = new Gson();
 		String json = gson.toJson(obj);
 
@@ -183,7 +182,7 @@ public class KtblClient {
 			pid = responseObj.getText().split(" ")[0];
 		}
 
-		logger.debug("pid=" + pid);
+		System.out.println("pid=" + pid);
 		return pid;
 	}
 
@@ -271,6 +270,10 @@ public class KtblClient {
 	 *            Json file which contains TOSCIENCE and KTBL metadata
 	 */
 	public void postJsonFile(String parentId, File file) {
+		
+		System.out.println("PostJsonFile has been called");
+		logger.info("PostJsonFile has been called");
+		
 		String endpoint = "resource";
 
 		HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature
@@ -288,17 +291,21 @@ public class KtblClient {
 
 		WebTarget webTarget = client.target(apiHost).path(endpoint)
 				.path(parentId).path("ktbl");
+		
+		System.out.println("webTarget" + webTarget.toString());
 
 		Response response = webTarget.request()
 				.put(Entity.entity(multipart, multipart.getMediaType()));
 
 		int statusCode = response.getStatus();
 		if (statusCode == 200) {
-			JOptionPane.showMessageDialog(null, "OK", "Report",
-					JOptionPane.INFORMATION_MESSAGE);
+			logger.info("File " + file.getName() + " successfully uploaded");
 		} else {
-			JOptionPane.showMessageDialog(null, "Failed to upload Json file",
-					"Report", JOptionPane.INFORMATION_MESSAGE);
+
+			logger.info(" Failed to upload Json file" + file.getName());
+
+			// JOptionPane.showMessageDialog(null, "Failed to upload Json file",
+			// "Report", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		try {
