@@ -69,17 +69,19 @@ public class ZipExtractor {
 			ZipEntry zEntry = zEnum.nextElement();
 
 			// System.out.println("Methode: " + zEntry.getMethod());
-			// System.out.println(zEntry.getName());
+			logger.debug("ZIP-Content: " + zEntry.getName());
+			String extLocation = zEntry.getName().replace("\\", "/");
 			File zPart = new File(extractionPath
-					+ System.getProperty("file.separator") + zEntry.getName());
+					+ System.getProperty("file.separator") + extLocation);
+			
 			if (extractionPath.equals(zPart.getParent())) {
 				zPart = new File(
 						extractionPath + System.getProperty("file.separator")
 								+ extLoc + System.getProperty("file.separator")
-								+ zEntry.getName());
+								+ extLocation);
 			}
 			if (!zPart.getParentFile().isDirectory() && !zPart.exists()) {
-				logger.info("\nCreate sub directories: "
+				logger.debug("\nCreate sub directories: "
 						+ zPart.getParentFile().toString() + "\n");
 				zPart.getParentFile().mkdirs();
 			}
