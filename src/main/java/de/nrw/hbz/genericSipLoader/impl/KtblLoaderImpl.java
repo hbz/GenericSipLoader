@@ -13,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import de.nrw.hbz.genericSipLoader.restClient.KtblClient;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
+import jdk.internal.org.jline.utils.Log;
+
 import java.nio.file.Path;
 
 /**
@@ -125,13 +127,15 @@ public class KtblLoaderImpl {
           addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title",
               Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
 
-          // create part "Support" if part doesn't exist
-          boolean supportPartExists = false;
+          // create part "Support" if part doesn't exist. 
+          // Files from Support dir are not required according to ktbl. Should be skipped
+          // we keep the code block here as example for introducing sub structures 
+          //boolean supportPartExists = false;
 
-          if (!supportPartExists) {
-            supportPartId = createToScienceObject("part", parentId);
-            addMetadataAsTriples(supportPartId, "http://purl.org/dc/terms/title", "Support");
-          }
+          // if (!supportPartExists) {
+            //supportPartId = createToScienceObject("part", parentId);
+            //addMetadataAsTriples(supportPartId, "http://purl.org/dc/terms/title", "Support");
+          //}
         }
       }
 
@@ -161,12 +165,15 @@ public class KtblLoaderImpl {
         }
       }
 
-      // add docx-Files to support-object in main ResearchData-object
+      // skip processing of docx-Files to support-object in main ResearchData-object
+      
       if (fileName.endsWith(".docx")) {
-        String childPid = createToScienceObject("file", supportPartId);
-        uploadFile(new File(fileName), childPid);
-        addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title",
-            Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
+        logger.info("found docx-file skip processing for: " + Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
+        // String childPid = createToScienceObject("file", supportPartId);
+        
+        // uploadFile(new File(fileName), childPid);
+        // addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title",
+        //    Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
 
       }
 
