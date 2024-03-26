@@ -5,15 +5,16 @@ package de.nrw.hbz.genericSipLoader.impl;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.nrw.hbz.genericSipLoader.restClient.KtblClient;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
-import jdk.internal.org.jline.utils.Log;
 
 import java.nio.file.Path;
 
@@ -24,7 +25,6 @@ import java.nio.file.Path;
 public class KtblLoaderImpl {
 
   public KtblLoaderImpl(String basePath, String user, String passwd) {
-    logger.info("KtblLoaderImpl constructor has been called.");
     this.basePath = basePath;
     this.user = user;
     this.passwd = passwd;
@@ -93,10 +93,64 @@ public class KtblLoaderImpl {
    */
   public void cuToScienceObject(Set<String> fList) {
 
-    Iterator<String> fIt = fList.iterator();
+    // Set 1:  
+    Iterator<String> fIt = ((TreeSet<String>) fList).descendingIterator();
     String parentId = null;
-    String supportPartId = null;
     String mainJsonFileName = null;
+
+    while (fIt.hasNext()) {
+      String fileName = fIt.next();
+      if(fileName.endsWith(".json")) {
+        
+        // create new empty ToScienceObject
+        parentId = createToScienceObject("researchData", null);
+        File jsonFile = new File(fileName);
+        uploadJsonFile(jsonFile, parentId);
+        jsonFile.delete();
+
+        File zipFile = new File(fileName.replace(".json", ".zip"));
+        if(zipFile.exists()) {
+          String partId = createToScienceObject("file", parentId);
+          uploadFile(zipFile, partId);
+          zipFile.delete();
+        }
+
+        File xlsxFile = new File(fileName.replace(".json", ".xlsx"));
+        if(xlsxFile.exists()) {
+          String partId = createToScienceObject("file", parentId);
+          uploadFile(xlsxFile, partId);
+          xlsxFile.delete();
+        }
+        // try to remove parent directory
+        File parentDir = Paths.get(fileName).getParent().toFile();
+        File[] delFile = parentDir.listFiles();
+        for(int i=0; i< delFile.length; i++) {
+          delFile[i].delete();
+        }
+        
+        parentDir.delete();
+      }
+      
+      if(fileName.contains("SUPPORT")) {
+        new File(fileName).delete();
+      }
+    }
+        
+    
+    
+    
+    /*
+    
+    
+    
+    
+    
+    
+    
+    // Set 2
+    fIt = fList.iterator();
+    parentId = null;
+    mainJsonFileName = null;
 
     while (fIt.hasNext()) {
       String fileName = fIt.next();
@@ -110,7 +164,7 @@ public class KtblLoaderImpl {
         System.out.println("Found Main Dataset directory including Main Json file");
         mainJsonFileName = fileName.replace(".xlsx", ".json");
         if (new File(mainJsonFileName).isFile()) {
-          logger.debug("Found Json file : " + mainJsonFileName);
+          logger.info("Found Json file : " + mainJsonFileName);
 
           // create new empty ToScienceObject
           parentId = createToScienceObject("researchData", null);
@@ -148,20 +202,20 @@ public class KtblLoaderImpl {
 
       if (fileName.endsWith(".json") && !fileName.equals(mainJsonFileName)) {
 
-        // create new empty ToScienceObject
-        parentId = createToScienceObject("researchData", null);
-
-        // Upload of the Json-File so that 2 datastreams KTBL and
-        // TOSCIENCE will be persisted.
-        System.out.println("Start uploadJsonFile");
-        logger.info("Start uploadJsonFile");
-        String partId = null;
-        uploadJsonFile(new File(fileName), parentId);
-
         File otherFile = getFileInSameFolder(fList, fileName);
-        if (otherFile != null) {
+        if(otherFile != null && !otherFile.getAbsolutePath().endsWith(".xlsx")) {
+          // create new empty ToScienceObject
+          parentId = createToScienceObject("researchData", null);
+
+          // Upload of the Json-File so that 2 datastreams KTBL and
+          // TOSCIENCE will be persisted.
+          System.out.println("Start uploadJsonFile");
+          logger.info("Start uploadJsonFile");
+          String partId = null;
+          uploadJsonFile(new File(fileName), parentId);
           partId = createToScienceObject("file", parentId);
-          uploadFile(otherFile, partId);
+            uploadFile(otherFile, partId);
+          
         }
       }
 
@@ -176,8 +230,9 @@ public class KtblLoaderImpl {
         //    Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
 
       }
+      
 
-    }
+    }*/
   }
 
   /**
@@ -193,7 +248,7 @@ public class KtblLoaderImpl {
     Path currentFileParentPath = Paths.get(currentFileName).getParent();
     for (String otherFileName : fList) {
       Path otherFileParentPath = Paths.get(otherFileName).getParent();
-      if (currentFileParentPath.equals(otherFileParentPath) && currentFileName != otherFileName) {
+      if (currentFileParentPath.equals(otherFileParentPath) && !currentFileName.equals(otherFileName)) {
         return new File(otherFileName);
       }
     }

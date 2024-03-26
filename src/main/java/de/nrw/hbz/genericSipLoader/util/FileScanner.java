@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class FileScanner {
 
 	public FileScanner() {
-		logger.info("FileScanner constructor has been called.");
+		logger.debug("FileScanner constructor has been called.");
 		createScanner(System.getProperty("user.dir"));
 	}
 
@@ -81,7 +81,7 @@ public class FileScanner {
 	}
 
 	private Set<String> listFiles(String dir) throws IOException {
-		final Set<String> fileList = new HashSet<String>();
+		final Set<String> fileList = new TreeSet<String>();
 		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path file,
@@ -97,7 +97,7 @@ public class FileScanner {
 
 	private Set<String> listFilesByNamePattern(String dir, final String pattern)
 			throws IOException {
-		final Set<String> fileList = new HashSet<String>();
+		final Set<String> fileList = new TreeSet<String>();
 		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path file,
@@ -114,7 +114,7 @@ public class FileScanner {
 
 	private Set<String> listFilesExcludeMimeType(String dir,
 			final List<String> mimeTypes) throws IOException {
-		final Set<String> fileList = new HashSet<String>();
+		final Set<String> fileList = new TreeSet<String>();
 		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path file,

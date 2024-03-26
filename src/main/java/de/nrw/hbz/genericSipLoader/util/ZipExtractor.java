@@ -21,7 +21,7 @@ public class ZipExtractor {
 	}
 
 	public ZipExtractor(Set<String> fList, String basePath) {
-		logger.info("ZipExtractor constructor has been called.");
+		logger.debug("ZipExtractor constructor has been called.");
 		this.fList = fList;
 		this.extractionPath = basePath;
 		extractZip();

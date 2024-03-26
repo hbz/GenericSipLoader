@@ -40,7 +40,6 @@ import jakarta.ws.rs.core.Response;
 public class KtblClient {
 
 	public KtblClient(String user, String passwd) {
-		logger.info("KtblClient constructor has been called.");
 		this.user = user;
 		this.passwd = passwd;
 		setApi();
@@ -169,8 +168,7 @@ public class KtblClient {
 		Response response = webTarget.request()
 				.post(Entity.entity(json, MediaType.APPLICATION_JSON));
 
-		logger.debug("response" + response.toString());
-		logger.debug("response nach senden");
+		logger.debug("response: " + response.toString());
 
 		String responseBody = response.readEntity(String.class);
 		ResponseObject responseObj = gson.fromJson(responseBody,
@@ -181,8 +179,6 @@ public class KtblClient {
 		if (response.getStatus() == 200) {
 			pid = responseObj.getText().split(" ")[0];
 		}
-
-		System.out.println("pid=" + pid);
 		return pid;
 	}
 
@@ -211,7 +207,7 @@ public class KtblClient {
 		client.register(basicAuthFeature);
 		String mdTriple = "<" + pid + "> <" + mdUri + "> \"" + mdString
 				+ "\" .";
-		logger.info(mdTriple);
+		logger.debug(mdTriple);
 
 		WebTarget webTarget = client.target(apiHost).path(endpoint).path(pid)
 				.path("metadata2");
@@ -271,8 +267,7 @@ public class KtblClient {
 	 */
 	public void postJsonFile(String parentId, File file) {
 		
-		System.out.println("PostJsonFile has been called");
-		logger.info("PostJsonFile has been called");
+		logger.debug("PostJsonFile has been called");
 		
 		String endpoint = "resource";
 
@@ -292,17 +287,15 @@ public class KtblClient {
 		WebTarget webTarget = client.target(apiHost).path(endpoint)
 				.path(parentId).path("ktbl");
 		
-		System.out.println("webTarget" + webTarget.toString());
-
 		Response response = webTarget.request()
 				.put(Entity.entity(multipart, multipart.getMediaType()));
 
 		int statusCode = response.getStatus();
-		if (statusCode == 200) {
-			logger.info("File " + file.getName() + " successfully uploaded");
+		if (statusCode == 200 || statusCode == 201) {
+			logger.debug("File " + file.getName() + " successfully uploaded");
 		} else {
 
-			logger.info(" Failed to upload Json file" + file.getName());
+			logger.warn(" Failed to upload Json file" + file.getName());
 
 			// JOptionPane.showMessageDialog(null, "Failed to upload Json file",
 			// "Report", JOptionPane.INFORMATION_MESSAGE);
