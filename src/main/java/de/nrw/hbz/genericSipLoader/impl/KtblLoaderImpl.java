@@ -93,10 +93,10 @@ public class KtblLoaderImpl {
    */
   public void cuToScienceObject(Set<String> fList) {
 
+    String parentId = null;
+    ArrayList<String> childId = new ArrayList<>();
     // Set 1:  
     Iterator<String> fIt = ((TreeSet<String>) fList).descendingIterator();
-    String parentId = null;
-    String mainJsonFileName = null;
 
     while (fIt.hasNext()) {
       String fileName = fIt.next();
@@ -133,7 +133,7 @@ public class KtblLoaderImpl {
       
       if(fileName.contains("SUPPORT")) {
         new File(fileName).delete();
-      }
+      }      
     }
         
     
