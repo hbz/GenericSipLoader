@@ -111,6 +111,9 @@ public class KtblClient {
 	// }
 	// }
 
+	/**
+	 * Configure remote API 
+	 */
 	private void setApi() {
 		loadProperties();
 		apiHost = apiProps.getProperty("protocol") + "://"
@@ -138,8 +141,8 @@ public class KtblClient {
 	}
 
 	/**
-	 * Create a Parent or a Child ToScience Object in remote ToScience
-	 * Repository
+	 * Create a Parent or a Child to.science Object in remote to.science
+	 * fedora repository
 	 * 
 	 * @param sourceId
 	 * @return
@@ -155,7 +158,7 @@ public class KtblClient {
 
 		WebTarget webTarget = client.target(apiHost).path(endpoint)
 				.path(namespace);
-		System.out.println("webTarget=" + webTarget.toString());
+		logger.debug("webTarget=" + webTarget.toString());
 		ToScienceObject obj = new ToScienceObject();
 		obj.setAccessScheme(PRIVATE);
 		obj.setPublishScheme(PRIVATE);
@@ -308,6 +311,10 @@ public class KtblClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String getApiUrl() {
+	  return apiHost;
 	}
 
 	/**

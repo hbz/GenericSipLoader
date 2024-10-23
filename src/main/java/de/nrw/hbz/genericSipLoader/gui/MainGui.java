@@ -329,12 +329,14 @@ public class MainGui {
 						passwd);
 				ktblLoader.extractZips();
 				Set<String> ieList = ktblLoader.scanIEs();
-				ktblLoader.cuToScienceObject(ieList);
+				// ktblLoader.cuToScienceObject(ieList);
+        ktblLoader.persistKtblRD(ieList);
 			}
 			showMessage("Report", "Uploading is finished!");
 			handleResetButtonClick();
 		} catch (Exception e) {
-			showMessage("Warning", "Please check your entries !!!");
+			e.printStackTrace();
+		  showMessage("Warning", "Please check your entries !!!");
 		}
 
 	}
