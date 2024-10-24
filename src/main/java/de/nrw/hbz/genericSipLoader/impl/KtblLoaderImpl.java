@@ -297,7 +297,7 @@ public class KtblLoaderImpl {
         }
         
         ktblJSONObj.put("relatedDatasets", tosRelDat);
-        ktblJSONObj.put("associatedDatasets", tosRelDat);
+        ktblJSONObj.put("associatedDataset", tosRelDat);
         
         FileUtil.saveStringToResultFile(jsonFileName, ktblJSONObj.toString(2));
        
