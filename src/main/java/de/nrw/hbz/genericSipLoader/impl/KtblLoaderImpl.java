@@ -31,21 +31,15 @@ import java.nio.file.Path;
  */
 public class KtblLoaderImpl {
 
-  public KtblLoaderImpl(String basePath, String user, String passwd) {
-    this.basePath = basePath;
-    this.user = user;
-    this.passwd = passwd;
-    this.apiProps = new PropertiesLoader().getProperties();
-    this.client = new KtblClient(this.user, this.passwd);
-  }
-
   final static Logger logger = LogManager.getLogger(KtblLoaderImpl.class);
   private String basePath = System.getProperty("user.dir");
-  private String user = null;
-  private String passwd = null;
-  private Hashtable<String, String> apiProps;
-  private Hashtable<String, String> parts = new Hashtable<>();
   private KtblClient client = null;
+
+
+  public KtblLoaderImpl(String basePath, String user, String passwd) {
+    this.basePath = basePath;
+    this.client = new KtblClient(user, passwd);
+  }
 
   public void extractZips() {
 
@@ -127,7 +121,6 @@ public class KtblLoaderImpl {
   public void cuToScienceObject(Set<String> fList) {
 
     String parentId = null;
-    ArrayList<String> childId = new ArrayList<>();
     // Set 1:  
     Iterator<String> fIt = ((TreeSet<String>) fList).descendingIterator();
 
