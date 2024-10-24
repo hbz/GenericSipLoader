@@ -37,6 +37,10 @@ import javax.swing.*;
  */
 public class MainGui {
 	final static Logger logger = LogManager.getLogger(MainGui.class);
+	
+	private final String LEDIT =  "xdg-open";
+  private final String WEDIT =  "notepad.exe";
+  private final String MEDIT =  "open -t";
 
 	private JFrame frmGenericsiploader;
 	private JTextField textFieldZipFile, textFieldName;
@@ -441,11 +445,11 @@ public class MainGui {
 		String os = System.getProperty("os.name").toLowerCase();
 
 		if (os.contains("win")) {
-			editorCommand = "notepad.exe";
+			editorCommand = WEDIT;
 		} else if (os.contains("mac")) {
-			editorCommand = "open -t";
+			editorCommand = MEDIT;
 		} else if (os.contains("nix") || os.contains("nux")) {
-			editorCommand = "xdg-open";
+			editorCommand = LEDIT;
 		} else {
 			showMessage("Error", "Unsupported operating system.");
 			return;
@@ -476,8 +480,7 @@ public class MainGui {
 			File file = targetFilePath.toFile();
 			if(file!=null && file.isFile()) {
 	      String path = file.getAbsolutePath();
-	      processBuilder = new ProcessBuilder(editorCommand,
-	          path);			  
+	      processBuilder = new ProcessBuilder(editorCommand, path);			  
 			}
 
 
