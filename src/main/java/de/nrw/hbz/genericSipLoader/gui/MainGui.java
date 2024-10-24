@@ -479,8 +479,7 @@ public class MainGui {
 			// Properties-Datei mit dem Standardeditor öffnen
 			File file = targetFilePath.toFile();
 			if(file!=null && file.isFile()) {
-	      String path = file.getAbsolutePath();
-	      processBuilder = new ProcessBuilder(editorCommand, path);			  
+	      processBuilder = new ProcessBuilder(editorCommand, file.getAbsolutePath());			  
 			}
 
 
