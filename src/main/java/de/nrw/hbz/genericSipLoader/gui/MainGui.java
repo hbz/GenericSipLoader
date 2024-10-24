@@ -470,11 +470,16 @@ public class MainGui {
 			InputStream inputStream = MainGui.class.getResourceAsStream(
 					"/" + metadataName + "-api.properties");
 
+			ProcessBuilder processBuilder = null;
+			
 			// Properties-Datei mit dem Standardeditor öffnen
 			File file = targetFilePath.toFile();
+			if(file!=null && file.isFile()) {
+	      String path = file.getAbsolutePath();
+	      processBuilder = new ProcessBuilder(editorCommand,
+	          path);			  
+			}
 
-			ProcessBuilder processBuilder = new ProcessBuilder(editorCommand,
-					file.getAbsolutePath());
 
 			Process process = processBuilder.start();
 			// Warten auf das Beenden des Editors
