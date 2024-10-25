@@ -12,7 +12,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import javax.swing.JOptionPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +20,7 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
@@ -168,6 +168,10 @@ public class KtblClient {
 		Gson gson = new Gson();
 		String json = gson.toJson(obj);
 
+		System.out.println(json);
+		
+		System.out.println(obj.toString());
+		
 		Response response = webTarget.request()
 				.post(Entity.entity(json, MediaType.APPLICATION_JSON));
 
