@@ -1,5 +1,10 @@
 package de.nrw.hbz.genericSipLoader.model;
 
+import java.util.LinkedHashMap;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -28,8 +33,43 @@ public class ToScienceObject {
 	public ToScienceObject() {
 
 	}
-
 	
+	
+	/**
+	 * Method overwrites default toString() in order to provide the to.science Object
+	 * as pretty printed json-String
+	 * return pretty printed json
+	 */
+	public String toString() {
+  
+	  LinkedHashMap<String, String> initObjMap = new LinkedHashMap<>();
+	  initObjMap.put("contentType", contentType);
+    initObjMap.put("accessScheme", accessScheme);
+    initObjMap.put("publishScheme", publishScheme);
+    initObjMap.put("parentPid", parentPid);
+    
+    JSONArray initArray = new JSONArray();
+    initArray.put(initObjMap);
+    JSONObject initObj = new JSONObject(initObjMap);
+    	  
+	  return initObj.toString();
+	}
+	
+  public String toString(int indent) {
+    
+    LinkedHashMap<String, String> initObjMap = new LinkedHashMap<>();
+    initObjMap.put("contentType", contentType);
+    initObjMap.put("accessScheme", accessScheme);
+    initObjMap.put("publishScheme", publishScheme);
+    initObjMap.put("parentPid", parentPid);
+    
+    JSONArray initArray = new JSONArray();
+    initArray.put(initObjMap);
+    JSONObject initObj = new JSONObject(initObjMap);
+        
+    return initObj.toString(indent);
+  }
+
 	public String getAccessScheme() {
 		return accessScheme;
 	}
@@ -61,5 +101,5 @@ public class ToScienceObject {
 	public void setParentPid(String parentPid) {
 		this.parentPid = parentPid;
 	}
-
+	
 }
