@@ -21,17 +21,17 @@ import jakarta.ws.rs.core.MediaType;
  */
 public class DipsLoaderImpl {
 
+  final static Logger logger = LogManager.getLogger(DipsLoaderImpl.class);
+  private String basePath = System.getProperty("user.dir");
+  private String user = null;
+  private String passwd = null;
+
 	public DipsLoaderImpl(String basePath, String user, String passwd) {
 		logger.info("DipsLoaderImpl has been called.");
 		this.basePath = basePath;
 		this.user = user;
 		this.passwd = passwd;
 	}
-
-	final static Logger logger = LogManager.getLogger(DipsLoaderImpl.class);
-	private String basePath = System.getProperty("user.dir");
-	private String user = null;
-	private String passwd = null;
 
 	public void extractZips() {
 

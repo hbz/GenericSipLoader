@@ -39,23 +39,23 @@ import jakarta.ws.rs.core.Response;
  */
 public class KtblClient {
 
+  final static Logger logger = LogManager.getLogger(KtblClient.class);
+
+  private static Properties apiProps = new Properties();
+  private String apiHost = null;
+  private String user = null;
+  private String passwd = null;
+  public static String MANAGED = "M";
+  public static String DSSTATE = "A";
+  public static String PRIVATE = "private";
+  public static String PUBLIC = "public";
+  private Hashtable<String, String> apiConfig = new Hashtable<>();
+
 	public KtblClient(String user, String passwd) {
 		this.user = user;
 		this.passwd = passwd;
 		setApi();
 	}
-	final static Logger logger = LogManager.getLogger(KtblClient.class);
-
-	private static Properties apiProps = new Properties();
-	private String apiHost = null;
-	private String user = null;
-	private String passwd = null;
-	public static String MANAGED = "M";
-	public static String DSSTATE = "A";
-	public static String PRIVATE = "private";
-	public static String PUBLIC = "public";
-	private Hashtable<String, String> apiConfig = new Hashtable<>();
-
 	private void loadProperties() {
 		InputStream propStream = null;
 
