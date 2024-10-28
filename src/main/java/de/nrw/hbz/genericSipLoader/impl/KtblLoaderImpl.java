@@ -8,12 +8,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import de.nrw.hbz.genericSipLoader.restClient.KtblClient;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
+import de.nrw.hbz.genericSipLoader.util.FileUtil;
+import de.nrw.hbz.genericSipLoader.util.JsonFileLoader;
+import de.nrw.hbz.genericSipLoader.util.PropertiesLoader;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
 
 import java.nio.file.Path;
@@ -24,17 +31,15 @@ import java.nio.file.Path;
  */
 public class KtblLoaderImpl {
 
-  public KtblLoaderImpl(String basePath, String user, String passwd) {
-    this.basePath = basePath;
-    this.user = user;
-    this.passwd = passwd;
-  }
-
   final static Logger logger = LogManager.getLogger(KtblLoaderImpl.class);
   private String basePath = System.getProperty("user.dir");
-  private String user = null;
-  private String passwd = null;
-  private Hashtable<String, String> parts = new Hashtable<>();
+  private KtblClient client = null;
+
+
+  public KtblLoaderImpl(String basePath, String user, String passwd) {
+    this.basePath = basePath;
+    this.client = new KtblClient(user, passwd);
+  }
 
   public void extractZips() {
 
@@ -49,6 +54,12 @@ public class KtblLoaderImpl {
 
   }
 
+  
+  /**
+   * Produces a Set of file names that will be found in the basePath directory
+   *    
+   * @return a Set of file names
+   */
   public Set<String> scanIEs() {
     FileScanner fScan = new FileScanner(basePath);
     fScan.processScan();
@@ -56,23 +67,37 @@ public class KtblLoaderImpl {
     return ieList;
   }
 
+
+  /*  
+   * Next methods call to.science.api via KtblClient Instance
+   */
+  
+  /**
+   * Creates an empty to.science Objects fedora representation of predefined model  
+   * @param type model of to.science Object to generate. Can be Monograph, Article, ResearchData, File, Part, ...
+   * @param parentId an optional fedora ResourceId (pid) from a related superior to.science Object.   
+   * @return fedora ResourceId (pid) 
+   */
   public String createToScienceObject(String type, String parentId) {
-    KtblClient client = new KtblClient(user, passwd);
     return client.postToScienceObject(type, parentId);
   }
 
+  /**
+   * Adds metadata as N-Triples to the fedora representation of any to.science Object
+   * @param pid the fedora ResourceId for the fedora representation
+   * @param mdUri schema URI for the metadata schema 
+   * @param mdString
+   */
+  @Deprecated
   public void addMetadataAsTriples(String pid, String mdUri, String mdString) {
-    KtblClient client = new KtblClient(user, passwd);
     client.addMdAsTriple(pid, mdUri, mdString);
   }
 
   public void uploadFile(File file, String childId) {
-    KtblClient client = new KtblClient(user, passwd);
     client.postFileStream(childId, file);
   }
 
   public void uploadJsonFile(File file, String parentId) {
-    KtblClient client = new KtblClient(user, passwd);
     client.postJsonFile(parentId, file);
   }
 
@@ -85,16 +110,17 @@ public class KtblLoaderImpl {
    * "DS" + id; Fedora38Client client = new Fedora38Client(user, passwd);
    * client.postPayLoadStream(pid, DSId, file); }
    */
+
   /**
    * create or update a parent ToScienceObject and one or more childs to upload
    * files
    * 
-   * @param fList
+   * @param fList list of file names within a scanned directory
    */
+  @Deprecated
   public void cuToScienceObject(Set<String> fList) {
 
     String parentId = null;
-    ArrayList<String> childId = new ArrayList<>();
     // Set 1:  
     Iterator<String> fIt = ((TreeSet<String>) fList).descendingIterator();
 
@@ -136,103 +162,141 @@ public class KtblLoaderImpl {
       }      
     }
         
-    
-    
+  }    
+ 
+  
+  
+  /**
+   * Method (enhanced from cuToScienceObject) aims to persist a complete ktbl ResearchData item into 
+   * appropriate to.science Objects with respect to each objects relation to each other  
+   * 
+   * @param fList
+   */
+  public void persistKtblRD(Set<String> fList) {
+      
+    LinkedHashMap<String, String> ktblDataId = new LinkedHashMap<>();
     
     /*
+     *     Sort iterator alphabetical descending
+     *     As we have json files with alphabetical ordered dataset names, we can predict that 
+     *     we create the fedora representations for the datasets first and finish with the superior ktblResearchData object.
+     *     Due to the agreements with ktbl each Dataset by itself will be acting like an independent ktblResearchData. 
+     *     Therefore we persist a ktblResearchData representation for each Dataset   
+     */
+    Iterator<String> fIt = ((TreeSet<String>) fList).descendingIterator();
     
-    
-    
-    
-    
-    
-    
-    // Set 2
-    fIt = fList.iterator();
-    parentId = null;
-    mainJsonFileName = null;
-
+    // Step 1: find json files and persist an empty ktblResearchData object for each one
     while (fIt.hasNext()) {
+
+      String pId = null;
       String fileName = fIt.next();
+      
+      if(fileName.endsWith(".json")) {
+        logger.info("persist new ktblResearchData object for " + fileName);
 
-      logger.info("FileName: " + fileName);
-      logger.info(Paths.get(fileName).getParent());
+        // create new empty ToScienceObject
+        pId = createToScienceObject("researchData", null);
+        ktblDataId.put(fileName, pId);
+        //File jsonFile = new File(fileName);
+        //uploadJsonFile(jsonFile, parentId);
+        //jsonFile.delete();
+        
+       }
+    }
+    
+    // Step 2: Modify json files to add 
+    logger.debug("look for associatedDataSets");
 
-      // first create the main ResearchData-object with summarizing metadata and file
-      // objects
-      if (fileName.endsWith(".xlsx")) {
-        System.out.println("Found Main Dataset directory including Main Json file");
-        mainJsonFileName = fileName.replace(".xlsx", ".json");
-        if (new File(mainJsonFileName).isFile()) {
-          logger.info("Found Json file : " + mainJsonFileName);
-
-          // create new empty ToScienceObject
-          parentId = createToScienceObject("researchData", null);
-
-          // Upload of the Json-File so that 2 datastreams KTBL and
-          // TOSCIENCE will be persisted.
-          System.out.println("Start uploadJsonFile");
-          logger.debug("Start uploadJsonFile");
-          uploadJsonFile(new File(mainJsonFileName), parentId);
-
-          // upload xslx file
-          String childPid = createToScienceObject("file", parentId);
-          uploadFile(new File(fileName), childPid);
-          addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title",
-              Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
-
-          // create part "Support" if part doesn't exist. 
-          // Files from Support dir are not required according to ktbl. Should be skipped
-          // we keep the code block here as example for introducing sub structures 
-          //boolean supportPartExists = false;
-
-          // if (!supportPartExists) {
-            //supportPartId = createToScienceObject("part", parentId);
-            //addMetadataAsTriples(supportPartId, "http://purl.org/dc/terms/title", "Support");
-          //}
-        }
+    addRelatededDataSetMD(ktblDataId);
+    
+    // Step 3: Upload modified json files into empty ktblResearchData objects  
+    Set<String> kSet = ktblDataId.keySet();
+    Iterator<String> kIt = kSet.iterator();
+    
+    while(kIt.hasNext()) {
+      
+      String fileName = kIt.next();
+      String parentId = ktblDataId.get(fileName);
+      File jsonFile = new File(fileName);
+      uploadJsonFile(jsonFile, parentId);
+      
+      
+      
+      File zipFile = new File(fileName.replace(".json", ".zip"));
+      if(zipFile.exists()) {
+        String partId = createToScienceObject("file", parentId);
+        uploadFile(zipFile, partId);
+        zipFile.delete();
+        
       }
 
-      // prevent main Json File from being processed two times
-      //if (mainJsonFileName != null && mainJsonFileName.equals(fileName)) {
-        //fIt.remove();
-      //}
+      File xlsxFile = new File(fileName.replace(".json", ".xlsx"));
+      if(xlsxFile.exists()) {
+        String partId = createToScienceObject("file", parentId);
+        uploadFile(xlsxFile, partId);
+        xlsxFile.delete();
+      }
+      
+    }
+  }
 
-      // now create all depending ResearchData-objects
+  /**
+   * @param ktblDataId
+   */
+  public void addRelatededDataSetMD(LinkedHashMap<String,String> ktblDataId) {
 
-      if (fileName.endsWith(".json") && !fileName.equals(mainJsonFileName)) {
+    Set<String> keySet = ktblDataId.keySet();
+    Iterator<String> pIt = keySet.iterator();
+    while(pIt.hasNext()) {
+      
+      String key = pIt.next();
+      
+      logger.debug("found " + ktblDataId.size() + " related Datasets");
+      logger.debug("id " + ktblDataId.get(key));
+      
+      JsonFileLoader jFl = new JsonFileLoader();
+      String jsonFileName = key;
+      logger.info("load file: " + jsonFileName);
+      JSONObject ktblJSONObj = jFl.loadJsonObject(jsonFileName);
+      // System.out.println(ktblJSONObj.toString());
+      
+      if(ktblJSONObj.has("relatedDatasets")) {
+      
+        logger.debug("found related Datasets");
+        JSONArray ktblRelDat = ktblJSONObj.getJSONArray("relatedDatasets");
+        logger.info("array has: " + ktblRelDat.length() + " items");
+        Iterator<Object> kIt = ktblRelDat.iterator();
 
-        File otherFile = getFileInSameFolder(fList, fileName);
-        if(otherFile != null && !otherFile.getAbsolutePath().endsWith(".xlsx")) {
-          // create new empty ToScienceObject
-          parentId = createToScienceObject("researchData", null);
-
-          // Upload of the Json-File so that 2 datastreams KTBL and
-          // TOSCIENCE will be persisted.
-          System.out.println("Start uploadJsonFile");
-          logger.info("Start uploadJsonFile");
-          String partId = null;
-          uploadJsonFile(new File(fileName), parentId);
-          partId = createToScienceObject("file", parentId);
-            uploadFile(otherFile, partId);
+        JSONArray tosRelDat = new JSONArray();
+        ArrayList<String> resId = new ArrayList<>();
+        Iterator<String> rIt = keySet.iterator();
+        while(rIt.hasNext()) {
+          String fName = rIt.next();
+          resId.add(fName);
+          logger.info("Key: " + fName);
           
         }
-      }
 
-      // skip processing of docx-Files to support-object in main ResearchData-object
-      
-      if (fileName.endsWith(".docx")) {
-        logger.info("found docx-file skip processing for: " + Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
-        // String childPid = createToScienceObject("file", supportPartId);
+        int j = resId.size()-2;
+        while(kIt.hasNext()) {
+         JSONObject relDat = new JSONObject();
+         if(resId != null && resId.size() > 0) {
+           relDat.put("@id", client.getApiUrl().replace("api.", "") + "/resource/" + ktblDataId.get(resId.get(j)));
+           relDat.put("prefLabel", kIt.next().toString());
+           tosRelDat.put(relDat);
+           logger.info("KeySet: " + resId.get(j) + ", " + j);
+           j--;
+         }
+        }
         
-        // uploadFile(new File(fileName), childPid);
-        // addMetadataAsTriples(childPid, "http://purl.org/dc/terms/title",
-        //    Paths.get(fileName).getName(Paths.get(fileName).getNameCount() - 1).toString());
-
+        ktblJSONObj.put("relatedDatasets", tosRelDat);
+        ktblJSONObj.put("associatedDataset", tosRelDat);
+        
+        FileUtil.saveStringToResultFile(jsonFileName, ktblJSONObj.toString(2));
+       
+        System.out.println(ktblJSONObj.toString(2));
       }
-      
-
-    }*/
+    }
   }
 
   /**
@@ -254,5 +318,7 @@ public class KtblLoaderImpl {
     }
     return null;
   }
+  
+  
 
 }
