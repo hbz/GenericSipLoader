@@ -32,22 +32,22 @@ import jakarta.ws.rs.core.Response;
  */
 public class Fedora38Client {
 
+  final static Logger logger = LogManager.getLogger(Fedora38Client.class);
+
+  private static Properties apiProps = new Properties();
+  private String apiHost = null;
+  private String user = null;
+  private String passwd = null;
+  public static String MANAGED = "M";
+  public static String DSSTATE = "A";
+  private Hashtable<String, String> apiConfig = new Hashtable<>();
+
 	public Fedora38Client(String user, String passwd) {
 		logger.info("Fedora38Client constructor has been called.");
 		this.user = user;
 		this.passwd = passwd;
 		setApi();
 	}
-	final static Logger logger = LogManager.getLogger(Fedora38Client.class);
-
-	private static Properties apiProps = new Properties();
-	private String apiHost = null;
-	private String user = null;
-	private String passwd = null;
-	public static String MANAGED = "M";
-	public static String DSSTATE = "A";
-	private Hashtable<String, String> apiConfig = new Hashtable<>();
-
 	private void loadProperties() {
 	    InputStream propStream = null;
 
