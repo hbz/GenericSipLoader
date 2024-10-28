@@ -168,10 +168,6 @@ public class KtblClient {
 		Gson gson = new Gson();
 		String json = gson.toJson(obj);
 
-		System.out.println(json);
-		
-		System.out.println(obj.toString());
-		
 		Response response = webTarget.request()
 				.post(Entity.entity(json, MediaType.APPLICATION_JSON));
 

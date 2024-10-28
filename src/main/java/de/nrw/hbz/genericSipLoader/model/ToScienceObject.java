@@ -2,6 +2,7 @@ package de.nrw.hbz.genericSipLoader.model;
 
 import java.util.LinkedHashMap;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -47,12 +48,28 @@ public class ToScienceObject {
     initObjMap.put("publishScheme", publishScheme);
     initObjMap.put("parentPid", parentPid);
     
+    JSONArray initArray = new JSONArray();
+    initArray.put(initObjMap);
     JSONObject initObj = new JSONObject(initObjMap);
-    initObj.toString(2);
-	  
-	  return initObj.toString(2);
+    	  
+	  return initObj.toString();
 	}
 	
+  public String toString(int indent) {
+    
+    LinkedHashMap<String, String> initObjMap = new LinkedHashMap<>();
+    initObjMap.put("contentType", contentType);
+    initObjMap.put("accessScheme", accessScheme);
+    initObjMap.put("publishScheme", publishScheme);
+    initObjMap.put("parentPid", parentPid);
+    
+    JSONArray initArray = new JSONArray();
+    initArray.put(initObjMap);
+    JSONObject initObj = new JSONObject(initObjMap);
+        
+    return initObj.toString(indent);
+  }
+
 	public String getAccessScheme() {
 		return accessScheme;
 	}
