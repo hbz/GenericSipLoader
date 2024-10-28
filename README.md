@@ -6,7 +6,8 @@ The GenericSipLoader is a lightweight tool for uploading submission to different
 It's thought to facilitate upload of zip-based Containers or whole directories as single submission.
 
 The GenericSipLoader therefore provides 
--	a Zip-Extraction Class
+
+- a Zip-Extraction Class
 -	a File-Scanner for identifying metadata files and content files via string-pattern
 -	a Jersey REST-Client for Fedora Commons 3.8
 -	a Jersey REST-Client for to.science (not implemented yet)  
@@ -19,7 +20,7 @@ GenericSipLoader is licensed under [Apache License 2.0](LICENSE)
 ## Prerequisites ##
 
 -	OpenJDK 1.8 or above
--   Maven 3.x or so for integration and deployment
+- Maven 3.x or so for integration and deployment
 
 ## Installation ##
 
