@@ -118,7 +118,6 @@
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-multipart</artifactId>
@@ -149,7 +148,6 @@
 			<artifactId>jakarta.activation-api</artifactId>
 			<version>2.1.2</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
