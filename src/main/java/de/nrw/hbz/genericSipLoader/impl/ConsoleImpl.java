@@ -42,8 +42,9 @@ public class ConsoleImpl {
       fScan.processScan(".zip");
       Set<String> fList = fScan.getFileList();
       
-      logger.info("\nZip-extraction starts with default settings\n");
+      logger.debug("Zip-extraction starts with default settings");
       ZipExtractor extractor = new ZipExtractor(fList, basePath);
+      extractor.extractZip();
     }
     
     if(target.equals("danrw")) {

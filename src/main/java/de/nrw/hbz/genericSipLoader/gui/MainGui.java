@@ -319,6 +319,7 @@ public class MainGui {
 				fScan.processScan(".zip");
 				Set<String> fList = fScan.getFileList();
 				ZipExtractor extractor = new ZipExtractor(fList, basePath);
+				extractor.extractZip();
 			}
 			if (target.equals("danrw") && areFieldsFilled()) {
 				logger.debug("danrw block has been called");

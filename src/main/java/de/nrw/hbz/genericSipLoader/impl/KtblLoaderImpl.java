@@ -51,6 +51,7 @@ public class KtblLoaderImpl {
 
     // comment zipextractor for testing, uncomment for production
     ZipExtractor extractor = new ZipExtractor(fList, basePath);
+    extractor.extractZip();
 
   }
 

@@ -15,21 +15,19 @@ import java.io.InputStream;
 
 public class ZipExtractor {
 
+  final static Logger logger = LogManager.getLogger(ZipExtractor.class);
+  private Set<String> fList = null;
+  private String extractionPath = System.getProperty("user.dir");
+
 	public ZipExtractor(Set<String> fList) {
 		this.fList = fList;
-		extractZip();
 	}
 
 	public ZipExtractor(Set<String> fList, String basePath) {
 		logger.debug("ZipExtractor constructor has been called.");
 		this.fList = fList;
 		this.extractionPath = basePath;
-		extractZip();
 	}
-
-	final static Logger logger = LogManager.getLogger(ZipExtractor.class);
-	private Set<String> fList = null;
-	private String extractionPath = System.getProperty("user.dir");
 
 	public void setTargetDir(String fileName) {
 		String extLoc = fileName.replace(".zip", "");
@@ -39,23 +37,26 @@ public class ZipExtractor {
 
 	}
 
-	public void extractZip() {
+	public boolean extractZip() {
 		Iterator<String> fListIt = fList.iterator();
 		ZipFile zFile = null;
 
+		boolean success = true;
+		
 		while (fListIt.hasNext()) {
 			try {
 				zFile = new ZipFile(fListIt.next());
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			  success = false;
+			  e.printStackTrace();
 			}
 
 			setTargetDir(zFile.getName());
 			writeExtContent(zFile);
 
 		}
+		return success;
 	}
 
 	private void writeExtContent(ZipFile zFile) {
