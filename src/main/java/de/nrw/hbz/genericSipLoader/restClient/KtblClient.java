@@ -66,7 +66,8 @@ public class KtblClient {
       System.out.println("propertiesFile.exists()=" + propertiesFile.exists());
       try {
         propStream = new FileInputStream(propertiesFile);
-      } catch (FileNotFoundException e) {
+        apiProps.load(propStream);
+      } catch (Exception e) {
         e.printStackTrace();
       }
     } else {

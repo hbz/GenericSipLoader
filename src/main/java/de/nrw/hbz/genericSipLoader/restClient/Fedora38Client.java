@@ -59,7 +59,8 @@ public class Fedora38Client {
 	    	
 	        try {
 	            propStream = new FileInputStream(propertiesFile);
-	        } catch (FileNotFoundException e) {
+              apiProps.load(propStream);
+	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 	    } else {
@@ -68,6 +69,24 @@ public class Fedora38Client {
 
 	}
 
+//	private void loadProperties() {
+//		InputStream propStream = this.getClass().getClassLoader()
+//				.getResourceAsStream("fedora-api.properties");
+//		if (propStream != null) {
+//			try {
+//				apiProps.load(propStream);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//			Enumeration<Object> eProps = apiProps.keys();
+//			while (eProps.hasMoreElements()) {
+//				String key = (String) eProps.nextElement();
+//				apiConfig.put(key, apiProps.getProperty(key));
+//			}
+//		}
+//	}
 
 	private void setApi() {
 		loadProperties();
