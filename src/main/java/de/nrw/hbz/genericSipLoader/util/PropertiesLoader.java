@@ -60,4 +60,8 @@ public class PropertiesLoader {
     return config;
   }
   
+  public Properties getApiProperties() {
+    return apiProps;
+  }
+  
 }

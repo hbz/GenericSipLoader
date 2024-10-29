@@ -18,6 +18,8 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+
+import de.nrw.hbz.genericSipLoader.util.PropertiesLoader;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -61,43 +63,11 @@ public class Fedora38Client {
 	            e.printStackTrace();
 	        }
 	    } else {
-	        // Wenn die Datei nicht im "Properties files" Ordner gefunden wurde, suche sie im Classpath
-	        propStream = this.getClass().getClassLoader().getResourceAsStream("fedora-api.properties");
+	        apiProps = new PropertiesLoader().getApiProperties();  
 	    }
 
-	    if (propStream != null) {
-	        try {
-	            apiProps.load(propStream);
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-
-	        Enumeration<Object> eProps = apiProps.keys();
-	        while (eProps.hasMoreElements()) {
-	            String key = (String) eProps.nextElement();
-	            apiConfig.put(key, apiProps.getProperty(key));
-	        }
-	    }
 	}
 
-//	private void loadProperties() {
-//		InputStream propStream = this.getClass().getClassLoader()
-//				.getResourceAsStream("fedora-api.properties");
-//		if (propStream != null) {
-//			try {
-//				apiProps.load(propStream);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//			Enumeration<Object> eProps = apiProps.keys();
-//			while (eProps.hasMoreElements()) {
-//				String key = (String) eProps.nextElement();
-//				apiConfig.put(key, apiProps.getProperty(key));
-//			}
-//		}
-//	}
 
 	private void setApi() {
 		loadProperties();
