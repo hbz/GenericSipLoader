@@ -109,6 +109,24 @@ public class FileUtil {
 		log.info("File-Size, Ergebnis: " + inputFile.length());
 		return inputFile.getName();
 	}
+	 
+  /**
+   * @param file
+   * @return FileInputStream with content of the file
+   */
+  public static InputStream loadFile(File file) {
+    FileInputStream fis = null;
+    try {
+      fis = new FileInputStream(file);
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return fis;
+  }
+  
+  
 }
 	
 

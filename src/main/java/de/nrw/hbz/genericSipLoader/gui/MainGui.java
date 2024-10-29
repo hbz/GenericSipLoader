@@ -48,15 +48,23 @@ public class MainGui {
   private final String MEDIT =  "open -t";
 
 	private JFrame frmGenericsiploader;
-	private JTextField textFieldZipFile, textFieldName;
-	private JLabel lblApiProperties, lbApiUser, lblApiPassword, lblZipFile,
-			lblApiCreditianls;
-	private JRadioButton rdbtnDanrw, rdbtnKtbl;
+	private JTextField textFieldZipFile; 
+	private JTextField textFieldName;
+	private JLabel lblApiProperties;
+	private JLabel lbApiUser;
+	private JLabel lblApiPassword;
+	private JLabel lblZipFile;
+	private JLabel lblApiCreditianls;
+	private JRadioButton rdbtnDanrw;
+	private JRadioButton rdbtnKtbl;
 	private JTextArea textAreaApiProperties = null;
 	// DANRW | KTBL
 	private String radButtonMetadata = "ktbl";
 	private JPasswordField passwordField;
-	private JButton btnBrowse, btnReset, btnOk, btnEditProperties;
+	private JButton btnBrowse;
+	private JButton btnReset;
+	private JButton btnOk;
+	private JButton btnEditProperties;
 	private Path configProperitesPath = Paths
 			.get(System.getProperty("user.dir"), "Properties files");
 
