@@ -282,7 +282,7 @@ public class KtblLoaderImpl {
         while(kIt.hasNext()) {
          JSONObject relDat = new JSONObject();
          if(resId != null && resId.size() > 0) {
-           relDat.put("@id", client.getApiUrl().replace("api.", "") + "/resource/" + ktblDataId.get(resId.get(j)));
+           relDat.put("@id", client.getResouceUri() + ktblDataId.get(resId.get(j)));
            relDat.put("prefLabel", kIt.next().toString());
            tosRelDat.put(relDat);
            logger.info("KeySet: " + resId.get(j) + ", " + j);

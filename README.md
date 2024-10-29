@@ -16,7 +16,6 @@ The GenericSipLoader therefore provides
 
 GenericSipLoader is licensed under [Apache License 2.0](LICENSE)
 
-
 ## Prerequisites ##
 
 - OpenJDK 1.8 or above
@@ -36,4 +35,3 @@ Edit properties-Files with your settings
 Run:
 
 `java -jar genericSipLoader.jar [target] [start path] [user] [password]`
-

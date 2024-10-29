@@ -42,6 +42,7 @@ public class KtblClient {
   final static Logger logger = LogManager.getLogger(KtblClient.class);
 
   private static Properties apiProps = new Properties();
+  private String resourceUri = null;
   private String apiHost = null;
   private String user = null;
   private String passwd = null;
@@ -56,6 +57,7 @@ public class KtblClient {
     this.passwd = passwd;
     loadProperties();
     setApi();
+    setResourceUri();
   }
 
   private void loadProperties() {
@@ -83,6 +85,14 @@ public class KtblClient {
     apiHost = apiProps.getProperty("protocol") + "://" + apiProps.getProperty("host") + ":"
         + apiProps.getProperty("port");
     logger.info(apiHost);
+  }
+  
+  /**
+   * 
+   */
+  public void setResourceUri() {
+    resourceUri = apiProps.getProperty("resourceUri");
+    
   }
 
   /**
@@ -257,6 +267,11 @@ public class KtblClient {
     return apiHost;
   }
 
+
+  public String getResouceUri() {
+    return resourceUri;
+  }
+  
   /**
    * @param objId
    * @param DSId
