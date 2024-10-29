@@ -2,9 +2,12 @@ package de.nrw.hbz.genericSipLoader.gui;
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,10 +20,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.awt.event.ActionEvent;
 import de.nrw.hbz.genericSipLoader.impl.DipsLoaderImpl;
 import de.nrw.hbz.genericSipLoader.impl.KtblLoaderImpl;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
+import de.nrw.hbz.genericSipLoader.util.FileUtil;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +53,7 @@ public class MainGui {
 			lblApiCreditianls;
 	private JRadioButton rdbtnDanrw, rdbtnKtbl;
 	private JTextArea textAreaApiProperties = null;
-	// DANARW | KTBL
+	// DANRW | KTBL
 	private String radButtonMetadata = "ktbl";
 	private JPasswordField passwordField;
 	private JButton btnBrowse, btnReset, btnOk, btnEditProperties;
@@ -334,7 +339,6 @@ public class MainGui {
 						passwd);
 				ktblLoader.extractZips();
 				Set<String> ieList = ktblLoader.scanIEs();
-				// ktblLoader.cuToScienceObject(ieList);
         ktblLoader.persistKtblRD(ieList);
 			}
 			showMessage("Report", "Uploading is finished!");
@@ -480,7 +484,7 @@ public class MainGui {
 			// Properties-Datei mit dem Standardeditor öffnen
 			File file = targetFilePath.toFile();
 			if(file!=null && file.isFile()) {
-	      processBuilder = new ProcessBuilder(editorCommand, file.getAbsolutePath());			  
+	      secureProcessBuilder(editorCommand, file);			  
 			}
 
 
@@ -574,6 +578,23 @@ public class MainGui {
 	public void showMessage(String title, String message) {
 		JOptionPane.showMessageDialog(frmGenericsiploader, message, title,
 				JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	public ProcessBuilder secureProcessBuilder(String editorCommand, File file) {
+	  
+	  
+	  String tmpFileName = UUID.randomUUID().toString();
+    InputStream fis = FileUtil.loadFile(file);
+    FileOutputStream fos;
+    try {
+      fos = new FileOutputStream(tmpFileName);
+      fis.transferTo(fos);
+      fos.flush();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return new ProcessBuilder(editorCommand, tmpFileName);
 	}
 
 }
