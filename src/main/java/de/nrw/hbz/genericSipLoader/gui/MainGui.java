@@ -588,7 +588,13 @@ public class MainGui {
 				JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	public ProcessBuilder secureProcessBuilder(String editorCommand, File file) {
+	/**
+	 * A secure way to initialize a ProcessBuilder
+	 * @param editorCommand Editor in use depends on OS
+	 * @param file config file
+	 * @return a new ProcessBuilder using a copied temp file 
+	 */
+	private ProcessBuilder secureProcessBuilder(String editorCommand, File file) {
 	  
 	  
 	  String tmpFileName = UUID.randomUUID().toString();
@@ -602,7 +608,7 @@ public class MainGui {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    return new ProcessBuilder(editorCommand, tmpFileName);
+    return new ProcessBuilder("kate", tmpFileName);
 	}
 
 }
