@@ -125,7 +125,7 @@ public class Fedora38Client {
 	public String postFedoraObject(String sourceId) {
 		String endpoint = "fedora/objects";
 
-		String objId = apiConfig.get("namespace") + sourceId;
+		String objId = apiProps.getProperty("namespace") + sourceId;
 		HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature
 				.basic(user, passwd);
 		// MultiPartFeature mpFeature = MultiPartFeature.

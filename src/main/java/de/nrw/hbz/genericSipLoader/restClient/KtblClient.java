@@ -54,6 +54,7 @@ public class KtblClient {
   public KtblClient(String user, String passwd) {
     this.user = user;
     this.passwd = passwd;
+    loadProperties();
     setApi();
   }
 
@@ -79,10 +80,9 @@ public class KtblClient {
    * Configure remote API
    */
   private void setApi() {
-    loadProperties();
     apiHost = apiProps.getProperty("protocol") + "://" + apiProps.getProperty("host") + ":"
         + apiProps.getProperty("port");
-    logger.debug(apiHost);
+    logger.info(apiHost);
   }
 
   /**
@@ -111,13 +111,14 @@ public class KtblClient {
   public String postToScienceObject(String type, String parentIdOrNull) {
     String endpoint = "resource";
     String pid = null;
-    String namespace = apiConfig.get("namespace");
+    String namespace = apiProps.getProperty("namespace");
     HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
     Client client = ClientBuilder.newClient(new ClientConfig());
     client.register(basicAuthFeature);
 
+    logger.info("path = " + endpoint);
     WebTarget webTarget = client.target(apiHost).path(endpoint).path(namespace);
-    logger.debug("webTarget=" + webTarget.toString());
+    logger.info("webTarget=" + webTarget.toString());
     ToScienceObject obj = new ToScienceObject();
     obj.setAccessScheme(PRIVATE);
     obj.setPublishScheme(PRIVATE);
