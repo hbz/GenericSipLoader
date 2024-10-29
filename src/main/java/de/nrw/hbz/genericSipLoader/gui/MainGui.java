@@ -37,6 +37,10 @@ import javax.swing.*;
  */
 public class MainGui {
 	final static Logger logger = LogManager.getLogger(MainGui.class);
+	
+	private final String LEDIT =  "xdg-open";
+  private final String WEDIT =  "notepad.exe";
+  private final String MEDIT =  "open -t";
 
 	private JFrame frmGenericsiploader;
 	private JTextField textFieldZipFile, textFieldName;
@@ -315,6 +319,7 @@ public class MainGui {
 				fScan.processScan(".zip");
 				Set<String> fList = fScan.getFileList();
 				ZipExtractor extractor = new ZipExtractor(fList, basePath);
+				extractor.extractZip();
 			}
 			if (target.equals("danrw") && areFieldsFilled()) {
 				logger.debug("danrw block has been called");
@@ -329,12 +334,14 @@ public class MainGui {
 						passwd);
 				ktblLoader.extractZips();
 				Set<String> ieList = ktblLoader.scanIEs();
-				ktblLoader.cuToScienceObject(ieList);
+				// ktblLoader.cuToScienceObject(ieList);
+        ktblLoader.persistKtblRD(ieList);
 			}
 			showMessage("Report", "Uploading is finished!");
 			handleResetButtonClick();
 		} catch (Exception e) {
-			showMessage("Warning", "Please check your entries !!!");
+			e.printStackTrace();
+		  showMessage("Warning", "Please check your entries !!!");
 		}
 
 	}
@@ -439,11 +446,11 @@ public class MainGui {
 		String os = System.getProperty("os.name").toLowerCase();
 
 		if (os.contains("win")) {
-			editorCommand = "notepad.exe";
+			editorCommand = WEDIT;
 		} else if (os.contains("mac")) {
-			editorCommand = "open -t";
+			editorCommand = MEDIT;
 		} else if (os.contains("nix") || os.contains("nux")) {
-			editorCommand = "xdg-open";
+			editorCommand = LEDIT;
 		} else {
 			showMessage("Error", "Unsupported operating system.");
 			return;
@@ -468,11 +475,14 @@ public class MainGui {
 			InputStream inputStream = MainGui.class.getResourceAsStream(
 					"/" + metadataName + "-api.properties");
 
+			ProcessBuilder processBuilder = null;
+			
 			// Properties-Datei mit dem Standardeditor öffnen
 			File file = targetFilePath.toFile();
+			if(file!=null && file.isFile()) {
+	      processBuilder = new ProcessBuilder(editorCommand, file.getAbsolutePath());			  
+			}
 
-			ProcessBuilder processBuilder = new ProcessBuilder(editorCommand,
-					file.getAbsolutePath());
 
 			Process process = processBuilder.start();
 			// Warten auf das Beenden des Editors

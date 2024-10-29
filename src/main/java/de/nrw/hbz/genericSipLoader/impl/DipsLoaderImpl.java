@@ -42,6 +42,7 @@ public class DipsLoaderImpl {
 		logger.info("\nZip-extraction starts\n");
 
 		ZipExtractor extractor = new ZipExtractor(fList, basePath);
+		extractor.extractZip();
 
 	}
 
