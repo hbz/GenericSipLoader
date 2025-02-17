@@ -600,7 +600,13 @@ public class MainGui {
 	  
 	  tmpFileName = UUID.randomUUID().toString() + ".properties";
 	  FileUtil.copyFile(file, tmpFileName);
-	  return new ProcessBuilder(ChooseEditor.getEditor(this), tmpFileName);
+	  ProcessBuilder procB = new ProcessBuilder();
+	  String editorCommand = ChooseEditor.getEditor(this);
+	  if(editorCommand.equals("xdg-open") || editorCommand.equals("notepad.exe") || editorCommand.equals("open -t")) {
+	    procB.command(ChooseEditor.getEditor(this), tmpFileName);
+	  }
+	  //return new ProcessBuilder(ChooseEditor.getEditor(this), tmpFileName);
+	  return procB;
 	}
 
 }
