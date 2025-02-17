@@ -13,6 +13,11 @@ import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
 
 /**
  * @author aquast
+ * 
+ * Console-Starter of genericSipLoader Tool
+ * 
+ * Class is thought to allow usage of genericSipLoader by shell, i.E. for 
+ * calling it by other scripts or crontab  
  *
  */
 public class ConsoleImpl {
@@ -30,10 +35,10 @@ public class ConsoleImpl {
     String passwd = null;
     String target = null;
     if (args != null && args.length > 0) {
-      target =  args[0];
-      basePath = args[1];
-      user = args[2];
-      passwd = args[3];
+      target =  args[1];
+      basePath = args[2];
+      user = args[3];
+      passwd = args[4];
       logger.info("You defined " + basePath + " as starting directory");
       logger.info("You defined " + target + " as repository to store data\n");
 

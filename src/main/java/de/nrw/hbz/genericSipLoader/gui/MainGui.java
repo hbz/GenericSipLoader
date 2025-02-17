@@ -1,4 +1,5 @@
 package de.nrw.hbz.genericSipLoader.gui;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -35,6 +36,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.*;
+
 /**
  * 
  * @author adoud
@@ -43,9 +45,6 @@ import javax.swing.*;
 public class MainGui {
 	final static Logger logger = LogManager.getLogger(MainGui.class);
 	
-	final static String LEDIT =  "xdg-open";
-  final static String WEDIT =  "notepad.exe";
-  final static String MEDIT =  "open -t";
   private String tmpFileName = null;
 
 	private JFrame frmGenericsiploader;
@@ -601,23 +600,7 @@ public class MainGui {
 	  
 	  tmpFileName = UUID.randomUUID().toString() + ".properties";
 	  FileUtil.copyFile(file, tmpFileName);
-	  return new ProcessBuilder(getEditor(), tmpFileName);
+	  return new ProcessBuilder(ChooseEditor.getEditor(this), tmpFileName);
 	}
-
-  private String getEditor() {
-    String os = System.getProperty("os.name").toLowerCase();
-    String editorCommand = null;;
-
-    if (os.contains("win")) {
-      editorCommand = WEDIT;
-    } else if (os.contains("mac")) {
-      editorCommand = MEDIT;
-    } else if (os.contains("nix") || os.contains("nux")) {
-      editorCommand = LEDIT;
-    } else {
-      showMessage("Error", "Unsupported operating system.");
-    }
-    return editorCommand;     
-  }
 
 }
