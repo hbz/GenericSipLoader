@@ -45,7 +45,7 @@ import javax.swing.*;
 public class MainGui {
 	final static Logger logger = LogManager.getLogger(MainGui.class);
 	
-  private String tmpFileName = null;
+  private final String tmpFileName = "tmp.properties";
 
 	private JFrame frmGenericsiploader;
 	private JTextField textFieldZipFile; 
@@ -598,7 +598,7 @@ public class MainGui {
 	 */
 	private ProcessBuilder secureProcessBuilder(File file) {
 	  
-	  tmpFileName = UUID.randomUUID().toString() + ".properties";
+	  // tmpFileName = UUID.randomUUID().toString() + ".properties";
 	  FileUtil.copyFile(file, tmpFileName);
 	  ProcessBuilder procB = new ProcessBuilder();
 	  String editorCommand = ChooseEditor.getEditor(this);
