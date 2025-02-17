@@ -43,9 +43,10 @@ import javax.swing.*;
 public class MainGui {
 	final static Logger logger = LogManager.getLogger(MainGui.class);
 	
-	private final String LEDIT =  "xdg-open";
-  private final String WEDIT =  "notepad.exe";
-  private final String MEDIT =  "open -t";
+	final static String LEDIT =  "xdg-open";
+  final static String WEDIT =  "notepad.exe";
+  final static String MEDIT =  "open -t";
+  private String tmpFileName = null;
 
 	private JFrame frmGenericsiploader;
 	private JTextField textFieldZipFile; 
@@ -410,6 +411,10 @@ public class MainGui {
 		return null;
 	}
 
+	/**
+	 * @param metadataName
+	 * @return
+	 */
 	public String readFileContent(String metadataName) {
 		String result = null;
 		InputStream inputStream = null;
@@ -448,24 +453,15 @@ public class MainGui {
 		return !text1.isEmpty() && !text2.isEmpty() && passwordChar.length != 0;
 	}
 
+	/**
+	 * 
+	 * @param metadataName
+	 * @throws InterruptedException
+	 */
 	private void editPropertiesFile(String metadataName)
 			throws InterruptedException {
-		String editorCommand;
 		if (metadataName.equals("danrw")) {
 			metadataName = "fedora";
-		}
-
-		String os = System.getProperty("os.name").toLowerCase();
-
-		if (os.contains("win")) {
-			editorCommand = WEDIT;
-		} else if (os.contains("mac")) {
-			editorCommand = MEDIT;
-		} else if (os.contains("nix") || os.contains("nux")) {
-			editorCommand = LEDIT;
-		} else {
-			showMessage("Error", "Unsupported operating system.");
-			return;
 		}
 
 		try {
@@ -488,20 +484,22 @@ public class MainGui {
 					"/" + metadataName + "-api.properties");
 
 			ProcessBuilder processBuilder = null;
+			File tmpFile = null;
 			
 			// Properties-Datei mit dem Standardeditor öffnen
 			File file = targetFilePath.toFile();
 			if(file!=null && file.isFile()) {
-	      secureProcessBuilder(editorCommand, file);			  
+	      processBuilder = secureProcessBuilder(file);
+	      tmpFile = new File(tmpFileName);	     
 			}
-
 
 			Process process = processBuilder.start();
 			// Warten auf das Beenden des Editors
 			int exitCode = process.waitFor();
 			// Editor geschlossen
 			if (exitCode == 0) {
-				// refresh textAreaApiProperties
+			  FileUtil.copyFile(tmpFile, file.getAbsolutePath());
+			  // refresh textAreaApiProperties
 				loadContentOfProperitesFileInTextArea(
 						metadataName + "-api.properties",
 						textAreaApiProperties);
@@ -511,8 +509,13 @@ public class MainGui {
 
 		} catch (IOException e) {
 			showMessage("Error", "Error when editing the file");
+			e.printStackTrace();			
 		}
 	}
+	
+	/**
+	 * 
+	 */
 	private void checkAndCopyPropertiesFiles() {
 		try {
 			// Zielverzeichnis fuer Properties-Dateien
@@ -594,21 +597,27 @@ public class MainGui {
 	 * @param file config file
 	 * @return a new ProcessBuilder using a copied temp file 
 	 */
-	private ProcessBuilder secureProcessBuilder(String editorCommand, File file) {
+	private ProcessBuilder secureProcessBuilder(File file) {
 	  
-	  
-	  String tmpFileName = UUID.randomUUID().toString();
-    InputStream fis = FileUtil.loadFile(file);
-    FileOutputStream fos;
-    try {
-      fos = new FileOutputStream(tmpFileName);
-      fis.transferTo(fos);
-      fos.flush();
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return new ProcessBuilder("kate", tmpFileName);
+	  tmpFileName = UUID.randomUUID().toString() + ".properties";
+	  FileUtil.copyFile(file, tmpFileName);
+	  return new ProcessBuilder(getEditor(), tmpFileName);
 	}
+
+  private String getEditor() {
+    String os = System.getProperty("os.name").toLowerCase();
+    String editorCommand = null;;
+
+    if (os.contains("win")) {
+      editorCommand = WEDIT;
+    } else if (os.contains("mac")) {
+      editorCommand = MEDIT;
+    } else if (os.contains("nix") || os.contains("nux")) {
+      editorCommand = LEDIT;
+    } else {
+      showMessage("Error", "Unsupported operating system.");
+    }
+    return editorCommand;     
+  }
 
 }

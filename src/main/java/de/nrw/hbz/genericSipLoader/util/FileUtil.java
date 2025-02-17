@@ -126,7 +126,19 @@ public class FileUtil {
     return fis;
   }
   
-  
+  public static void copyFile(File sourceFile, String targetFileName) {
+    
+    InputStream fis = FileUtil.loadFile(sourceFile);
+    FileOutputStream fos;
+    try {
+      fos = new FileOutputStream(targetFileName);
+      fis.transferTo(fos);
+      fos.flush();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 }
 	
 
