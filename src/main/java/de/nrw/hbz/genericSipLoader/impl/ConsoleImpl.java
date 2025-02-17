@@ -29,6 +29,14 @@ public class ConsoleImpl {
    */
   public static void main(String[] args) {
     
+
+    System.out.println("***---------------------- Console SiPLoader ----------------------------***");
+    System.out.println("***        SiPLoader is part of the to.science library by hbz           ***");
+    System.out.println("***             Loads your SIP into appropriate System                  ***");
+    System.out.println("***---------------------------------------------------------------------***");
+    System.out.println("");
+
+    
     FileScanner fScan = null;
     String basePath = null;
     String user = null;

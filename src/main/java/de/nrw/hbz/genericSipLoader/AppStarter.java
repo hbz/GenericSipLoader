@@ -20,7 +20,7 @@ public class AppStarter {
     
     AppStarter appSt = new AppStarter();
     
-    if(args[0].equals("cli")) {
+    if(args.length > 1 && args[0].equals("cli")) {
       appSt.getCliImpl(args);
     } else {
       appSt.getGuiImpl(args);      
@@ -35,7 +35,6 @@ public class AppStarter {
       mGui.main(args);
     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
         | UnsupportedLookAndFeelException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     
@@ -43,6 +42,7 @@ public class AppStarter {
 
   private void getCliImpl(String[] args){
       ConsoleImpl mCli = new ConsoleImpl();
+      System.out.println("Client Modus");
       mCli.main(args);
   }
 

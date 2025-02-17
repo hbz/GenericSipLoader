@@ -602,7 +602,7 @@ public class MainGui {
 	  FileUtil.copyFile(file, tmpFileName);
 	  ProcessBuilder procB = new ProcessBuilder();
 	  String editorCommand = ChooseEditor.getEditor(this);
-	  if(editorCommand.equals("xdg-open") || editorCommand.equals("notepad.exe") || editorCommand.equals("open -t")) {
+	  if(editorCommand.equals(ChooseEditor.LEDIT) || editorCommand.equals(ChooseEditor.MEDIT) || editorCommand.equals(ChooseEditor.WEDIT)) {
 	    procB.command(ChooseEditor.getEditor(this), tmpFileName);
 	  }
 	  //return new ProcessBuilder(ChooseEditor.getEditor(this), tmpFileName);
