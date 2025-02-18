@@ -30,8 +30,27 @@ No installation required. Can be used as library within other Software Modules.
 - Either download latest release of genericSipLoader.jar
 - Or clone source code via git clone and run mvn clean test compile assembly:single
 
-Edit properties-Files with your settings
+### Use GUI ###
 
-Run:
+By simply calling
 
-`java -jar genericSipLoader.jar [target] [start path] [user] [password]`
+`java -jar genericSipLoader.jar`
+
+you will get the graphic user interface. Default settings will be loaded an can be adopted to your setting by integrated editing option.
+
+### Use Console Client ### 
+
+By calling:
+
+`java -jar genericSipLoader.jar cli [target] [start path] [user] [password]`
+
+you will get the Console version of the GenericSipLoader, i.E. for usage with crontab.
+
+* `cli` = selects the console version
+
+* `target` = defines the loading target, either danrw or ktbl
+
+* `start path` = defines the parent directory where the tool finds the *.zip file to upload
+
+* `user, password` = your credentials  
+ 

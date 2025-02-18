@@ -140,9 +140,10 @@ public class KtblClient {
 
     Response response = webTarget.request().post(Entity.entity(json, MediaType.APPLICATION_JSON));
 
-    logger.debug("response: " + response.toString());
+    logger.info("response: " + response.toString());
 
     String responseBody = response.readEntity(String.class);
+    
     ResponseObject responseObj = gson.fromJson(responseBody, ResponseObject.class);
 
     logger.debug("responseObj=" + responseObj.toString());
@@ -248,7 +249,7 @@ public class KtblClient {
       logger.debug("File " + file.getName() + " successfully uploaded");
     } else {
 
-      logger.warn(" Failed to upload Json file" + file.getName());
+      logger.warn(" Failed to upload Json file" + file.getName() + ", http-status: " + statusCode + ", pid: " + parentId);
 
       // JOptionPane.showMessageDialog(null, "Failed to upload Json file",
       // "Report", JOptionPane.INFORMATION_MESSAGE);

@@ -33,14 +33,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
+				<version>3.7.1</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>de.nrw.hbz.genericSipLoader.gui.MainGui</mainClass>
+							<mainClass>de.nrw.hbz.genericSipLoader.AppStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -53,7 +53,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>de.nrw.hbz.genericSipLoader.gui.MainGui</mainClass>
+							<mainClass>de.nrw.hbz.genericSipLoader.AppStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -66,7 +66,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>de.nrw.hbz.genericSipLoader.gui.MainGui</mainClass>
+							<mainClass>de.nrw.hbz.genericSipLoader.AppStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -151,12 +151,12 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<version>2.19.0</version>
+			<version>2.22.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<version>2.19.0</version>
+			<version>2.22.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
