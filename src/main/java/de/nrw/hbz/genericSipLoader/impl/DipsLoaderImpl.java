@@ -3,17 +3,10 @@
  */
 package de.nrw.hbz.genericSipLoader.impl;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +17,10 @@ import jakarta.ws.rs.core.MediaType;
 
 /**
  * @author aquast
+ * A class that processes incoming DiPS.kommunal zip files.
+ * 
+ * The class prepares these files and delegates them to appropriate methods 
+ * of FedoraClient class in order to submit the zip-file content to DA.NRW.   
  *
  */
 public class DipsLoaderImpl {
@@ -32,6 +29,7 @@ public class DipsLoaderImpl {
   private String basePath = System.getProperty("user.dir");
   private String user = null;
   private String passwd = null;
+
 	public DipsLoaderImpl(String basePath, String user, String passwd) {
 		logger.info("DipsLoaderImpl has been called.");
 		this.basePath = basePath;
@@ -39,6 +37,9 @@ public class DipsLoaderImpl {
 		this.passwd = passwd;
 	}
 
+	/**
+	 * extract content of zip into the directory where the zip resides
+	 */
 	public void extractZips() {
 
 		FileScanner fScan = new FileScanner(basePath);

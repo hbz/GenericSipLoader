@@ -139,6 +139,55 @@ public class FileUtil {
       e.printStackTrace();
     }
   }
+  
+  /**
+   * @param basePath
+   * @param workDirName
+   * @return
+   */
+  public static String makeWorkDir(String basePath, String workDirName) {
+    
+    String wdPath = basePath + System.getProperty("file.separator") + workDirName;
+    removeWorkDir(basePath, workDirName);
+    
+    if(!new File(basePath + System.getProperty("file.separator") + workDirName).isDirectory()) {
+      File workDir = new File(basePath + System.getProperty("file.separator") + workDirName);
+      workDir.mkdir();
+    }
+    
+    return wdPath;
+    
+  }
+
+  public static void removeWorkDir(String basePath, String workDirName) {
+    
+    //if(new File(basePath + System.getProperty("file.separator") + workDirName).isDirectory()) {
+      File workDir = new File(basePath + System.getProperty("file.separator") + workDirName);
+      
+      deleteDir(workDir);
+      workDir.delete();
+      
+    //}
+    
+  }
+    
+  /**
+   * method provides a recursive way to delete directories with content
+   * see: https://www.baeldung.com/java-delete-directory
+   * 
+   * @param file
+   */
+  private static void deleteDir(File file) {
+    File[] delFiles = file.listFiles();
+    if(delFiles != null) {
+      for(File dFile : delFiles) {
+        deleteDir(dFile);
+      }
+    }
+    file.delete();
+    
+  }
+
 }
 	
 
