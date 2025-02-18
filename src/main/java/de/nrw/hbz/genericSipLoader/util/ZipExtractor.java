@@ -18,7 +18,8 @@ public class ZipExtractor {
   final static Logger logger = LogManager.getLogger(ZipExtractor.class);
   private Set<String> fList = null;
   private String extractionPath = System.getProperty("user.dir");
-
+  private String workDir = "unpacked";
+  
 	public ZipExtractor(Set<String> fList) {
 		this.fList = fList;
 	}
@@ -52,27 +53,37 @@ public class ZipExtractor {
 			  e.printStackTrace();
 			}
 
-			setTargetDir(zFile.getName());
+			//setTargetDir(zFile.getName());
 			writeExtContent(zFile);
 
 		}
 		return success;
 	}
 
+	/**
+	 * @param zFile
+	 */
 	private void writeExtContent(ZipFile zFile) {
 
-		String extLoc = zFile.getName().replace(".zip", "").replace(
+		// extract zip specific directory name from zip file name 
+	  // i.e. extract test.zip to test
+	  String extLoc = zFile.getName().replace(".zip", "").replace(
 				extractionPath + System.getProperty("file.separator"), "");
 		logger.info("Filename: " + extLoc);
 
+		// write all structure names found in zip file into enumeration 
 		Enumeration<? extends ZipEntry> zEnum = zFile.entries();
+		
+		// extract all included structures from zip file
 		while (zEnum.hasMoreElements()) {
 			ZipEntry zEntry = zEnum.nextElement();
 
 			// System.out.println("Methode: " + zEntry.getMethod());
 			logger.debug("ZIP-Content: " + zEntry.getName());
+			// workaround for ktbl zips
 			String extLocation = zEntry.getName().replace("\\", "/");
 			File zPart = new File(extractionPath
+					+ System.getProperty("file.separator") + workDir
 					+ System.getProperty("file.separator") + extLocation);
 			
 			if (extractionPath.equals(zPart.getParent())) {

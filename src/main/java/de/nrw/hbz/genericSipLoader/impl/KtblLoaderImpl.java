@@ -34,11 +34,14 @@ public class KtblLoaderImpl {
   final static Logger logger = LogManager.getLogger(KtblLoaderImpl.class);
   private String basePath = System.getProperty("user.dir");
   private KtblClient client = null;
+  private String workDir = "unpacked";
 
 
   public KtblLoaderImpl(String basePath, String user, String passwd) {
     this.basePath = basePath;
     this.client = new KtblClient(user, passwd);
+    FileUtil.makeWorkDir(basePath, workDir);
+
   }
 
   public void extractZips() {
@@ -239,6 +242,9 @@ public class KtblLoaderImpl {
       }
       
     }
+    
+    // Last step: clean up the work directory
+    FileUtil.removeWorkDir(basePath, "unpacked");
   }
 
   /**
