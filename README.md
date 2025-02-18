@@ -1,8 +1,12 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b17416e2c3ec4ecba6e9353571219601)](https://app.codacy.com/gh/hbz/GenericSipLoader/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![build](https://github.com/hbz/GenericSipLoader/actions/workflows/maven.yml/badge.svg)](https://github.com/hbz/GenericSipLoader/actions)
+[![Maven Package](https://github.com/hbz/GenericSipLoader/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/hbz/GenericSipLoader/actions/workflows/maven-publish.yml)
+
 # About #
 
 ## About the GenericSiPLoader ##
 
-The GenericSipLoader is a lightweight tool for uploading submission to different Repository-APIs. 
+The GenericSipLoader is a lightweight tool for uploading submission to different Repository-APIs.
 It's thought to facilitate upload of zip-based Containers or whole directories as single submission.
 
 The GenericSipLoader therefore provides 
@@ -23,7 +27,7 @@ GenericSipLoader is licensed under [Apache License 2.0](LICENSE)
 
 ## Installation ##
 
-No installation required. Can be used as library within other Software Modules. 
+No installation required. Can be used as library within other Software Modules.
 
 ## Usage ##
 

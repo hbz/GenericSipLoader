@@ -18,6 +18,7 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import de.nrw.hbz.genericSipLoader.util.PropertiesLoader;
 import jakarta.ws.rs.client.Client;
@@ -33,7 +34,6 @@ import jakarta.ws.rs.core.Response;
  *
  */
 public class Fedora38Client {
-
   final static Logger logger = LogManager.getLogger(Fedora38Client.class);
 
   private static Properties apiProps = new Properties();

@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class FileScanner {
-
+  
   final static Logger logger = LogManager.getLogger(FileScanner.class);
   private File scan;
   private String startPath;

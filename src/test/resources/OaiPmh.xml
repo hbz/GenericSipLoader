@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/oai-pmh/xslt/oai2.xsl" ?> 
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2024-01-30T08:58:47Z</responseDate>
+  <request verb="ListRecords" identifier="oai:danrw:de:20240132-12345-min" metadataPrefix="edm">http://localhost:8080/oai-pmh/2.0</request>
+<ListRecords>
+  <header>
+    <identifier>oai:danrw:de:20240132-12345-min</identifier>
+    <datestamp>2024-01-30T08:54:26Z</datestamp>
+  </header>
+<record>
+<metadata>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:edm="http://www.europeana.eu/schemas/edm/" xmlns:ore="http://www.openarchives.org/ore/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <edm:ProvidedCHO rdf:about="0AF2C1CB-B876-5628-217E-44F5C72E2612-02274757">
+    <dc:title xml:lang="de">Andres 30.01.2024</dc:title>
+    <dc:description>Köln. K. Heinrich IV schenkt S. Pantaleon Güter Gertruds von Boppard. (3. non. dec., ind. 14, regnangte [!] Henr. IV Rom. imp. aug. a. 57, imp. 21).</dc:description>
+    <dc:language>la</dc:language>
+    <dc:type>Archivalie</dc:type>
+    <dc:type>Urkunde</dc:type>
+    <dc:contributor rdf:about="https://d-nb.info/gnd/118548271">Heinrich 4, Römisch-deutsches Reich ; Kaiser</dc:contributor>
+    <dc:contributor>Andres Quast</dc:contributor>
+    <dc:identifier>0AF2C1CB-B876-5628-217E-44F5C72E2612-02274757</dc:identifier>
+    <dc:identifier>U 2/11C</dc:identifier>
+    <dc:identifier>Best. 1 (Haupturkundenarchiv (HUA)), U 2/11C</dc:identifier>
+    <dc:rights>Historisches Stadtarchiv Köln</dc:rights>
+    <dc:publisher>Historisches Stadtarchiv Köln</dc:publisher>
+    <dc:date>1105-12-03</dc:date>
+    <dcterms:created>1105-12-03</dcterms:created>
+    <dcterms:issued>2010-02-11</dcterms:issued>
+    <dcterms:extent>2 Digitalisate von Mikrofilm</dcterms:extent>
+    <dcterms:extent>4 nasse Fische</dcterms:extent>
+    <dcterms:isReferencedBy rdf:resource="http://www.mgh.de/dmgh/resolving/MGH_DD_H_IV._2_S._669">Gedr.: MGH DH IV 491.</dcterms:isReferencedBy>
+    <dcterms:provenance>Dauerleihgabe des Gymnasial- und Stiftungsfonds.</dcterms:provenance>
+    <edm:type>TEXT</edm:type>
+  </edm:ProvidedCHO>
+  <ore:Aggregation rdf:about="2994F67B-5E26-2002-342E-8BF81DC34F19-02274758">
+    <edm:aggregatedCHO rdf:resource="0AF2C1CB-B876-5628-217E-44F5C72E2612-02274757"></edm:aggregatedCHO>
+    <edm:dataProvider>Stadt Köln, Historisches Stadarchiv 1</edm:dataProvider>
+    <edm:isShownBy rdf:resource="https://historischesarchivkoeln.de/viewer/?fileName=https%3A//historischesarchivkoeln.de/mets%3Fid=E09F59A5-2139-41C9-AF4F-AC07056FEBBE_U1.0_11C-D_Mikrofilm_20160719115543.xml"></edm:isShownBy>
+    <edm:isShownAt>https://historischesarchivkoeln.de/archive.xhtml?id=Tekt++++0EE4563D-E1A6-4D7E-9DA2-70FFC8442063#Tekt____0EE4563D-E1A6-4D7E-9DA2-70FFC8442063</edm:isShownAt>
+    <edm:object rdf:resource="2994F67B-5E26-2002-342E-8BF81DC34F19-02274758.pdf"></edm:object>
+    <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+    <edm:rights rdf:resource="http://rightsstatements.org/vocab/NKC/1.0/"></edm:rights>
+  </ore:Aggregation>
+  <ore:Aggregation rdf:about="63EE32FF-CE58-87F1-57E1-642C986D35E4-02274757">
+    <edm:aggregatedCHO rdf:resource="0AF2C1CB-B876-5628-217E-44F5C72E2612-02274757"></edm:aggregatedCHO>
+    <edm:dataProvider>Stadt Köln, Historisches Stadarchiv 2</edm:dataProvider>
+    <edm:isShownBy rdf:resource="https://historischesarchivkoeln.de/viewer/?fileName=https%3A//historischesarchivkoeln.de/mets%3Fid=E09F59A5-2139-41C9-AF4F-AC07056FEBBE_U1.0_11C-D_Mikrofilm_20160719115543.xml"></edm:isShownBy>
+    <edm:isShownAt>https://historischesarchivkoeln.de/archive.xhtml?id=Tekt++++0EE4563D-E1A6-4D7E-9DA2-70FFC8442063#Tekt____0EE4563D-E1A6-4D7E-9DA2-70FFC8442063</edm:isShownAt>
+    <edm:object rdf:resource="63EE32FF-CE58-87F1-57E1-642C986D35E4-02274757.pdf"></edm:object>
+    <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+    <edm:rights rdf:resource="http://rightsstatements.org/vocab/NKC/1.0/"></edm:rights>
+  </ore:Aggregation>
+</rdf:RDF>
+  </metadata>
+</record>
+</ListRecords></OAI-PMH>

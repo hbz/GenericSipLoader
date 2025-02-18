@@ -38,7 +38,6 @@ import jakarta.ws.rs.core.Response;
  *
  */
 public class KtblClient {
-
   final static Logger logger = LogManager.getLogger(KtblClient.class);
 
   private static Properties apiProps = new Properties();

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:edm="http://www.europeana.eu/schemas/edm/" 
+         xmlns:dc="http://purl.org/dc/elements/1.1/" 
+         xmlns:dcterms="http://purl.org/dc/terms/" 
+         xmlns:ore="http://www.openarchives.org/ore/terms/">
+    <edm:ProvidedCHO rdf:about="U_U1">
+        <dc:title xml:lang="de">Jakob Lamberts Sohn gelobt dem Goldschmiedeamt, welches ihm gegen den Brauch gestattet hatte, beim fünften Meister seine Lehrzeit abdienen zu dürfen, </dc:title>
+        <dc:description xml:lang="de">Jakob Lamberts Sohn gelobt dem Goldschmiedeamt, welches ihm gegen den Brauch gestattet hatte, beim fünften Meister seine Lehrzeit abdienen zu dürfen, die ganze Zeit bei dem Meister auszuhalten und während der Zeit keine Waffen zu tragen.
+D. sabbato die post Anthonii confessoris</dc:description>
+        <dc:language>de</dc:language>
+        <dc:type>Archivalie</dc:type>
+        <dc:creator>Handwerkskammer Köln</dc:creator>
+        <dc:type>Urkunde</dc:type>
+        <dc:identifier>U/U1</dc:identifier>
+        <dc:identifier>U/U1</dc:identifier>
+        <dc:identifier>U_U1</dc:identifier>
+        <dc:identifier>Best. 96 (Zunft Depositum (Z Dep)), U 1/1</dc:identifier> 
+        <dc:rights>Historisches Stadtarchiv Köln</dc:rights>
+        <dc:publisher>Historisches Stadtarchiv Köln</dc:publisher>
+        <dcterms:created>1381-01-19</dcterms:created>
+        <dc:date>1381 Januar 19</dc:date>
+        <dcterms:extent>Siegel der Kölner Bürger Jakob Eckbert und Johann von den Duwen, ab</dcterms:extent>
+        <edm:type>TEXT</edm:type>
+    </edm:ProvidedCHO>
+    <ore:Aggregation rdf:about="0C8ED86F-C21F-BAD2-2DC3-C21B46AE005B-001142030_0001">
+        <edm:aggregatedCHO rdf:resource="U_U1"/>
+        <edm:dataProvider>Stadt Köln, Historisches Stadarchiv</edm:dataProvider>
+        <edm:isShownBy rdf:resource="0C8ED86F-C21F-BAD2-2DC3-C21B46AE005B-001142030_0001.jpg"/>
+        <edm:isShownAt rdf:resource="https://historischesarchivkoeln.de/archive.xhtml?id=Tekt++++0EE4563D-E1A6-4D7E-9DA2-70FFC8442063#Tekt____0EE4563D-E1A6-4D7E-9DA2-70FFC8442063"/>
+        <edm:object rdf:resource="0C8ED86F-C21F-BAD2-2DC3-C21B46AE005B-001142030_0001.jpg"/>
+        <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+        <edm:rights rdf:resource="http://rightsstatements.org/vocab/NKC/1.0/"/>
+    </ore:Aggregation>
+    <ore:Aggregation rdf:about="3E574FED-F2F2-101B-C618-474441E3ADB8-001142030_0002">
+        <edm:aggregatedCHO rdf:resource="U_U1"/>
+        <edm:dataProvider>Stadt Köln, Historisches Stadarchiv</edm:dataProvider>
+        <edm:isShownBy rdf:resource="3E574FED-F2F2-101B-C618-474441E3ADB8-001142030_0002.jpg"/>
+        <edm:isShownAt rdf:resource="https://historischesarchivkoeln.de/archive.xhtml?id=Tekt++++0EE4563D-E1A6-4D7E-9DA2-70FFC8442063#Tekt____0EE4563D-E1A6-4D7E-9DA2-70FFC8442063"/>
+        <edm:object rdf:resource="3E574FED-F2F2-101B-C618-474441E3ADB8-001142030_0002.jpg"/>
+        <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+        <edm:rights rdf:resource="http://rightsstatements.org/vocab/NKC/1.0/"/>
+    </ore:Aggregation>
+    <ore:Aggregation rdf:about="0C8ED86F-C21F-BAD2-2DC3-C21B46AE005B-001142030_0003">
+        <edm:aggregatedCHO rdf:resource="U_U1"/>
+        <edm:dataProvider>Stadt Köln, Historisches Stadarchiv</edm:dataProvider>
+        <edm:isShownBy rdf:resource="Gesamt.pdf"/>
+        <edm:isShownAt rdf:resource="https://historischesarchivkoeln.de/archive.xhtml?id=Tekt++++0EE4563D-E1A6-4D7E-9DA2-70FFC8442063#Tekt____0EE4563D-E1A6-4D7E-9DA2-70FFC8442063"/>
+        <edm:object rdf:resource="Gesamt.pdf"/>
+        <edm:provider>Digitales Archiv Nordrhein-Westfalen</edm:provider>
+        <edm:rights rdf:resource="http://rightsstatements.org/vocab/NKC/1.0/"/>
+    </ore:Aggregation>
+    <edm:WebResource rdf:about="Gesamt.pdf"/>
+    <edm:WebResource rdf:about="3E574FED-F2F2-101B-C618-474441E3ADB8-001142030_0002.jpg">
+        <edm:isNextInSequence rdf:resource="0C8ED86F-C21F-BAD2-2DC3-C21B46AE005B-001142030_0001.jpg"/>
+    </edm:WebResource>
+    <edm:WebResource rdf:about="0C8ED86F-C21F-BAD2-2DC3-C21B46AE005B-001142030_0001.jpg">
+        <edm:isNextInSequence rdf:resource="Gesamt.pdf"/>
+    </edm:WebResource>
+</rdf:RDF>

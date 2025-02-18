@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<epicur xmlns="urn:nbn:de:1111-2004033116">
+    <administrative_data>
+        <delivery>
+            <update_status type="urn_new"/>
+        </delivery>
+    </administrative_data>
+    <record>
+        <identifier scheme="urn:nbn:de">urn:nbn:de:danrw-1-26aa43dd-049b-4c7c-b0c1-e165622ac040</identifier>
+        <resource>
+            <identifier scheme="url" role="primary">http://data.danrw.de/ead-viewer/#/browse?src=26aa43dd-049b-4c7c-b0c1-e165622ac040</identifier>
+            <format scheme="imt">text/html</format>
+        </resource>
+    </record>
+</epicur>
