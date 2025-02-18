@@ -1,5 +1,5 @@
 /**
- * 
+ *  
  */
 package de.nrw.hbz.genericSipLoader.impl;
 
@@ -13,6 +13,11 @@ import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
 
 /**
  * @author aquast
+ * 
+ * Console-Starter of genericSipLoader Tool
+ * 
+ * Class is thought to allow usage of genericSipLoader by shell, i.E. for 
+ * calling it by other scripts or crontab  
  *
  */
 public class ConsoleImpl {
@@ -24,16 +29,24 @@ public class ConsoleImpl {
    */
   public static void main(String[] args) {
     
+
+    System.out.println("***---------------------- Console SiPLoader ----------------------------***");
+    System.out.println("***        SiPLoader is part of the to.science library by hbz           ***");
+    System.out.println("***             Loads your SIP into appropriate System                  ***");
+    System.out.println("***---------------------------------------------------------------------***");
+    System.out.println("");
+
+    
     FileScanner fScan = null;
     String basePath = null;
     String user = null;
     String passwd = null;
     String target = null;
     if (args != null && args.length > 0) {
-      target =  args[0];
-      basePath = args[1];
-      user = args[2];
-      passwd = args[3];
+      target =  args[1];
+      basePath = args[2];
+      user = args[3];
+      passwd = args[4];
       logger.info("You defined " + basePath + " as starting directory");
       logger.info("You defined " + target + " as repository to store data\n");
 
@@ -42,8 +55,9 @@ public class ConsoleImpl {
       fScan.processScan(".zip");
       Set<String> fList = fScan.getFileList();
       
-      logger.info("\nZip-extraction starts with default settings\n");
+      logger.debug("Zip-extraction starts with default settings");
       ZipExtractor extractor = new ZipExtractor(fList, basePath);
+      extractor.extractZip();
     }
     
     if(target.equals("danrw")) {
@@ -54,10 +68,12 @@ public class ConsoleImpl {
     }
     
     if(target.equals("ktbl")) {
+    	// Constructor Initialize
         KtblLoaderImpl ktblLoader = new KtblLoaderImpl(basePath, user, passwd);
+        // Unzipping the File
         ktblLoader.extractZips();
         Set<String> ieList = ktblLoader.scanIEs();
-        ktblLoader.cuToScienceObject(ieList);
+        ktblLoader.persistKtblRD(ieList);
       }
   }
     
