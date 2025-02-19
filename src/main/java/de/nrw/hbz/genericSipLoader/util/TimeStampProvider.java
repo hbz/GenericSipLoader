@@ -36,6 +36,13 @@ public class TimeStampProvider {
 		// logger.debug(dateFormat.format(cal.getTime()));
 		return dateFormat.format(cal.getTime());
 	}
+	
+  public static String getDTShort(){
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MMddmm-sS");
+    Calendar cal = Calendar.getInstance();
+    // logger.debug(dateFormat.format(cal.getTime()));
+    return dateFormat.format(cal.getTime());
+  }
 		
 
 }

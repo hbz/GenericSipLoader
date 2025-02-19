@@ -82,7 +82,7 @@ public class KtblLoaderImpl {
    * @param parentId an optional fedora ResourceId (pid) from a related superior to.science Object.   
    * @return fedora ResourceId (pid) 
    */
-  public String createToScienceObject(String type, String parentId) {
+  private String createToScienceObject(String type, String parentId) {
     return client.postToScienceObject(type, parentId);
   }
 
@@ -244,7 +244,7 @@ public class KtblLoaderImpl {
     }
     
     // Last step: clean up the work directory
-    FileUtil.removeWorkDir(basePath, "unpacked");
+    FileUtil.removeWorkDir(basePath, workDir);
   }
 
   /**
