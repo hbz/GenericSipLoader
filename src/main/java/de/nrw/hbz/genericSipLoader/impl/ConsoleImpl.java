@@ -64,7 +64,7 @@ public class ConsoleImpl {
       DipsLoaderImpl dLoader = new DipsLoaderImpl(basePath, user, passwd);
       dLoader.extractZips();
       Set<String> ieList = dLoader.scanIEs();
-      dLoader.cuFedoraObject(ieList);
+      dLoader.persistFedoraObject(ieList);
     }
     
     if(target.equals("ktbl")) {

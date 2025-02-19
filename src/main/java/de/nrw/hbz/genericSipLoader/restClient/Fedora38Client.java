@@ -5,10 +5,8 @@ package de.nrw.hbz.genericSipLoader.restClient;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +19,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 import de.nrw.hbz.genericSipLoader.util.PropertiesLoader;
+import de.nrw.hbz.genericSipLoader.util.TimeStampProvider;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -45,11 +44,16 @@ public class Fedora38Client {
   private Hashtable<String, String> apiConfig = new Hashtable<>();
 
 	public Fedora38Client(String user, String passwd) {
-		logger.info("Fedora38Client constructor has been called.");
+		logger.debug("Fedora38Client constructor has been called.");
 		this.user = user;
 		this.passwd = passwd;
 		setApi();
 	}
+	
+	
+	/**
+	 * method loads properties from file
+	 */
 	private void loadProperties() {
 	    InputStream propStream = null;
 
@@ -64,7 +68,7 @@ public class Fedora38Client {
 	            e.printStackTrace();
 	        }
 	    } else {
-	        apiProps = new PropertiesLoader().getApiProperties();  
+	        apiProps = new PropertiesLoader().getApiProperties();
 	    }
 
 	}
@@ -88,6 +92,9 @@ public class Fedora38Client {
 //		}
 //	}
 
+	/**
+	 * Configure API using properties loaded by loadProperties method
+	 */
 	private void setApi() {
 		loadProperties();
 		apiHost = apiProps.getProperty("protocol") + "://"
@@ -99,6 +106,7 @@ public class Fedora38Client {
 	/**
 	 * @param objId
 	 */
+	@Deprecated
 	public void getFedoraObject(String objId) {
 		String endpoint = "fedora/objects";
 
@@ -117,7 +125,7 @@ public class Fedora38Client {
 	}
 
 	/**
-	 * Create new empty Fedora Object in remote Fedora Repository
+	 * Create a new empty Fedora Object in remote Fedora Repository
 	 * 
 	 * @param sourceId
 	 * @return
@@ -125,7 +133,7 @@ public class Fedora38Client {
 	public String postFedoraObject(String sourceId) {
 		String endpoint = "fedora/objects";
 
-		String objId = apiProps.getProperty("namespace") + sourceId;
+		String objId = setPidByEnvironment(apiProps.getProperty("namespace") + sourceId);
 		HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature
 				.basic(user, passwd);
 		// MultiPartFeature mpFeature = MultiPartFeature.
@@ -154,13 +162,13 @@ public class Fedora38Client {
 	}
 
 	/**
-	 * add Xml Metadata Stream to remote Fedora Object
+	 * Add any XML Metadata file to remote Fedora Object
 	 * 
 	 * @param objId
 	 * @param mdSchema
 	 * @param xmlFile
 	 */
-	public void postXmlMetadataStream(String objId, String mdSchema,
+	public void postXmlMetadataFile(String objId, String mdSchema,
 			File xmlFile) {
 		String endpoint = "fedora/objects";
 
@@ -194,13 +202,49 @@ public class Fedora38Client {
 			e.printStackTrace();
 		}
 	}
+	
+  /**
+   *  Add any XML Metadata stream to remote Fedora Object
+   *  
+   * @param objId
+   * @param mdSchema
+   * @param xmlStream Method uses InputStream instead of File
+   */
+  public void postXmlMetadataStream(String objId, String mdSchema, InputStream xmlStream) {
+    String endpoint = "fedora/objects";
+    
+    HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
+    Client client =  ClientBuilder.newBuilder().register(basicAuthFeature).register(MultiPartFeature.class).build();
+    
+    StreamDataBodyPart filePart = new StreamDataBodyPart("file", xmlStream);
+    FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+    FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.bodyPart(filePart);
 
+    WebTarget webTarget = client.target(apiHost).path(endpoint).path(objId).path("datastreams").path(mdSchema)
+        .queryParam("controlGroup", "X").queryParam("mimeType", filePart.getMediaType()).queryParam("dsState", "A")
+        .queryParam("dsLabel", mdSchema);
+    logger.debug(webTarget.getUri().toString());
+    
+    Response response = webTarget.request().post(Entity.entity(multipart, multipart.getMediaType()));
+    logger.debug(response.getStatus());
+    
+    try {
+      formDataMultiPart.close();
+      multipart.close();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+	
 	/**
+	 * Add and persist any payload file to Fedora Object
 	 * @param objId
 	 * @param DSId
 	 * @param plFile
 	 */
-	public void postPayLoadStream(String objId, String DSId, File plFile) {
+	public void postPayLoadFile(String objId, String DSId, File plFile) {
 		String endpoint = "fedora/objects";
 
 		int index = plFile.getName().lastIndexOf("/");
@@ -240,5 +284,49 @@ public class Fedora38Client {
 			e.printStackTrace();
 		}
 	}
+	
+  /**
+   * Add new Relationship to RELS-EXT Stream of a fedora object
+   * Using fedora API-M call
+   * @param pid
+   * @param subject
+   * @param predicate
+   * @param object
+   */
+  public void postRelationship(String pid, String subject, String predicate, String object) {
+    String endpoint = "fedora/objects/" + pid + "/relationships/new";
+    
+    HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
+    //MultiPartFeature mpFeature = MultiPartFeature.
+    Client client =  ClientBuilder.newClient(new ClientConfig());
+    client.register(basicAuthFeature);
+    
+    WebTarget webTarget = client.target(apiHost).path(endpoint).queryParam("subject", subject).queryParam("predicate", predicate)
+        .queryParam("object", object).queryParam("isLiteral", "false");
+    logger.debug(webTarget.getUri().toString());
+    
+    Invocation.Builder invocationBuilder =  webTarget.request(MediaType.TEXT_HTML);
+    Response response = invocationBuilder.post(null);
+    logger.debug(response.getStatus());
+
+    if(response.getStatus()!=200) {
+      if(response.getStatus()==500) {
+        logger.warn("Server error");
+      } else {
+        logger.warn("Could not create new relationship");
+      }
+    }
+  }
+	
+  private String setPidByEnvironment(String pid) {
+    
+    if(apiProps.containsKey("environment") && apiProps.getProperty("environment").equals("development")) {
+      logger.info("Use development environment");
+      pid = pid.substring(0, 7) + TimeStampProvider.getDTShort();
+    }
+      
+    return pid;
+  }
+
 
 }
