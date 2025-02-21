@@ -6,15 +6,18 @@
 
 ## About the GenericSiPLoader ##
 
-The GenericSipLoader is a lightweight tool for uploading submission to different Repository-APIs.
+The GenericSipLoader is a lightweight tool for uploading submissions to different Repository-APIs.
 It's thought to facilitate upload of zip-based Containers or whole directories as single submission.
+
+The tool makes extensive use of the Jersey and Jackson Libraries. It also uses java interfaces as part of 
+meta data schema modelling in order to simplify code enhancements by using conventions.
 
 The GenericSipLoader therefore provides 
 
 - a Zip-Extraction Class
 - a File-Scanner for identifying metadata files and content files via string-pattern
 - a Jersey REST-Client for Fedora Commons 3.8
-- a Jersey REST-Client for to.science (not implemented yet)  
+- a Jersey REST-Client for the Toolbox Open Science (to.science)
 
 ## License ##
 
@@ -32,7 +35,7 @@ No installation required. Can be used as library within other Software Modules.
 ## Usage ##
 
 - Either download latest release of genericSipLoader.jar
-- Or clone source code via git clone and run mvn clean test compile assembly:single
+- Or clone source code via git clone and run `mvn clean test compile assembly:single`
 
 ### Use GUI ###
 
