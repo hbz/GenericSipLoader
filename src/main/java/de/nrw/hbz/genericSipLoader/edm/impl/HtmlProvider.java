@@ -17,11 +17,11 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.nrw.hbz.genericSipLoader.dips.model.IEStructure;
 import de.nrw.hbz.genericSipLoader.edm.model.Aggregation;
 import de.nrw.hbz.genericSipLoader.edm.model.Rdf;
 import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeAggregation;
 import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeResourceAttribute;
-
 
 /**
  * 
@@ -31,11 +31,13 @@ public class HtmlProvider {
   final static Logger logger = LogManager.getLogger(HtmlProvider.class);
 
   private Rdf rdf = null;
+  private IEStructure ieStruct = null;
+  
   private String filePath = System.getProperty("user.dir") 
       + System.getProperty("file.separator") + "src/main/resources/presentation-template.html";
 
   private String htmlHead = "<!DOCTYPE html>\n<html lang=\"de\">"
-      + "<head>\n<title>DA.NRW Item Presentation</title>\n"
+      + "<head>\n<title>DA.NRW DeserializeItem Presentation</title>\n"
       + "<meta http-equiv=\"Content-Type\" \n"
       + "      content=\"text/html; charset=utf-8\">"
       + "<style>\n"
@@ -70,6 +72,15 @@ public class HtmlProvider {
     appendFoot();
   }
  
+  public HtmlProvider(Rdf rdf, IEStructure ieStruct) {
+    this.rdf = rdf;
+    this.ieStruct = ieStruct;
+    readHeadTemplate();
+    appendHead();
+    appendMD();
+    appendContent();
+    appendFoot();
+  }
   
   
   /**
@@ -126,14 +137,19 @@ public class HtmlProvider {
     }
     htmlText.append("<hr/>\n");
 
-   // htmlText.append("<h2>" + rdf.getProvidedCho().getDcDescription().get(0) + "</h2>\n");
-   // htmlText.append("<h2>" + rdf.getProvidedCho().getDcPublisher().get(0) + "</h2>\n");    
+    //htmlText.append("<h2>" + rdf.getProvidedCho().getDcDescription().get(0) + "</h2>\n");
+    // htmlText.append("<h2>" + rdf.getProvidedCho().getDcPublisher().get(0) + "</h2>\n");    
   }
   
   private void appendContent() {
    htmlText.append("<div>\n<ul>\n");
    
-   appendContentItem();
+   if(ieStruct != null){
+     appendStructureMD();
+   } else {
+     appendContentItem();     
+   }
+
 
    htmlText.append("</ul></div>\n");
   }
@@ -163,11 +179,28 @@ public class HtmlProvider {
     return sTitel;
   }
   
-  private void appendFoot() {
-    htmlText.append("<hr/>\n");
-    htmlText.append("<h5><span class=\"field_name\">Besitz: </span>" + rdf.getProvidedCho().getDcPublisher().get(0) + "<br/>\n"); 
-    htmlText.append("<span class=\"field_name\">Format</span>" + rdf.getProvidedCho().getEdmType() + "</h5>\n");    
+  private void appendStructureMD() {
 
+    // htmlText.append("<p>Content from structure.xml</p>");
+    for(int i=0; i < ieStruct.getChildStructure().size(); i++) {
+      htmlText.append("<li>" + ieStruct.getChildStructure().get(i).getTitle() + "</li>");
+      
+      for(int j = 0; j < ieStruct.getChildStructure().get(i).getItem().size(); j++) {
+        htmlText.append("<ul><li><a href=\"" 
+            + ieStruct.getChildStructure().get(i).getItem().get(j).getItemID()
+            + "\">"
+            + ieStruct.getChildStructure().get(i).getItem().get(j).getItemTitle() + "</a></li></ul>");
+      }
+    }
+    
+  }
+  
+  /**
+   * Append default html Foot to the html page created
+   */
+  private void appendFoot() {
+    
+    htmlText.append("<hr/>\n");
     htmlText.append(htmlFoot);
   }
   
@@ -190,6 +223,11 @@ public class HtmlProvider {
     return null;
   }
   
+  /**
+   * Add additional ore:Aggregation to EDM.xml that represents the html page created with the HtmlProvider
+   * @param dsUrl
+   * @return
+   */
   public Rdf appendHtmlAggregation(String dsUrl) {
     // int i = rdf.getAggregation().size();
     Aggregation aggregation = new DeserializeAggregation();

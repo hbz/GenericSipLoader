@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<dips:ieStructureRoot
+	xmlns:dips="http://dips.bundesarchiv.de/schema/ieStructure">
+	<title>Verbannung des ehemaligen Syndikus Arnold Judendunck aus Köln
+		[wegen Amtsmissbrauch]
+		(Druck der Sentenz Leopold I.)
+	</title>
+	<structureIdentifier>A 11</structureIdentifier>
+	<childStructure>
+		<title>Farbtafel zur Urkunde</title>
+		<structureIdentifier>A 11</structureIdentifier>
+		<item>
+			<itemTitle>Farbtafel</itemTitle>
+			<itemID>FF32530D-CA8C-39C6-D86C-1DCE05372A3B-000013497_0001</itemID>
+		</item>
+	</childStructure>
+	<childStructure>
+		<title>Die Urkunde</title>
+		<structureIdentifier>A 11</structureIdentifier>
+		<item>
+			<itemTitle>Vorderseite</itemTitle>
+			<itemID>E43908C1-CDDB-6A76-01C0-802688C78C79-000013497_0002</itemID>
+		</item>
+		<item>
+			<itemTitle>Rückseite</itemTitle>
+			<itemID>21F20124-9919-D916-5DF2-6F511E4D5E36-000013497_0003</itemID>
+		</item>
+	</childStructure>
+</dips:ieStructureRoot>

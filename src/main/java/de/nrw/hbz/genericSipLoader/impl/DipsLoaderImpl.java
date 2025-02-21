@@ -18,6 +18,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.nrw.hbz.genericSipLoader.dips.impl.DipsIEStructureProvider;
+import de.nrw.hbz.genericSipLoader.dips.model.IEStructure;
 import de.nrw.hbz.genericSipLoader.edm.impl.AggregationElementOperator;
 import de.nrw.hbz.genericSipLoader.edm.impl.EdmProvider;
 import de.nrw.hbz.genericSipLoader.edm.impl.HtmlProvider;
@@ -28,6 +30,7 @@ import de.nrw.hbz.genericSipLoader.restClient.Fedora38Client;
 import de.nrw.hbz.genericSipLoader.util.FileScanner;
 import de.nrw.hbz.genericSipLoader.util.FileUtil;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
+
 import jakarta.ws.rs.core.MediaType;
 
 /**
@@ -149,6 +152,7 @@ public class DipsLoaderImpl {
 
     Iterator<String> fIt = fList.iterator();
     while(fIt.hasNext()) {
+      Hashtable<String, String> uriReplacement = new Hashtable<>();
       Hashtable<String, String> idReplacement = new Hashtable<>();
       
       // find correct sourceId for using this as fedora pid
@@ -185,6 +189,16 @@ public class DipsLoaderImpl {
         addMetadataStream(pid, "epicur.xml", new File(epiFileName));
       }
       
+      String dIEFileName = null;
+      fScan = new FileScanner(parent);
+      fScan.processScan("structure");
+      Set<String> dipsStructList = fScan.getFileList();
+      Iterator<String> dipsIt = dipsStructList.iterator();
+      while(dipsIt.hasNext()) {
+        dIEFileName = dipsIt.next();
+        logger.debug("Found structure.xml file : " + dIEFileName);
+      }
+
       List<String> mimeTypes = new ArrayList<>();
       mimeTypes.add(MediaType.APPLICATION_XML);
       fScan.processScan(mimeTypes);
@@ -198,9 +212,12 @@ public class DipsLoaderImpl {
         addPayLoadStream(pid, id, payLoadFile);
         logger.debug("Payload file name: " + plFileName);
         int plIndex = plFileName.lastIndexOf("/");
-        String plId = plFileName.substring(plIndex +1);
+        int suffixIndex = plFileName.lastIndexOf(".");
+        String plUri = plFileName.substring(plIndex +1);
+        String plId = plFileName.substring(plIndex +1, suffixIndex);
         String dsUrl = createDSUrl(pid, "DS" + id);
         idReplacement.put(plId, dsUrl);
+        uriReplacement.put(plUri, dsUrl);
         logger.info("Replace " + plId + " with " + idReplacement.get(plId));
       }
       logger.debug(pid);
@@ -208,7 +225,20 @@ public class DipsLoaderImpl {
       addMetadataStream(pid, "EDM_submitted.xml", new File(fileName));
 
       logger.debug("Start with creation of html structure file now");
-      HtmlProvider htmlProv = new HtmlProvider(EdmProvider.deserialize(refactorEdm(idReplacement, fileName)));
+      
+      // we need to merge informations from two files (EDM.xml and structure.xml) into splash page
+      // calling appropriate constructor that takes both 
+      // TODO replace if-construct
+      HtmlProvider htmlProv = null;
+      if(dIEFileName != null) {
+        logger.info("use structure.xml for splash page generation");
+        htmlProv = new HtmlProvider(EdmProvider.deserialize(refactorEdm(uriReplacement, fileName)), 
+            DipsIEStructureProvider.deserialize(refactorIEStructure(idReplacement, dIEFileName)));        
+      } else {
+        htmlProv = new HtmlProvider(EdmProvider.deserialize(refactorEdm(uriReplacement, fileName)));        
+        
+      }
+      
       addPayLoadStream(pid, id+1, htmlProv.toTempFile());
       String edmResult = EdmProvider.serialize(htmlProv.appendHtmlAggregation(createDSUrl(pid, "DS" + (id+1))));
        
@@ -268,6 +298,30 @@ public class DipsLoaderImpl {
     return ago.toString();
   }
 	
+  /**
+   * Replace names of local files with FedoraObject dsID's in accordance with the upload of files  
+   * @param edmFileName
+   * @return refactored EDM as String
+   */
+  private String refactorIEStructure(Hashtable<String,String> replacements, String dIEFileName) {
+    logger.debug(dIEFileName);
+    IEStructure ieStruct = DipsIEStructureProvider.deserialize(new File(dIEFileName));
+    
+    for(int i=0; i < ieStruct.getChildStructure().size(); i++) {
+      for(int j =0; j<ieStruct.getChildStructure().get(i).getItem().size(); j++) {
+        String itemID = ieStruct.getChildStructure().get(i).getItem().get(j).getItemID();
+        if(replacements.containsKey(itemID)){
+          ieStruct.getChildStructure().get(i).getItem().get(j).setItemID(replacements.get(itemID));
+          logger.info("Found replacement: " + replacements.get(itemID));
+        }
+        
+      }
+    }
+    DipsIEStructureProvider dsp =  new DipsIEStructureProvider(ieStruct);
+    logger.info(dsp.toString());
+    return dsp.toString();
+  }
+
   /**
    * Builds an URL for a datastream that is part of a FedoraObject. Method is required for replacing local filenames 
    * delivered by DIPS.kommunal with resolvable URLs in the DA.NRW Presentation Repository (Fedora Repo)   

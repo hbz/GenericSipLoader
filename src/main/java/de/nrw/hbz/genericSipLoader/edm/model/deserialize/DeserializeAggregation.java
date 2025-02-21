@@ -16,7 +16,7 @@ import de.nrw.hbz.genericSipLoader.edm.model.ResourceAttribute;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeserializeAggregation  implements Aggregation {
 
-private ResourceAttribute aggregatedCHO = null;
+  private ResourceAttribute aggregatedCHO = null;
   
   private String provider = "Digitales Archiv Nordrhein-Westfalen";
   private String dataProvider = null;
