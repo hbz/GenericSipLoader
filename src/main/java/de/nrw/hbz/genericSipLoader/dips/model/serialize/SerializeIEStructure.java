@@ -54,4 +54,10 @@ public class SerializeIEStructure implements IEStructure {
     return null;
   }
 
+  @Override
+  public void setChildStructure(ArrayList<ChildStructure> childStructure) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

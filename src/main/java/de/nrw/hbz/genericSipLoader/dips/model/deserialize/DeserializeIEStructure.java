@@ -25,8 +25,19 @@ public class DeserializeIEStructure implements IEStructure {
   private String structureIdentifier =  new String();
   private ArrayList<ChildStructure> childStructure = new ArrayList<>();
   
+  
+  
   /**
-   * @return the badipsXmlns
+   * @param cStruct
+   * @param i
+   */
+  public void replaceChildStructure(ChildStructure cStruct , int i) {
+    this.childStructure.remove(i);
+    this.childStructure.add(i, cStruct);
+  }
+  
+  /**
+   * @return the dipsXmlns
    */
   @JacksonXmlProperty(localName="xmlns:dips", isAttribute = true)
   public String getDipsXmlns() {

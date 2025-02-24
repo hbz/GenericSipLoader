@@ -18,6 +18,7 @@ import de.nrw.hbz.genericSipLoader.dips.model.deserialize.DeserializeChildStruct
 @JsonIgnoreProperties(ignoreUnknown = true)
 public interface ChildStructure {
   
+  
   /**
    * @return
    */
@@ -36,6 +37,14 @@ public interface ChildStructure {
   @JacksonXmlProperty(localName="item")
   public ArrayList<Item> getItem();
   
+  /**
+   * @return
+   */
+  @JacksonXmlProperty(localName="childStructure")
+  public ArrayList<ChildStructure> getChildStructure();
 
+  @JacksonXmlProperty(localName="childStructure")
+  public void setChildStructure(ArrayList<ChildStructure> refactorChildStructure);
+ 
 
 }

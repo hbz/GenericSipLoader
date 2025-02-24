@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.nrw.hbz.genericSipLoader.dips.impl.DipsIEStructureProvider;
+import de.nrw.hbz.genericSipLoader.dips.model.ChildStructure;
 import de.nrw.hbz.genericSipLoader.dips.model.IEStructure;
 import de.nrw.hbz.genericSipLoader.edm.impl.AggregationElementOperator;
 import de.nrw.hbz.genericSipLoader.edm.impl.EdmProvider;
@@ -306,21 +307,48 @@ public class DipsLoaderImpl {
   private String refactorIEStructure(Hashtable<String,String> replacements, String dIEFileName) {
     logger.debug(dIEFileName);
     IEStructure ieStruct = DipsIEStructureProvider.deserialize(new File(dIEFileName));
-    
     for(int i=0; i < ieStruct.getChildStructure().size(); i++) {
-      for(int j =0; j<ieStruct.getChildStructure().get(i).getItem().size(); j++) {
-        String itemID = ieStruct.getChildStructure().get(i).getItem().get(j).getItemID();
-        if(replacements.containsKey(itemID)){
-          ieStruct.getChildStructure().get(i).getItem().get(j).setItemID(replacements.get(itemID));
-          logger.info("Found replacement: " + replacements.get(itemID));
-        }
-        
+      // ChildStructure cStruct = ieStruct.getChildStructure().get(i);
+      ieStruct.setChildStructure(refactorChildStructure(replacements, ieStruct.getChildStructure()));
+      
       }
-    }
+    
     DipsIEStructureProvider dsp =  new DipsIEStructureProvider(ieStruct);
     logger.info(dsp.toString());
     return dsp.toString();
   }
+  
+  private ArrayList<ChildStructure> refactorChildStructure(Hashtable<String, String> replacements, ArrayList<ChildStructure> cStruct) {
+    ArrayList<ChildStructure> refCStruct = new ArrayList<>();
+    
+    for(int i =0; i < cStruct.size(); i++) {
+      
+      ChildStructure ccStruct = cStruct.get(i);
+      logger.info("Item-Array has Size of: " + ccStruct.getItem().size());
+      
+      for(int j=0; j < ccStruct.getItem().size(); j++) {
+
+        String itemID = ccStruct.getItem().get(j).getItemID();
+        logger.info("Found itemID: " + itemID);
+        if(replacements.containsKey(itemID)){
+          ccStruct.getItem().get(j).setItemID(replacements.get(itemID));
+          logger.info("Found replacement: " + replacements.get(itemID));
+        }
+        
+      }
+      
+      if(ccStruct.getChildStructure() != null) {
+        ccStruct.setChildStructure(refactorChildStructure(replacements, ccStruct.getChildStructure()));
+      }
+
+      refCStruct.add(ccStruct);
+              
+      }
+      
+    return refCStruct;
+    }
+    
+
 
   /**
    * Builds an URL for a datastream that is part of a FedoraObject. Method is required for replacing local filenames 
