@@ -21,7 +21,7 @@ import de.nrw.hbz.genericSipLoader.dips.model.deserialize.DeserializeIEStructure
 public interface IEStructure {
   
   /**
-   * @return the baDipsXmlns
+   * @return the dipsXmlns
    */
   public String getDipsXmlns();
   
@@ -41,4 +41,5 @@ public interface IEStructure {
   public ArrayList<ChildStructure> getChildStructure();
   
   
+  public void setChildStructure(ArrayList<ChildStructure> childStructure);
 }

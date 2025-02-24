@@ -21,6 +21,20 @@ public class DeserializeChildStructure implements ChildStructure {
   private String title = new String();
   private String structureIdentifier =  new String();
   private ArrayList<Item> item = new ArrayList<>();
+  private ArrayList<ChildStructure> childStructure = new ArrayList<ChildStructure>();
+
+
+  @JacksonXmlElementWrapper(useWrapping = false)
+  @JacksonXmlProperty(localName="item")
+  public void addItem(Item item) {
+    this.item.add(item);
+  }
+
+  @JacksonXmlElementWrapper(useWrapping = false)
+  @JacksonXmlProperty(localName="item")
+  public void addChildStructure(ChildStructure cStruct) {
+    this.childStructure.add(cStruct);
+  }
 
   @Override
   @JacksonXmlElementWrapper(useWrapping = false)
@@ -42,6 +56,14 @@ public class DeserializeChildStructure implements ChildStructure {
   public ArrayList<Item> getItem() {
     return item;
   }
+  
+  @Override
+  @JacksonXmlElementWrapper(useWrapping = false)
+  @JacksonXmlProperty(localName="childStructure")
+  public ArrayList<ChildStructure> getChildStructure() {
+    return childStructure;
+  }
+
 
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName="title")
@@ -55,10 +77,20 @@ public class DeserializeChildStructure implements ChildStructure {
     this.structureIdentifier = structureIdentifier;
   }
 
+  /**
+   * @param childStructure the childStructure to set
+   */
+  @JacksonXmlElementWrapper(useWrapping = false)
+  @JacksonXmlProperty(localName="childStructure")
+  public void setChildStructure(ArrayList<ChildStructure> cStruct) {
+    this.childStructure = cStruct;
+  }
+
   @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName="item")
   public void setItem(ArrayList<Item> item) {
     this.item = item;
   }
+
 
 }
