@@ -124,6 +124,7 @@ public class DipsLoaderImpl {
 	 */
 	public void addPayLoadStream(String pid, int id, File file) {
 		String DSId = "DS" + id;
+		logger.info("Load Payload to Fedora: " + DSId);
 		Fedora38Client client = new Fedora38Client(user, passwd);
 		client.postPayLoadFile(pid, DSId, file);
 	}
@@ -211,7 +212,7 @@ public class DipsLoaderImpl {
         String plFileName = payLoadIt.next();
         File payLoadFile = new File(plFileName);
         addPayLoadStream(pid, id, payLoadFile);
-        logger.debug("Payload file name: " + plFileName);
+        logger.info("Payload file name: " + plFileName);
         int plIndex = plFileName.lastIndexOf("/");
         int suffixIndex = plFileName.lastIndexOf(".");
         String plUri = plFileName.substring(plIndex +1);
@@ -236,6 +237,7 @@ public class DipsLoaderImpl {
         htmlProv = new HtmlProvider(EdmProvider.deserialize(refactorEdm(uriReplacement, fileName)), 
             DipsIEStructureProvider.deserialize(refactorIEStructure(idReplacement, dIEFileName)));        
       } else {
+        logger.info("use EDM.xml for splash page generation");
         htmlProv = new HtmlProvider(EdmProvider.deserialize(refactorEdm(uriReplacement, fileName)));        
         
       }
