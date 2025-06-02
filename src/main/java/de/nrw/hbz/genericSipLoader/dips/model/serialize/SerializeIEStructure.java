@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import de.nrw.hbz.genericSipLoader.dips.model.ChildStructure;
 import de.nrw.hbz.genericSipLoader.dips.model.IEStructure;
+import de.nrw.hbz.genericSipLoader.dips.model.Item;
 
 /**
  * 
@@ -58,6 +59,12 @@ public class SerializeIEStructure implements IEStructure {
   public void setChildStructure(ArrayList<ChildStructure> childStructure) {
     // TODO Auto-generated method stub
     
+  }
+
+  @Override
+  public ArrayList<Item> getItem() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

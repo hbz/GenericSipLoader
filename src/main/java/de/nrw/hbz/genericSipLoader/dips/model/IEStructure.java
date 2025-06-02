@@ -41,5 +41,14 @@ public interface IEStructure {
   public ArrayList<ChildStructure> getChildStructure();
   
   
+  /**
+   * @param childStructure
+   */
   public void setChildStructure(ArrayList<ChildStructure> childStructure);
+
+  
+  /**
+   * @return item ArrayList of item Element
+   */
+  public ArrayList<Item> getItem();
 }

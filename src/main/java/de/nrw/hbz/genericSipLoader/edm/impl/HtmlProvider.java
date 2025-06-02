@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.nrw.hbz.genericSipLoader.dips.model.ChildStructure;
 import de.nrw.hbz.genericSipLoader.dips.model.IEStructure;
+import de.nrw.hbz.genericSipLoader.dips.model.Item;
 import de.nrw.hbz.genericSipLoader.edm.model.Aggregation;
 import de.nrw.hbz.genericSipLoader.edm.model.Rdf;
 import de.nrw.hbz.genericSipLoader.edm.model.deserialize.DeserializeAggregation;
@@ -187,7 +188,20 @@ public class HtmlProvider {
       appendChildStructureMD(ieStruct.getChildStructure().get(i));
 
     }
+    
+    if( ieStruct.getItem() != null) {
+      appendRootItemMD(ieStruct.getItem());
+    }
+  }
 
+  private void appendRootItemMD(ArrayList<Item> item) {
+
+    for (int i = 0; i < ieStruct.getItem().size(); i++) {
+
+    htmlText.append("<li><a href=\"" + item.get(i).getItemID() + "\">"
+        + item.get(i).getItemTitle() + "</a></li>\n");
+    }
+    
   }
 
   private void appendChildStructureMD(ChildStructure cStruct) {
