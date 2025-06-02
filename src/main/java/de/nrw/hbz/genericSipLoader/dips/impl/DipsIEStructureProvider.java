@@ -18,13 +18,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 import de.nrw.hbz.genericSipLoader.dips.model.IEStructure;
 import de.nrw.hbz.genericSipLoader.dips.model.deserialize.DeserializeIEStructure;
 import de.nrw.hbz.genericSipLoader.dips.model.serialize.SerializeIEStructure;
-import de.nrw.hbz.genericSipLoader.edm.model.serialize.SerializeRdf;
 
 
 /**
@@ -74,7 +71,7 @@ public class DipsIEStructureProvider {
   /**
    * method takes serialized DiPS IE-Structure as InputStream 
    * @param is InputStream to be used
-   * @return EDM as Pojos according to jackson-Framework
+   * @return EDM as Pojos according to the jackson-Framework
    */
   public static IEStructure deserialize(InputStream is) {
     DeserializeIEStructure ieStruct = null;
@@ -98,7 +95,7 @@ public class DipsIEStructureProvider {
   /**
    * method takes serialized DiPS IE Structure as File object 
    * @param file File to be used
-   * @return EDM as Pojos according to jackson-Framework
+   * @return EDM as Pojos according to the jackson-Framework
    */
   public static IEStructure deserialize(File file) {
     DeserializeIEStructure ieStruct = null;
@@ -140,6 +137,10 @@ public class DipsIEStructureProvider {
     return ieStruct;
     }
   
+  /**
+   * @param ieStruct
+   * @return xml the IEStructure as serialized xml String
+   */
   public static String serialize(IEStructure ieStruct) {
     XmlMapper xmlMapper = new XmlMapper();
     String xml = null;

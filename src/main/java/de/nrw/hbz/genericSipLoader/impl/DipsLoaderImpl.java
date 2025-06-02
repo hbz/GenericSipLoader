@@ -309,6 +309,18 @@ public class DipsLoaderImpl {
   private String refactorIEStructure(Hashtable<String,String> replacements, String dIEFileName) {
     logger.debug(dIEFileName);
     IEStructure ieStruct = DipsIEStructureProvider.deserialize(new File(dIEFileName));
+    
+    for(int i=0; i < ieStruct.getItem().size(); i++) {
+      String itemID = ieStruct.getItem().get(i).getItemID();
+
+      logger.info("Found itemID: " + itemID);
+      if(replacements.containsKey(itemID)){
+        ieStruct.getItem().get(i).setItemID(replacements.get(itemID));
+        logger.info("Found replacement: " + replacements.get(itemID));
+      }
+
+    }
+
     for(int i=0; i < ieStruct.getChildStructure().size(); i++) {
       // ChildStructure cStruct = ieStruct.getChildStructure().get(i);
       ieStruct.setChildStructure(refactorChildStructure(replacements, ieStruct.getChildStructure()));
