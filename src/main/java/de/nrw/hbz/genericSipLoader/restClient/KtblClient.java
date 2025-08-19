@@ -83,7 +83,7 @@ public class KtblClient {
   private void setApi() {
     apiHost = apiProps.getProperty("protocol") + "://" + apiProps.getProperty("host") + ":"
         + apiProps.getProperty("port");
-    logger.info(apiHost);
+    logger.debug(apiHost);
   }
   
   /**
@@ -125,9 +125,9 @@ public class KtblClient {
     Client client = ClientBuilder.newClient(new ClientConfig());
     client.register(basicAuthFeature);
 
-    logger.info("path = " + endpoint);
+    logger.debug("path = " + endpoint);
     WebTarget webTarget = client.target(apiHost).path(endpoint).path(namespace);
-    logger.info("webTarget=" + webTarget.toString());
+    logger.debug("webTarget=" + webTarget.toString());
     ToScienceObject obj = new ToScienceObject();
     obj.setAccessScheme(PRIVATE);
     obj.setPublishScheme(PRIVATE);
@@ -139,7 +139,7 @@ public class KtblClient {
 
     Response response = webTarget.request().post(Entity.entity(json, MediaType.APPLICATION_JSON));
 
-    logger.info("response: " + response.toString());
+    logger.debug("response: " + response.toString());
 
     String responseBody = response.readEntity(String.class);
     
@@ -171,7 +171,7 @@ public class KtblClient {
     }
 
     String endpoint = "resource";
-    logger.info(pid);
+    logger.debug(pid);
     HttpAuthenticationFeature basicAuthFeature = HttpAuthenticationFeature.basic(user, passwd);
     Client client = ClientBuilder.newClient(new ClientConfig());
     client.register(basicAuthFeature);
