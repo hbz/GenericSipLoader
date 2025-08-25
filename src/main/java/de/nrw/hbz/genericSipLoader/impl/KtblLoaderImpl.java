@@ -23,6 +23,7 @@ import de.nrw.hbz.genericSipLoader.util.FileUtil;
 import de.nrw.hbz.genericSipLoader.util.JsonFileLoader;
 import de.nrw.hbz.genericSipLoader.util.PropertiesLoader;
 import de.nrw.hbz.genericSipLoader.util.ZipExtractor;
+import de.nrw.hbz.genericSipLoader.util.md.AdHocUriProvider;
 
 import java.nio.file.Path;
 
@@ -107,12 +108,9 @@ public class KtblLoaderImpl {
     client.postJsonFile(parentId, file);
   }
 
-  
-  
   /**
-   * Method aims to persist a complete ktbl
-   * ResearchData item into appropriate to.science Objects with respect to each
-   * objects relation to each other
+   * Method aims to persist a complete ktbl ResearchData item into appropriate
+   * to.science Objects with respect to each objects relation to each other
    * 
    * @param fList list of file names found by FileScanner
    */
@@ -130,7 +128,7 @@ public class KtblLoaderImpl {
      */
 
     Iterator<String> fIt = ((TreeSet<String>) fList).descendingIterator();
-    
+
     // Step 1: find json files and persist an empty ktblResearchData object for each
     // one
     while (fIt.hasNext()) {
@@ -151,11 +149,13 @@ public class KtblLoaderImpl {
         ktblDataId.put(fileName, pId);
       }
     }
-    
+
     // Step 2: Modify json files to add
     logger.debug("search for associatedDataSets");
     addRelatededDataSetMD(ktblDataId);
-    
+
+    createMissingAdHocUris(ktblDataId);
+
     // Step 3: Upload modified json files into empty ktblResearchData objects
     Set<String> kSet = ktblDataId.keySet();
     Iterator<String> kIt = kSet.iterator();
@@ -167,7 +167,7 @@ public class KtblLoaderImpl {
       File jsonFile = new File(fileName);
       uploadJsonFile(jsonFile, parentId);
       logger.info("Uploaded JSON-File: " + fileName);
-      
+
       File zipFile = new File(fileName.replace(".json", ".zip"));
       if (zipFile.exists()) {
         String partId = createToScienceObject("file", parentId);
@@ -189,19 +189,66 @@ public class KtblLoaderImpl {
     FileUtil.removeWorkDir(basePath, workDir);
   }
 
+  /**
+   * For sanity reasons provide adHocUris whenever an @id is missing or empty
+   * 
+   * @param ktblDataId
+   */
+  private void createMissingAdHocUris(LinkedHashMap<String, String> ktblDataId) {
+    // TODO Auto-generated method stub
+
+    Set<String> keySet = ktblDataId.keySet();
+    Iterator<String> kIt = keySet.iterator();
+
+    while (kIt.hasNext()) {
+      String fileName = kIt.next();
+      JsonFileLoader jFl = new JsonFileLoader();
+      JSONObject ktblJSONObj = jFl.loadJsonObject(fileName);
+
+      String[] fields2check = new String[] { "other", "contributor", "creator", "publisher", "subject" };
+
+      for (String field : fields2check) {
+        if (ktblJSONObj.has(field)) {
+          JSONArray fieldArray = ktblJSONObj.getJSONArray(field);
+          for (int i = 0; i < fieldArray.length(); i++) {
+            JSONObject fieldObj = fieldArray.getJSONObject(i);
+            if (! fieldObj.has("@id") && fieldObj.has("prefLabel")) {
+              String adHocUri = new AdHocUriProvider("ktbl").encode(fieldObj.getString("prefLabel"));
+              fieldObj.put("@id", adHocUri);
+              logger.info("added adHocUri: " + adHocUri);
+              // fieldArray.put(i, fieldObj);
+            }
+            if(fieldObj.has("@id") && fieldObj.has("prefLabel")) {
+              if(fieldObj.getString("@id").equals("")){
+                String adHocUri = new AdHocUriProvider("ktbl").encode(fieldObj.getString("prefLabel"));
+                fieldObj.put("@id", adHocUri);
+                logger.info("added adHocUri: " + adHocUri);
+                // fieldArray.put(i, fieldObj);
+              }              
+            }
+          }
+          // ktblJSONObj.put(field, fieldArray);
+        }
+      }
+      FileUtil.saveStringToResultFile(fileName, ktblJSONObj.toString(2));
+
+    }
+
+  }
+
   private void addChildsToParent(LinkedHashMap<String, String> ktblDataId) {
-    
+
     TreeSet<String> pIdSet = (TreeSet<String>) ktblDataId.keySet();
     NavigableSet<String> descSet = pIdSet.descendingSet();
     String parentId = descSet.pollFirst();
-    
+
     Iterator<String> childPidIt = descSet.iterator();
-    
+
     while (childPidIt.hasNext()) {
       String childId = childPidIt.next();
       createToScienceObject("part", parentId);
     }
-    
+
   }
 
   /**
@@ -219,7 +266,7 @@ public class KtblLoaderImpl {
     ArrayList<Hashtable<String, String>> relatedDataset = new ArrayList<>();
 
     ArrayList<String> pids = new ArrayList<>();
-    
+
     Set<String> keySet = ktblDataId.keySet();
     Iterator<String> pIt = keySet.iterator();
 
@@ -228,7 +275,7 @@ public class KtblLoaderImpl {
       String key = pIt.next();
       localFileList.add(key);
       pids.add(ktblDataId.get(key));
-      
+
       logger.debug("id " + ktblDataId.get(key));
 
       JsonFileLoader jFl = new JsonFileLoader();
@@ -238,17 +285,17 @@ public class KtblLoaderImpl {
 
       if (ktblJSONObj.has("relatedDatasets")) {
 
-        logger.debug("found related Datasets");
+        logger.info("found related Datasets");
         ktblRelDat = ktblJSONObj.getJSONArray("relatedDatasets");
-        
+
         logger.info("relatedDataset array has: " + ktblRelDat.length() + " items");
         logger.info("localFileList has: " + localFileList.size() + " items");
 
         Hashtable<String, String> related = null;
-        
+
         Iterator<Object> kIt = ktblRelDat.iterator();
 
-        int j = localFileList.size() -2 ;
+        int j = localFileList.size() - 2;
         while (kIt.hasNext()) {
 
           if (localFileList != null && localFileList.size() > 0) {
@@ -267,7 +314,6 @@ public class KtblLoaderImpl {
           }
         }
 
-
       }
 
     }
@@ -279,7 +325,7 @@ public class KtblLoaderImpl {
 
       String jsonFileName = localFileList.get(i);
       logger.info("load file: " + jsonFileName);
-      
+
       JsonFileLoader jFl = new JsonFileLoader();
       JSONObject ktblJSONObj = jFl.loadJsonObject(jsonFileName);
       JSONArray tosRelDat = new JSONArray();
@@ -287,22 +333,24 @@ public class KtblLoaderImpl {
 
       logger.info("relations count: " + relatedDataset.size());
 
+      if (jsonFileName != localFileList.get(localFileList.size() - 1)) {
         relDat = new JSONObject();
         relDat.put("prefLabel", "Parent publication");
-        relDat.put("@id", client.getResouceUri() + ktblDataId.get(localFileList.get(localFileList.size() -1 )));
-        tosRelDat.put(relDat);        
+        relDat.put("@id", client.getResouceUri() + ktblDataId.get(localFileList.get(localFileList.size() - 1)));
+        tosRelDat.put(relDat);
+      }
 
       for (int k = 0; k < relatedDataset.size(); k++) {
-         if (relatedDataset.size() -1 - i !=  k) {
+        if (relatedDataset.size() - 1 - i != k) {
           relDat = new JSONObject();
           relDat.put("prefLabel", relatedDataset.get(k).get("prefLabel"));
           relDat.put("@id", relatedDataset.get(k).get("@id"));
           tosRelDat.put(relDat);
-         } 
+        }
       }
       ktblJSONObj.put("relatedDatasets", tosRelDat);
       ktblJSONObj.put("associatedDataset", tosRelDat);
-      
+
       logger.debug(ktblJSONObj.toString(2));
 
       FileUtil.saveStringToResultFile(jsonFileName, ktblJSONObj.toString(2));

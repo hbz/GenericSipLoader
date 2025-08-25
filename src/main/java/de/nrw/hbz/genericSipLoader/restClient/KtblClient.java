@@ -73,7 +73,7 @@ public class KtblClient {
         e.printStackTrace();
       }
     } else {
-      apiProps = new PropertiesLoader().getApiProperties();
+      apiProps = new PropertiesLoader("ktbl-api.properties").getApiProperties();
     }
   }
 

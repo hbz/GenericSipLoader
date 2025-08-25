@@ -25,6 +25,14 @@ public class PropertiesLoader {
   private static Properties apiProps = new Properties();
   private Hashtable<String, String> config = new Hashtable<>();
 
+  public PropertiesLoader() {
+    loadProperties();
+  }
+
+  public PropertiesLoader(String propertiesFileName) {
+    loadProperties(propertiesFileName);
+  }
+  
   private void loadProperties() {
     InputStream propStream = null;
 
@@ -55,6 +63,27 @@ public class PropertiesLoader {
     }
   }
   
+  private void loadProperties(String propertiesFileName) {
+    InputStream propStream = null;
+
+    propStream = this.getClass().getClassLoader()
+          .getResourceAsStream(propertiesFileName);
+    
+    if (propStream != null) {
+      try {
+        apiProps.load(propStream);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      Enumeration<Object> eProps = apiProps.keys();
+      while (eProps.hasMoreElements()) {
+        String key = (String) eProps.nextElement();
+        config.put(key, apiProps.getProperty(key));
+      }
+    }
+  }
+
   public Hashtable<String, String> getProperties() {
     loadProperties();
     return config;
