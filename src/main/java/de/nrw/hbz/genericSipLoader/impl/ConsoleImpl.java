@@ -73,7 +73,7 @@ public class ConsoleImpl {
         // Unzipping the File
         ktblLoader.extractZips();
         Set<String> ieList = ktblLoader.scanIEs();
-        ktblLoader.persistKtblRD(ieList);
+        ktblLoader.persistKtblRDNew(ieList);
       }
   }
     

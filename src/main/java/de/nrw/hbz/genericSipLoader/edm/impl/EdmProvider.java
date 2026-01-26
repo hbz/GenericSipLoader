@@ -101,11 +101,11 @@ public class EdmProvider {
       rdf = xmlMapper.readValue(xmlIs, DeserializeRdf.class);
 
     } catch (StreamReadException e) {
-      logger.error(e.getMessage());
+      logger.error("Deserialize failed with StreamReadException at file " + file.getAbsolutePath() + "\n" + e.getMessage());
     } catch (DatabindException e) {
-      logger.error(e.getMessage());
+      logger.error("Deserialize failed with DataBindException at file " + file.getAbsolutePath() + "\n" + e.getMessage());
     } catch (IOException e) {
-      logger.error(e.getMessage());
+      logger.error("Deserialize failed with IOException at file " + file.getAbsolutePath() + "\n" + e.getMessage());
     }
 
     

@@ -303,7 +303,7 @@ public class DipsLoaderImpl {
 	
   /**
    * Replace names of local files with FedoraObject dsID's in accordance with the upload of files  
-   * @param edmFileName
+   * @param dIEFileName absolute path to structure.xml file
    * @return refactored EDM as String
    */
   private String refactorIEStructure(Hashtable<String,String> replacements, String dIEFileName) {

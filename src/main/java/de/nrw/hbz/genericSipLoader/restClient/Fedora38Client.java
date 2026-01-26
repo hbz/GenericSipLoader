@@ -57,7 +57,7 @@ public class Fedora38Client {
 	private void loadProperties() {
 	    InputStream propStream = null;
 
-	    // Prüfen, ob die Datei im "Properties files" Ordner existiert
+	    // Checks for file in "Properties files" directory
 	    File propertiesFile = new File("Properties files/fedora-api.properties");
 	    if (propertiesFile.exists()) {
 	    	
@@ -68,7 +68,7 @@ public class Fedora38Client {
 	            e.printStackTrace();
 	        }
 	    } else {
-	        apiProps = new PropertiesLoader().getApiProperties();
+	        apiProps = new PropertiesLoader("fedora-api.properties").getApiProperties();
 	    }
 
 	}
@@ -93,7 +93,7 @@ public class Fedora38Client {
 //	}
 
 	/**
-	 * Configure API using properties loaded by loadProperties method
+	 * Configures API using properties loaded by loadProperties method
 	 */
 	private void setApi() {
 		loadProperties();
@@ -125,7 +125,7 @@ public class Fedora38Client {
 	}
 
 	/**
-	 * Create a new empty Fedora Object in remote Fedora Repository
+	 * Creates a new empty Fedora Object in remote Fedora Repository
 	 * 
 	 * @param sourceId
 	 * @return
@@ -162,7 +162,7 @@ public class Fedora38Client {
 	}
 
 	/**
-	 * Add any XML Metadata file to remote Fedora Object
+	 * Adds any XML Metadata file to remote Fedora Object
 	 * 
 	 * @param objId
 	 * @param mdSchema
@@ -204,7 +204,7 @@ public class Fedora38Client {
 	}
 	
   /**
-   *  Add any XML Metadata stream to remote Fedora Object
+   *  Adds any XML Metadata stream to remote Fedora Object
    *  
    * @param objId
    * @param mdSchema
@@ -286,7 +286,7 @@ public class Fedora38Client {
 	}
 	
   /**
-   * Add new Relationship to RELS-EXT Stream of a fedora object
+   * Adds new Relationship to RELS-EXT Stream of a fedora object
    * Using fedora API-M call
    * @param pid
    * @param subject

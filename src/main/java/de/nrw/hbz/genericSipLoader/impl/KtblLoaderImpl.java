@@ -108,6 +108,82 @@ public class KtblLoaderImpl {
     client.postJsonFile(parentId, file);
   }
 
+ 
+  public void persistKtblRDNew(Set<String> fList) {
+    
+    LinkedHashMap<String, String> ktblDataId = createRDContainer(fList);
+    
+    // addRelatededDataSetMD(ktblDataId);
+    createMissingAdHocUris(ktblDataId);
+    uploadContent(ktblDataId);
+    
+    FileUtil.removeWorkDir(basePath, workDir);    
+     
+  }
+  
+  /**
+   * create empty toscience Objects as researchData objects and 
+   * bring them into hierarchical structure 
+   * 
+   * @param fList
+   * @return
+   */
+  private LinkedHashMap<String, String> createRDContainer(Set<String> fList) {
+    
+    LinkedHashMap<String, String> ktblDataId = new LinkedHashMap<>();
+    String parentPid = null;
+    Iterator<String> fIt = fList.iterator();
+    
+    // create new empty ToScienceObject for each json file we found in the zip
+    while(fIt.hasNext()) {
+      String fileName = fIt.next();
+      if (fileName.endsWith(".json")) {
+        logger.info("persist new ktblResearchData object for " + fileName);
+        String pId = createToScienceObject("researchData", parentPid);
+        ktblDataId.put(fileName, pId);
+        if(parentPid == null) {
+          parentPid = pId;
+        }
+      }
+    }
+    // return a Map of file names (json files) and associated fedora pids 
+    return ktblDataId;
+  };
+  
+  
+  /**
+   * Uploads json, zip and xslx files to the appropriate to.science Objects
+   * Remove uploaded files from the local directory 
+   * 
+   * @param ktblDataId
+   */
+  private void uploadContent(LinkedHashMap<String, String> ktblDataId) {
+    Set<String> kSet = ktblDataId.keySet();
+    Iterator<String> kIt = kSet.iterator();
+    
+    while (kIt.hasNext()) {
+      String fileName = kIt.next();
+      String parentId = ktblDataId.get(fileName);
+      File jsonFile = new File(fileName);
+      uploadJsonFile(jsonFile, parentId);
+      logger.info("Uploaded JSON-File: " + fileName);
+      File zipFile = new File(fileName.replace(".json", ".zip"));
+      if (zipFile.exists()) {
+        String partId = createToScienceObject("file", parentId);
+        uploadFile(zipFile, partId);
+        zipFile.delete();
+      }
+      File xlsxFile = new File(fileName.replace(".json", ".xlsx"));
+      if (xlsxFile.exists()) {
+        String partId = createToScienceObject("file", parentId);
+        uploadFile(xlsxFile, partId);
+        xlsxFile.delete();
+      }
+    }
+  }
+  
+  
+  
   /**
    * Method aims to persist a complete ktbl ResearchData item into appropriate
    * to.science Objects with respect to each objects relation to each other
@@ -236,6 +312,7 @@ public class KtblLoaderImpl {
 
   }
 
+  @Deprecated
   private void addChildsToParent(LinkedHashMap<String, String> ktblDataId) {
 
     TreeSet<String> pIdSet = (TreeSet<String>) ktblDataId.keySet();
