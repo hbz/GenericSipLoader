@@ -201,6 +201,8 @@ public class DipsLoaderImpl {
         logger.debug("Found structure.xml file : " + dIEFileName);
       }
 
+      // scan for files other than XML, 
+      // as we need to append all Payload files to the Fedora Obj
       List<String> mimeTypes = new ArrayList<>();
       mimeTypes.add(MediaType.APPLICATION_XML);
       fScan.processScan(mimeTypes);
@@ -224,6 +226,7 @@ public class DipsLoaderImpl {
       }
       logger.debug(pid);
 
+      // EDM_submitted should be added after all other XML files 
       addMetadataStream(pid, "EDM_submitted.xml", new File(fileName));
 
       logger.debug("Start with creation of html structure file now");
@@ -243,7 +246,9 @@ public class DipsLoaderImpl {
       }
       
       addPayLoadStream(pid, id+1, htmlProv.toTempFile());
-      String edmResult = EdmProvider.serialize(htmlProv.appendHtmlAggregation(createDSUrl(pid, "DS" + (id+1))));
+      
+      // finally create the complete EDM as String representation
+      String edmResult = EdmProvider.serialize(htmlProv.setOreAggregation(createDSUrl(pid, "DS" + (id+1))));
        
       Hashtable<String,String> xmlStreams = new Hashtable<>();
       xmlStreams.put("EDM.xml", edmResult);
@@ -302,7 +307,10 @@ public class DipsLoaderImpl {
   }
 	
   /**
-   * Replace names of local files with FedoraObject dsID's in accordance with the upload of files  
+   * Replace names of local files with FedoraObject dsID's in accordance with the upload of files
+   * 1. deserialize structure.xml file
+   * 2. replace all itemID's with dsID's
+   * 3. serialize structure.xml file again  
    * @param dIEFileName absolute path to structure.xml file
    * @return refactored EDM as String
    */
@@ -328,7 +336,7 @@ public class DipsLoaderImpl {
       }
     
     DipsIEStructureProvider dsp =  new DipsIEStructureProvider(ieStruct);
-    logger.info(dsp.toString());
+    logger.debug(dsp.toString());
     return dsp.toString();
   }
   

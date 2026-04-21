@@ -12,7 +12,7 @@ import de.nrw.hbz.genericSipLoader.dips.model.deserialize.DeserializeIEStructure
 
 /**
  * Interface that provides methods to read and write XML-based representations of
- * EDM meta data
+ * EDM metadata
  * RDF does not mean a rdf representation. Instead it's the XML root element provided in EDM
  *  
  */

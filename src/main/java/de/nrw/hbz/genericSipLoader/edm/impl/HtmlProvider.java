@@ -204,6 +204,10 @@ public class HtmlProvider {
     
   }
 
+  /**
+   * Append a distinct child structure to the html page
+   * @param cStruct
+   */
   private void appendChildStructureMD(ChildStructure cStruct) {
 
     htmlText.append("<ul>");
@@ -232,6 +236,9 @@ public class HtmlProvider {
     htmlText.append(htmlFoot);
   }
 
+  /**
+   * @return
+   */
   public File toTempFile() {
     File tmpFile = null;
     BufferedOutputStream bos = null;
@@ -252,13 +259,13 @@ public class HtmlProvider {
   }
 
   /**
-   * Add additional ore:Aggregation to EDM.xml that represents the html page
-   * created with the HtmlProvider
+   * create and set new ore:Aggregation that represents the html page
+   * created with the HtmlProvider to EDM Pojo
    * 
    * @param dsUrl
-   * @return
+   * @return Rdf ore:Aggregation-Element for EDM.xml as Pojo
    */
-  public Rdf appendHtmlAggregation(String dsUrl) {
+  public Rdf setOreAggregation(String dsUrl) {
     // int i = rdf.getAggregation().size();
     Aggregation aggregation = new DeserializeAggregation();
     aggregation.setEdmAggregatedCHO(new DeserializeResourceAttribute("SplashPage"));
@@ -273,6 +280,9 @@ public class HtmlProvider {
     return rdf;
   }
 
+  /**
+   * return html page as String
+   */
   @Override
   public String toString() {
     return htmlText.toString();

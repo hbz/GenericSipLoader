@@ -30,7 +30,7 @@ public class DeserializeIEStructure implements IEStructure {
   
   
   /**
-   * Replace childStructure Element at respective position
+   * Replace childStructure Element at its respective position
    * @param cStruct
    * @param i position at which childStructrue Element will be replaced
    */

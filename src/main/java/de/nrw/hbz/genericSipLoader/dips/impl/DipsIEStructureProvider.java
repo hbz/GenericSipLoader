@@ -71,7 +71,7 @@ public class DipsIEStructureProvider {
   /**
    * method takes serialized DiPS IE-Structure as InputStream 
    * @param is InputStream to be used
-   * @return EDM as Pojos according to the jackson-Framework
+   * @return EDM as PoJo according to the jackson-Framework
    */
   public static IEStructure deserialize(InputStream is) {
     DeserializeIEStructure ieStruct = null;
@@ -95,7 +95,7 @@ public class DipsIEStructureProvider {
   /**
    * method takes serialized DiPS IE Structure as File object 
    * @param file File to be used
-   * @return EDM as Pojos according to the jackson-Framework
+   * @return EDM as PoJo according to the jackson-Framework
    */
   public static IEStructure deserialize(File file) {
     DeserializeIEStructure ieStruct = null;
@@ -118,7 +118,7 @@ public class DipsIEStructureProvider {
   /**
    * method takes serialized DiPS IE Structure as String 
    * @param ieStructString the String used to deserialize
-   * @return EDM as Pojos according to jackson-Framework
+   * @return EDM as PoJo according to jackson-Framework
    */
   public static IEStructure deserialize(String ieStructString) {
     DeserializeIEStructure ieStruct = null;
@@ -139,7 +139,7 @@ public class DipsIEStructureProvider {
   
   /**
    * @param ieStruct
-   * @return xml the IEStructure as serialized xml String
+   * @return xml the IEStructure as serialized xml-String
    */
   public static String serialize(IEStructure ieStruct) {
     XmlMapper xmlMapper = new XmlMapper();
@@ -170,7 +170,7 @@ public class DipsIEStructureProvider {
   }
   
   /**
-   * return complete EDM metadata as serialization to String
+   * return xml the complete EDM metadata as serialization to String
    */
   @Override
   public String toString() {
