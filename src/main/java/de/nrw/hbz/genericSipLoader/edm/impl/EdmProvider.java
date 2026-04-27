@@ -134,6 +134,11 @@ public class EdmProvider {
     return rdf;
     }
   
+  /**
+   * method takes EDM as Pojos and serializes it to String
+   * @param edm the EDM to be serialized
+   * @return EDM as String
+   */
   public static String serialize(Rdf edm) {
     XmlMapper xmlMapper = new XmlMapper();
     String xml = null;

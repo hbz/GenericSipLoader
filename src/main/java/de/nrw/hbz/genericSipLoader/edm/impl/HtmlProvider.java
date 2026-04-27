@@ -270,6 +270,22 @@ public class HtmlProvider {
     Aggregation aggregation = new DeserializeAggregation();
     aggregation.setEdmAggregatedCHO(new DeserializeResourceAttribute("SplashPage"));
     aggregation.setEdmIsShownBy(new DeserializeResourceAttribute(dsUrl));
+    aggregation.setEdmIsShownAt(new DeserializeResourceAttribute(dsUrl));
+    aggregation.setEdmObject(new DeserializeResourceAttribute(dsUrl));
+    aggregation.setEdmAboutCHOResource("SplashPage");
+    aggregation.setEdmDataProvider(rdf.getAggregation().get(0).getEdmDataProvider());
+    aggregation.setEdmProvider(rdf.getAggregation().get(0).getEdmProvider());
+    aggregation.setEdmRights(new DeserializeResourceAttribute("http://creativecommons.org/publicdomain/zero/1.0"));
+    rdf.addAggregation(aggregation);
+
+    return rdf;
+  }
+  
+  public Rdf setOreAggregation(String dsUrl, String imageUrl) {
+    Aggregation aggregation = new DeserializeAggregation();
+    aggregation.setEdmAggregatedCHO(new DeserializeResourceAttribute("SplashPage"));
+    aggregation.setEdmIsShownBy(new DeserializeResourceAttribute(imageUrl));
+    aggregation.setEdmIsShownAt(new DeserializeResourceAttribute(dsUrl));
     aggregation.setEdmObject(new DeserializeResourceAttribute(dsUrl));
     aggregation.setEdmAboutCHOResource("SplashPage");
     aggregation.setEdmDataProvider(rdf.getAggregation().get(0).getEdmDataProvider());
@@ -280,6 +296,9 @@ public class HtmlProvider {
     return rdf;
   }
 
+  
+
+  
   /**
    * return html page as String
    */

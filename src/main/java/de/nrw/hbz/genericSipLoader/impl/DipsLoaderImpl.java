@@ -202,13 +202,15 @@ public class DipsLoaderImpl {
       }
 
       // scan for files other than XML, 
-      // as we need to append all Payload files to the Fedora Obj
-      List<String> mimeTypes = new ArrayList<>();
-      mimeTypes.add(MediaType.APPLICATION_XML);
-      fScan.processScan(mimeTypes);
+      // as we need to append all payload files to the Fedora Object
+      List<String> exclMimeTypes = new ArrayList<>();
+      exclMimeTypes.add(MediaType.APPLICATION_XML);
+      exclMimeTypes.add(MediaType.TEXT_XML);
+      fScan.removeMimeTypes(exclMimeTypes);
       Set<String> payLoadList = fScan.getFileList();
       Iterator<String> payLoadIt = payLoadList.iterator();    
       int id = 0;
+      // process all payload files
       while(payLoadIt.hasNext()) {
         id++;
         String plFileName = payLoadIt.next();
@@ -231,8 +233,8 @@ public class DipsLoaderImpl {
 
       logger.debug("Start with creation of html structure file now");
       
-      // we need to merge informations from two files (EDM.xml and structure.xml) into splash page
-      // calling appropriate constructor that takes both 
+      // we need to merge informations from two files (EDM.xml and structure.xml) into an html splash page
+      // calling appropriate constructor that takes both files as parameters
       // TODO replace if-construct
       HtmlProvider htmlProv = null;
       if(dIEFileName != null) {
@@ -245,10 +247,14 @@ public class DipsLoaderImpl {
         
       }
       
+      // add the html splash page to the Fedora Object
       addPayLoadStream(pid, id+1, htmlProv.toTempFile());
       
-      // finally create the complete EDM as String representation
-      String edmResult = EdmProvider.serialize(htmlProv.setOreAggregation(createDSUrl(pid, "DS" + (id+1))));
+
+      // finally create the complete EDM as String representation by adding a metadata entry for the html file 
+      // as last oreAggregation
+      logger.info("Create EDM.xml");
+      String edmResult = EdmProvider.serialize(htmlProv.setOreAggregation(createDSUrl(pid, "DS" + (id+1)), getThumbReadyFile(fScan, uriReplacement)));
        
       Hashtable<String,String> xmlStreams = new Hashtable<>();
       xmlStreams.put("EDM.xml", edmResult);
@@ -261,32 +267,30 @@ public class DipsLoaderImpl {
         BufferedOutputStream bos = null;
         try {
           tmpFile = File.createTempFile("danrw-", ".xml");
-          FileOutputStream fos = new FileOutputStream(tmpFile);
-          bos = new BufferedOutputStream(fos);      
-          bos.write(xmlStreams.get(key).getBytes("UTF-8"));
-          bos.flush();
+          FileUtil.saveStringToResultFile(tmpFile.getAbsolutePath(), xmlStreams.get(key));
           addMetadataStream(pid, key, tmpFile);
         } catch (IOException e) {
           e.printStackTrace();
         } finally {
            tmpFile.delete();
-          try {
-            bos.close();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
         }
         
       }
       
     }
- 
-		
+    
   // Last step: clean up the work directory
   FileUtil.removeWorkDir(basePath, workDir);
 	}
 	
-  private String createQDC(String edmFileName) {
+	
+	
+  /**
+   * Create QDC from EDM file
+   * @param edmFileName
+   * @return QDC as String
+   */
+	private String createQDC(String edmFileName) {
     Rdf rdf = EdmProvider.deserialize(new File(edmFileName));
     ProvidedCHO provCho = rdf.getProvidedCho();
     QdcProvider qdcProvider = new QdcProvider(provCho);
@@ -394,5 +398,29 @@ public class DipsLoaderImpl {
     }
     return DSUrl;    
   }
+  
+  public String getThumbReadyFile(FileScanner FScan, Hashtable<String,String> uriReplacement) {
+    logger.info("Start with getThumbReadyFile");
+    String thumbReadyFile = null;
+    FileScanner ifScan = FScan;
+    
+    List<String> selectMimeTypes = new ArrayList<>();
+    selectMimeTypes.add("image/png");
+    selectMimeTypes.add("image/jpeg");
+    selectMimeTypes.add("application/pdf");
+       
+    ifScan.selectMimeTypes(selectMimeTypes);
+    Set<String> imageList = ifScan.getFileList();
+    Iterator<String> imageIt = imageList.iterator();
+    if(imageIt.hasNext()) {
+      String plFileName = imageIt.next();
+      int plIndex = plFileName.lastIndexOf("/");
+      String plUri = plFileName.substring(plIndex +1);
+      thumbReadyFile = uriReplacement.get(plUri);
+    }
+    logger.info("Found thumbReadyFile: " + thumbReadyFile);
+    return thumbReadyFile;    
+  }
+
   
 }

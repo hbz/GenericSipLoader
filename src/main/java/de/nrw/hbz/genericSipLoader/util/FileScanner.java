@@ -16,6 +16,11 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Class gather a Set of files from directories. Different methods filter these files by name pattern or mime type.
+ * @author aquast
+ *  
+ */
 public class FileScanner {
   
   final static Logger logger = LogManager.getLogger(FileScanner.class);
@@ -37,14 +42,13 @@ public class FileScanner {
 		scan = new File(path);
 	}
 
+	
+	/**
+	 * 
+	 */
 	public void processScan() {
 		try {
 			fList = listFiles(scan.toString());
-			Iterator<String> fListIt = fList.iterator();
-			while (fListIt.hasNext()) {
-				String fileName = fListIt.next();
-				// System.out.println(fileName);
-			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,22 +69,36 @@ public class FileScanner {
 		}
 	}
 
-	public void processScan(List<String> excludedMimeTypes) {
+	
+	/**
+	 * remove all files with mimeTypes from fList 
+	 * @param mimeTypes
+	 */
+	public void removeMimeTypes(List<String> mimeTypes) {
 		try {
-			fList = listFilesExcludeMimeType(scan.toString(),
-					excludedMimeTypes);
-			Iterator<String> fListIt = fList.iterator();
-			while (fListIt.hasNext()) {
-				String fileName = fListIt.next();
-				// System.out.println(fileName);
-			}
+			fList = excludeMimeType(scan.toString(),
+					mimeTypes);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	private Set<String> listFiles(String dir) throws IOException {
+  /**
+   * remove all files with mimeTypes from fList 
+   * @param mimeTypes
+   */
+  public void selectMimeTypes(List<String> mimeTypes) {
+    try {
+      fList = filterMimeType(scan.toString(),
+          mimeTypes);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private Set<String> listFiles(String dir) throws IOException {
 		final Set<String> fileList = new TreeSet<String>();
 		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
 			@Override
@@ -112,7 +130,13 @@ public class FileScanner {
 		return fileList;
 	}
 
-	private Set<String> listFilesExcludeMimeType(String dir,
+	/**
+	 * @param dir
+	 * @param mimeTypes
+	 * @return
+	 * @throws IOException
+	 */
+	private Set<String> excludeMimeType(String dir,
 			final List<String> mimeTypes) throws IOException {
 		final Set<String> fileList = new TreeSet<String>();
 		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
@@ -122,9 +146,11 @@ public class FileScanner {
 				try {
 					if (!Files.isDirectory(file)) {
 						String type = Files.probeContentType(file);
+						logger.info("File: " + file.toAbsolutePath().toString() + " ContentType: " + type);
 						boolean mt = true;
 						for (int i = 0; i < mimeTypes.size(); i++) {
-							if (type.equals(mimeTypes.get(i))) {
+							logger.info("MimeType: " + mimeTypes.get(i));
+						  if (type.equals(mimeTypes.get(i))) {
 								mt = false;
 							}
 						}
@@ -141,6 +167,44 @@ public class FileScanner {
 		});
 		return fileList;
 	}
+
+	/**
+   * @param dir
+   * @param mimeTypes
+   * @return
+   * @throws IOException
+   */
+  private Set<String> filterMimeType(String dir,
+      final List<String> mimeTypes) throws IOException {
+    final Set<String> fileList = new TreeSet<String>();
+    Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(Path file,
+          BasicFileAttributes attrs) {
+        try {
+          if (!Files.isDirectory(file)) {
+            String type = Files.probeContentType(file);
+            logger.info("File: " + file.toAbsolutePath().toString() + " ContentType: " + type);
+            boolean mt = false;
+            for (int i = 0; i < mimeTypes.size(); i++) {
+              logger.info("MimeType: " + mimeTypes.get(i));
+              if (type.equals(mimeTypes.get(i))) {
+                mt = true;
+              }
+            }
+            if (mt) {
+              fileList.add(file.toAbsolutePath().toString());
+            }
+          }
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        return FileVisitResult.CONTINUE;
+      }
+    });
+    return fileList;
+  }
 
 	/**
 	 * @return the pattern
